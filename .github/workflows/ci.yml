@@ -100,46 +100,56 @@ jobs:
           # REDIS_URL: redis://localhost:6379/0
         run: bin/rails db:test:prepare test
 
-  system-test:
-    runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_DB: delivery_app_test
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U postgres"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+system-test:
+  runs-on: ubuntu-latest
+  services:
+    postgres:
+      image: postgres:15
+      env:
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        POSTGRES_DB: delivery_app_test
+      ports:
+        - 5432:5432
+      options: >-
+        --health-cmd "pg_isready -U postgres"
+        --health-interval 10s
+        --health-timeout 5s
+        --health-retries 5
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v6
 
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 3.2.10
-          bundler-cache: true
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 3.2.10
+        bundler-cache: true
 
-      - name: Run System Tests
-        env:
-          RAILS_ENV: test
-          DB_USERNAME: postgres
-          DB_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          # RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
-          # REDIS_URL: redis://localhost:6379/0
-        run: bin/rails db:test:prepare test:system
+    - name: Install dependencies
+      run: bundle install --jobs 4 --retry 3
 
-      - name: Keep screenshots from failed system tests
-        uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: screenshots
-          path: ${{ github.workspace }}/tmp/screenshots
-          if-no-files-found: ignore
+    - name: Prepare test database
+      env:
+        RAILS_ENV: test
+        DB_USERNAME: postgres
+        DB_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      run: |
+        bin/rails db:create db:schema:load
+
+    - name: Run System Tests
+      env:
+        RAILS_ENV: test
+        DB_USERNAME: postgres
+        DB_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        # RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }} # 必要ならアンコメント
+      run: bin/rails test:system
+
+    - name: Keep screenshots from failed system tests
+      uses: actions/upload-artifact@v4
+      if: failure()
+      with:
+        name: screenshots
+        path: ${{ github.workspace }}/tmp/screenshots
+        if-no-files-found: ignore
