@@ -23,7 +23,7 @@ class RoutesController < ApplicationController
 
   private
 
-    def route_params
-      params.require(:route).permit(:name, description)
-    end
+  def route_params
+    params.require(:route).permit(:name, description)
+  end
 end
