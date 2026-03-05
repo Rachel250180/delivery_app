@@ -1,2 +1,11 @@
-<h1>Routes#index</h1>
-<p>Find me in app/views/routes/index.html.erb</p>
+<h1>ルート一覧</h1>
+
+<%= link_to "新規作成", new_route_path %>
+
+<ul>
+  <% @routes.each do |route| %>
+    <li>
+      <%= link_to route.name, route_path(route) %>
+    </li>
+  <% end %>
+</ul>

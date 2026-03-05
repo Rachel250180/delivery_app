@@ -1,2 +1,5 @@
-<h1>Routes#show</h1>
-<p>Find me in app/views/routes/show.html.erb</p>
+<h1><%= @route.name %></h1>
+
+<p><%= @route.description %></p>
+
+<%= link_to "一覧へ戻る", routes_path %>
