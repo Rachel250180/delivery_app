@@ -21,9 +21,15 @@ class RoutesController < ApplicationController
     end
   end
 
+  def destory
+    @route = Route.find(params[:id])
+    @route.destroy
+    redirect_to routes_path, notice: "削除しました"
+  end
+
   private
 
   def route_params
-    params.require(:route).permit(:name, description)
+    params.require(:route).permit(:name, :description)
   end
 end
