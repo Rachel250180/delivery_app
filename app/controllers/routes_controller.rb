@@ -1,10 +1,13 @@
 class RoutesController < ApplicationController
+
+  before_action :set_route, only: [:show, :edit, :update, :destroy]
+
   def index
     @routes = Route.all
   end
 
   def show
-    @route = Route.find(params[:id])
+    
   end
 
   def new
@@ -21,15 +24,30 @@ class RoutesController < ApplicationController
     end
   end
 
-  def destory
-    @route = Route.find(params[:id])
+  def destroy
     @route.destroy
     redirect_to routes_path, notice: "削除しました"
   end
+
+  def edit
+  end
+
+  def update
+    if @route.update(route_params)
+      redirect_to @route
+    else
+      render :edit
+    end
+  end
+
 
   private
 
   def route_params
     params.require(:route).permit(:name, :description)
+  end
+
+  def set_route
+    @route = Route.find(params[:id])
   end
 end

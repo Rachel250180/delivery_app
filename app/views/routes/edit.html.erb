@@ -1,0 +1,19 @@
+<h1>ルート編集</h1>
+
+<%= form_with model: @route do |form| %>
+  <div>
+    <%= form.label :name, "ルート名" %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div>
+    <%= form.label :description, "説明" %><br>
+    <%= form.text_area :description %>
+  </div>
+
+  <div>
+    <%= form.submit "更新" %>
+  </div>
+<% end %>
+
+<%= link_to "戻る", route_path(@route) %>
