@@ -38,13 +38,24 @@ class RoutesControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to route_url(Route.last)
   end
 
-  test ""
+  test "should not create route with invalid data" do
+    assert_no_difference("Route.count") do
+      post routes_url, params:{route: {name: "", description: ""}}
+    end
+
+    assert_response :unprocessable_entity
+  end
 
 
 
   test "should update route" do
     patch route_url(@route),params: {route: {name: "更新ルート"}}
     assert_redirected_to route_url(@route)
+  end
+
+  test "should not update route with invalid data" do
+    patch route_url(@route),params: {route: {name: ""}}
+    assert_response :unprocessable_entity
   end
 
   test "should destroy route" do
