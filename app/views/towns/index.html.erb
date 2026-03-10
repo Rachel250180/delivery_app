@@ -1,0 +1,17 @@
+<h1>町名検索</h1>
+
+<%= form_with url: towns_path, method: :get, local: true do |f| %>
+  <%= f.label :name, "町名" %>
+  <%= f.text_field :name %>
+  <%= f.submit "検索" %>
+<% end %>
+
+<h1>町一覧</h1>
+
+<ul>
+  <% @towns.each do |town| %>
+    <li>
+      <%= link_to town.name, town_path(town) %>
+    </li>
+  <% end %>
+</ul>
