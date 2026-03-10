@@ -1,11 +1,11 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  name: MyString
-  description: MyText
-  user_id: 1
+  name: 最短ルート
+  description: テストルート
+  town: one
 
 two:
-  name: MyString
-  description: MyText
-  user_id: 2
+  name: 裏道ルート
+  description: テスト
+  town: two

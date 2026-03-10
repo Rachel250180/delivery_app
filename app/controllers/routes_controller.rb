@@ -1,32 +1,26 @@
 class RoutesController < ApplicationController
-
+  before_action :set_town
   before_action :set_route, only: [:show, :edit, :update, :destroy]
 
   def index
-    @routes = Route.all
+    @routes = @town.routes
   end
 
   def show
-    
   end
 
   def new
-    @route = Route.new
+    @route = @town.routes.new
   end
 
   def create
-    @route = Route.new(route_params)
+    @route = @town.routes.new(route_params)
 
     if @route.save
-      redirect_to @route, notice: "ルートを作成しました！"
+      redirect_to town_route_path(@town, @route), notice: "ルートを作成しました！"
     else
       render :new, status: :unprocessable_entity
     end
-  end
-
-  def destroy
-    @route.destroy
-    redirect_to routes_path, notice: "削除しました"
   end
 
   def edit
@@ -34,12 +28,16 @@ class RoutesController < ApplicationController
 
   def update
     if @route.update(route_params)
-      redirect_to @route
+      redirect_to town_route_path(@town, @route)
     else
       render :edit, status: :unprocessable_entity
     end
   end
 
+  def destroy
+    @route.destroy
+    redirect_to town_routes_path(@town), notice: "削除しました"
+  end
 
   private
 
@@ -47,7 +45,11 @@ class RoutesController < ApplicationController
     params.require(:route).permit(:name, :description)
   end
 
+  def set_town
+    @town = Town.find(params[:town_id])
+  end
+
   def set_route
-    @route = Route.find(params[:id])
+    @route = @town.routes.find(params[:id])
   end
 end

@@ -1,6 +1,6 @@
 <h1>ルート登録</h1>
 
-<%= form_with model: @route do |f| %>
+<%= form_with model: [@town, @route] do |f| %>
   <div>
     <%= f.label :name, "ルート名" %><br>
     <%= f.text_field :name %>

@@ -1,6 +1,6 @@
 <h1>ルート編集</h1>
 
-<%= form_with model: @route do |form| %>
+<%= form_with model: [@town, @route] do |form| %>
   <div>
     <%= form.label :name, "ルート名" %>
     <%= form.text_field :name %>
@@ -16,4 +16,4 @@
   </div>
 <% end %>
 
-<%= link_to "戻る", route_path(@route) %>
+<%= link_to "戻る", town_route_path(@town, @route) %>

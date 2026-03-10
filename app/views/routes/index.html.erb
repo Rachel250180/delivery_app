@@ -1,11 +1,11 @@
 <h1>ルート一覧</h1>
 
-<%= link_to "新規作成", new_route_path %>
+<%= link_to "新規作成", new_town_route_path(@town) %>
 
 <ul>
   <% @routes.each do |route| %>
     <li>
-      <%= link_to route.name, route_path(route) %>
+      <%= link_to route.name, town_route_path(@town, route) %>
     </li>
   <% end %>
 </ul>
