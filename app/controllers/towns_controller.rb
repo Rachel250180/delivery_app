@@ -20,10 +20,14 @@ class TownsController < ApplicationController
     @town = Town.new(town_params)
 
     if @town.save
-      redirect_to @town, notice: "町名を追加しました！"
+      redirect_to new_town_route_path(@town), notice: "町名を追加しました！"
     else
       render :new, status: :unprocessable_entity
     end
+  end
+
+  def edit
+    @town = Town.find(params[:id])
   end
 
   def update
@@ -32,7 +36,7 @@ class TownsController < ApplicationController
     if @town.update(town_params)
       redirect_to @town
     else
-      render :edit, , status: :unprocessable_entity
+      render :edit, status: :unprocessable_entity
     end
   end
 
@@ -53,7 +57,7 @@ class TownsController < ApplicationController
   private
 
   def town_params
-    params.require(:town).permit(:name)
+    params.require(:town).permit(:name, :description)
   end
 
 

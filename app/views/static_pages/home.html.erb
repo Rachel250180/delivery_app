@@ -4,8 +4,20 @@
   配達ルートを登録・管理できます。
 </p>
 
+<h1>ルート検索アプリ</h1>
+
+<%= form_with url: towns_path, method: :get, local: true do |f| %>
+  <%= f.label :name, "町名検索" %>
+  <%= f.text_field :name %>
+  <%= f.submit "検索" %>
+<% end %>
+
 <div>
-  <%= link_to "町検索", towns_path %>
+  <%= link_to "町一覧", towns_path %>
+</div>
+
+<div>
+  <%= link_to "町登録", new_town_url%>
 </div>
 
 <div>
