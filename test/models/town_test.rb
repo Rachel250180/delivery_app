@@ -1,7 +1,9 @@
 require "test_helper"
 
 class TownTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+
+  test "name should not be blank" do
+    town = Town.new(name: "")
+    assert_not town.save
+  end
 end

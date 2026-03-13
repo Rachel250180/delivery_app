@@ -14,6 +14,7 @@ class RoutesController < ApplicationController
   end
 
   def create
+    @town = Town.find(params[:town_id])
     @route = @town.routes.new(route_params)
 
     if @route.save
