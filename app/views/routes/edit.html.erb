@@ -1,6 +1,7 @@
 <h1>ルート編集</h1>
 
 <%= form_with model: [@town, @route] do |form| %>
+
   <div>
     <%= form.label :name, "ルート名" %>
     <%= form.text_field :name %>
@@ -14,6 +15,11 @@
   <div>
     <%= form.submit "更新" %>
   </div>
+
 <% end %>
 
 <%= link_to "戻る", town_route_path(@town, @route) %>
+
+<%= button_to "削除", [@town, @route],
+      method: :delete,
+      data: { confirm: "このルートを削除しますか？" } %>
