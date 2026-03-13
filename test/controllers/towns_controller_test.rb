@@ -30,6 +30,30 @@ class TownsControllerTest < ActionDispatch::IntegrationTest
 
   #create test
 
+  test "should create town" do
+    assert_difference("Town.count") do
+      post towns_url, params: {
+        town: {
+          name:        "test town",
+          description: "test description"
+        }
+      }
+    end
+
+    assert_redirected_to new_town_route_path(Town.last)
+  end
+
+
+
+
+
+
+
+
+
+
+
+
   test "should display routes of town" do
     town = towns(:one)
     route = Route.create!(name: "テストルート", town: town)
