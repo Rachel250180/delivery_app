@@ -1,9 +1,9 @@
 class TownsController < ApplicationController
   def index
+    @towns = Town.all
+
     if params[:name].present?
-      @towns =Town.where("name LIKE ?", "%#{params[:name]}%")
-    else
-      @towns = Town.all
+      @towns = @towns.where("name LIKE ?", "%#{params[:name]}%")
     end
   end
 
