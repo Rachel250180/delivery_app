@@ -2,65 +2,80 @@ require "test_helper"
 
 class TownsControllerTest < ActionDispatch::IntegrationTest
 
-  #index test
+  setup do
+    @town = towns(:one)
+  end
 
   test "should get index and show towns in index" do
-    town = towns(:one)
-
     get towns_url
     assert_response :success
-    assert_select "li", text: town.name
+    assert_select "li", text: @town.name
   end
-
-    #show test
 
   test "should show town and display town name" do
-    town = towns(:one)
-
-    get town_url(town)
+    get town_url(@town)
     assert_response :success
-    assert_select "h1", /#{town.name}/
+    assert_select "h1", /#{@town.name}/
   end
 
-  #new test
   test "should get new" do
     get new_town_url
     assert_response :success
   end
 
-  #create test
+  test "should create town" do
+    assert_difference("Town.count") do
+      post towns_url, params: {
+        town: {
+          name:        "test town",
+          description: "test description"
+        }
+      }
+    end
+
+    assert_redirected_to new_town_route_path(Town.last)
+  end
+
+  test "should not create town with invalid data" do
+    assert_no_difference("Town.count") do
+      post towns_url, params: {
+        town:{
+          name:        "",
+          description: "test description"
+        }
+      }
+    end
+
+    assert_response :unprocessable_entity
+  end
 
   test "should display routes of town" do
-    town = towns(:one)
-    route = Route.create!(name: "テストルート", town: town)
+    route = Route.create!(name: "テストルート", town: @town)
 
-    get town_url(town)
+    get town_url(@town)
 
     assert_select "li", text: route.name
   end
 
-  #edit test
   test "should get edit" do
-    town = towns(:one)
-
-    get edit_town_url(town)
+    get edit_town_url(@town)
     assert_response :success
   end
 
-  #update test
-
   test "should update town" do
-    town = towns(:one)
+    patch town_url(@town), params: {town: {name: "更新町"}}
 
-    patch town_url(town), params: {town: {name: "更新町"}}
+    assert_redirected_to town_url(@town)
 
-    assert_redirected_to town_url(town)
-
-    town.reload
-    assert_equal "更新町", town.name
+    @town.reload
+    assert_equal "更新町", @town.name
   end
 
-  #destroy test
-  #test "should destroy "
+  test "should destroy town" do
+    assert_difference("Town.count", -1) do
+      delete town_url(@town)
+    end
 
+    assert_redirected_to towns_path
+  end
 end
