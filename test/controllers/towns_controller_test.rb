@@ -1,7 +1,6 @@
 require "test_helper"
 
 class TownsControllerTest < ActionDispatch::IntegrationTest
-
   setup do
     @town = towns(:one)
   end
@@ -26,9 +25,9 @@ class TownsControllerTest < ActionDispatch::IntegrationTest
   test "should create town" do
     assert_difference("Town.count") do
       post towns_url, params: {
-        town: {
-          name:        "test town",
-          description: "test description"
+                        town: {
+                        name:        "test town",
+                        description: "test description"
         }
       }
     end
@@ -39,9 +38,9 @@ class TownsControllerTest < ActionDispatch::IntegrationTest
   test "should not create town with invalid data" do
     assert_no_difference("Town.count") do
       post towns_url, params: {
-        town:{
-          name:        "",
-          description: "test description"
+        town: {
+        name:        "",
+        description: "test description"
         }
       }
     end
@@ -63,7 +62,7 @@ class TownsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update town" do
-    patch town_url(@town), params: {town: {name: "更新町"}}
+    patch town_url(@town), params: { town: { name: "更新町" } }
 
     assert_redirected_to town_url(@town)
 

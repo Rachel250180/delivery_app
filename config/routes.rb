@@ -3,4 +3,5 @@ Rails.application.routes.draw do
   resources :towns do
     resources :routes
   end
+  resources :users
 end
