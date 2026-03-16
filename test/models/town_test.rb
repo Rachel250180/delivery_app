@@ -4,6 +4,6 @@ class TownTest < ActiveSupport::TestCase
 
   test "name should not be blank" do
     town = Town.new(name: "")
-    assert_not town.save
+    assert_not town.valid?
   end
 end
