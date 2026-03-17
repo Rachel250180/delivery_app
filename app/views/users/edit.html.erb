@@ -1,0 +1,30 @@
+ <h1>マイページ</h1>
+
+ <%= form_with model: @user do |f| %>
+    <div>
+        <%= f.label :name, "名前" %>
+        <%= f.text_field :name %>
+    </div>
+
+    <div>
+        <%= f.label :email, "メールアドレス" %>
+        <%= f.email_field :email %>
+    </div>
+
+    <div>
+        <%= f.label :name, "町名" %>
+        <%= f.text_field :name %>
+    </div>
+
+    <div>
+        <%= f.label :description, "説明" %>
+        <%= f.text_field :description %>
+    </div>
+
+    <div>
+        <%= f.submit "更新" %>
+    </div>
+
+    <%= f.submit "更新" %>
+
+<% end %>

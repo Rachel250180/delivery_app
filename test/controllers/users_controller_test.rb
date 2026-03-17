@@ -10,12 +10,17 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should create town" do
+  test "should get new" do
+    get new_user_path
+    assert_response :success
+  end
+
+  test "should create user" do
     assert_difference("User.count") do
       post users_url params: {
                      user:   {
                      name: "michael",
-                     email: "useful@example.com",
+                     email: "test@example.com",
                      password: "password",
                      password_confirmation: "password"
                      }
