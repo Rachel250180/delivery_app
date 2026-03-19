@@ -2,10 +2,11 @@
 
 <ul>
   <% @routes.each do |route| %>
-    <li><%= route.name %></li>
+    <li><%= link_to route.name, town_route_path(@town, route)  %></li>
   <% end %>
 </ul>
 
 
 <%= link_to "ルートを登録", new_town_route_path(@town) %>
 <%= link_to "町を編集", edit_town_path(@town) %>
+<%= link_to "戻る", towns_path %>
