@@ -1,1 +1,5 @@
-<%= @user.name %>, <%= @user.email %>
+<%= @user.name %>
+<%= @user.email %>
+
+<%= link_to "登録情報を編集する" , edit_user_path(@user) %>
+<%= link_to "戻る" , root_path %>

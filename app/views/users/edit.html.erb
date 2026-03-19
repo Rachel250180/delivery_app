@@ -11,20 +11,8 @@
         <%= f.email_field :email %>
     </div>
 
-    <div>
-        <%= f.label :name, "町名" %>
-        <%= f.text_field :name %>
-    </div>
-
-    <div>
-        <%= f.label :description, "説明" %>
-        <%= f.text_field :description %>
-    </div>
-
-    <div>
-        <%= f.submit "更新" %>
-    </div>
-
     <%= f.submit "更新" %>
+
+    <%= link_to "戻る", user_path(@user) %>
 
 <% end %>

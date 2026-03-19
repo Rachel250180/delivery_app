@@ -1,6 +1,6 @@
 class RoutesController < ApplicationController
   before_action :set_town
-  before_action :set_route, only: [:show, :edit, :update, :destroy]
+  before_action :set_route, only: [ :show, :edit, :update, :destroy ]
 
   def index
     @routes = @town.routes

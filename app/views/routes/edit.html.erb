@@ -18,7 +18,7 @@
 
 <% end %>
 
-<%= link_to "戻る", town_route_path(@town, @route) %>
+<%= link_to "戻る", town_path(@town) %>
 
 <%= button_to "削除", [@town, @route],
       method: :delete,
