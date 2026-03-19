@@ -4,8 +4,10 @@ one:
   name: 最短ルート
   description: テストルート
   town: one
+  user: michael
 
 two:
   name: 裏道ルート
   description: テスト
   town: two
+  user: archer

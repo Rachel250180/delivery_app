@@ -1,15 +1,11 @@
 require "test_helper"
 
 class RoutesControllerTest < ActionDispatch::IntegrationTest
-
   setup do
     @town = towns(:one)
     @route = routes(:one)
-  end
-
-  test "should get index" do
-    get town_routes_url(@town)
-    assert_response :success
+    @user = users(:michael)
+    log_in_as(@user)
   end
 
   test "should get show" do

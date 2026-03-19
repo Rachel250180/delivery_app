@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  has_many :routes, dependent: :destroy
   before_save { email.downcase! }
   validates :name, presence: true,
             length: { maximum: 50 }
