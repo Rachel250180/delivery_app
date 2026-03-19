@@ -3,6 +3,7 @@ require "test_helper"
 class TownsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @town = towns(:one)
+    @user = users(:michael)
   end
 
   test "should get index and show towns in index" do
@@ -49,7 +50,10 @@ class TownsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should display routes of town" do
-    route = Route.create!(name: "テストルート", town: @town)
+    route = Route.create!(name: "テストルート",
+                          description: "説明",
+                          town: @town,
+                          user: @user)
 
     get town_url(@town)
 

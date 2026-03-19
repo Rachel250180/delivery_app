@@ -2,10 +2,6 @@ class RoutesController < ApplicationController
   before_action :set_town
   before_action :set_route, only: [ :show, :edit, :update, :destroy ]
 
-  def index
-    @routes = @town.routes
-  end
-
   def show
   end
 
@@ -14,8 +10,8 @@ class RoutesController < ApplicationController
   end
 
   def create
-    @town = Town.find(params[:town_id])
     @route = @town.routes.new(route_params)
+    @route.user = current_user
 
     if @route.save
       redirect_to town_route_path(@town, @route), notice: "ルートを作成しました！"
