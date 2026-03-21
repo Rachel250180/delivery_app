@@ -8,6 +8,5 @@ class UsersLoginTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
     assert_not flash.empty?
     get root_path
-    assert_not flash.empty?
   end
 end

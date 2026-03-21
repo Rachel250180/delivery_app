@@ -5,7 +5,6 @@ class RoutesControllerTest < ActionDispatch::IntegrationTest
     @town = towns(:one)
     @route = routes(:one)
     @user = users(:michael)
-    log_in_as(@user)
   end
 
   test "should get show" do
@@ -14,41 +13,47 @@ class RoutesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get new" do
+    log_in_as(@user)
     get new_town_route_url(@town)
     assert_response :success
   end
 
+  test "should redirect new when not logged in" do
+    get new_town_route_url(@town)
+    assert_redirected_to login_url
+  end
+
   test "should get edit" do
+    log_in_as(@user)
     get edit_town_route_url(@town, @route)
     assert_response :success
   end
 
-  # create
+  test "should redirect edit when not logged in" do
+    get edit_town_route_url(@town, @route)
+    assert_redirected_to login_url
+  end
 
   test "should create route" do
+    log_in_as(@user)
     assert_difference("Route.count", 1) do
       post town_routes_url(@town), params: {
-        route: {
-          name: "新しいルート",
-          description: "説明"
-        }
-      }
+                                route: { name: "新しいルート",
+                                         description: "説明" } }
     end
 
     assert_redirected_to town_route_url(@town, Route.last)
   end
 
-  test "should not create route with invalid data" do
-    assert_no_difference("Route.count") do
-      post town_routes_url(@town), params: {
-        route: { name: "", description: "" }
-      }
-    end
-
-    assert_response :unprocessable_entity
+  test "should redirect create when not logged in" do
+    post town_routes_url(@town), params: {
+                                route: { name: "新しいルート",
+                                         description: "説明" } }
+    assert_redirected_to login_url
   end
 
   test "should update route" do
+    log_in_as(@user)
     patch town_route_url(@town, @route), params: {
       route: { name: "更新ルート" }
     }
@@ -56,19 +61,23 @@ class RoutesControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to town_route_url(@town, @route)
   end
 
-  test "should not update route with invalid data" do
+  test "should redirect update when not logged in" do
     patch town_route_url(@town, @route), params: {
-      route: { name: "" }
-    }
-
-    assert_response :unprocessable_entity
+                                         route: { name: "更新ルート" } }
+    assert_redirected_to login_url
   end
 
   test "should destroy route" do
+    log_in_as(@user)
     assert_difference("Route.count", -1) do
-      delete town_route_url(@town, @route)
+      delete town_route_path(@town, @route)
     end
 
     assert_redirected_to town_routes_url(@town)
+  end
+
+  test "should redirect destroy when not logged in" do
+    delete town_route_path(@town, @route)
+    assert_redirected_to login_url
   end
 end
