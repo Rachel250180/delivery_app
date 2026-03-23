@@ -29,10 +29,46 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to user_url(User.last)
   end
 
+  test "should not create user with invalid data" do
+    assert_no_difference("User.count") do
+      post users_url, params: {
+                      user: { name: "",
+                              email: "invalid",
+                              password: "foo",
+                              password_confirmation: "bar" } }
+    end
+
+    assert_response :unprocessable_entity
+  end
+
+  test "should edit user" do
+    log_in_as(@user)
+    get edit_user_path(@user)
+    assert_response :success
+  end
+
   test "should redirect edit when not logged in" do
     get edit_user_path(@user)
     assert_not flash.empty?
     assert_redirected_to login_url
+  end
+
+  test "should update user" do
+    log_in_as(@user)
+    patch user_path(@user), params: {
+                            user: { name: "new",
+                                    email: "new@example.com",
+                                    password: "password",
+                                    password_confirmation: "password" } }
+    assert_redirected_to user_url(@user)
+  end
+
+  test "should not update user with invalid data" do
+    log_in_as(@user)
+
+    patch user_path(@user), params: { user: { name: "",
+                                              email: "invalid" } }
+    assert_response :unprocessable_entity
   end
 
   test "should redirect update when not logged in" do
@@ -42,7 +78,15 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to login_url
   end
 
-  test "should redirect destroy when logged in" do
+  test "should destroy user" do
+    log_in_as(@user)
+    assert_difference("User.count", -1) do
+      delete user_path(@user)
+    end
+    assert_redirected_to users_url
+  end
+
+  test "should redirect destroy when not logged in" do
     assert_no_difference "User.count" do
       delete user_path(@user)
     end

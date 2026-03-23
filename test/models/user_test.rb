@@ -50,8 +50,9 @@ class UserTest < ActiveSupport::TestCase
     end
   end
 
-  test "email address should be unique" do
+  test "email address should be unique (case insensitive)" do
     duplicate_user = @user.dup
+    duplicate_user.email = @user.email.upcase
     @user.save
     assert_not duplicate_user.valid?
   end
@@ -70,6 +71,16 @@ class UserTest < ActiveSupport::TestCase
 
   test "password should have a minimum length" do
     @user.password = @user.password_confirmation ="a" * 7
+    assert_not @user.valid?
+  end
+
+  test "authenticate should return false for user with nil digest" do
+    @user.password_digest = nil
+    assert_not @user.authenticate("password")
+  end
+
+  test "password confirmation should match password" do
+    @user.password_confirmation = "different"
     assert_not @user.valid?
   end
 end

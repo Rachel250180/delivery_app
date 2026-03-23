@@ -12,6 +12,8 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
 
     if @user.save
+      reset_session
+      log_in(@user)
       redirect_to @user
     else
       render :new, status: :unprocessable_entity
@@ -35,7 +37,7 @@ class UsersController < ApplicationController
   def destroy
     User.find(params[:id]).destroy
     flash[:success] = "User deleted"
-    redilect_to users_url, status: :see_other
+    redirect_to users_url, status: :see_other
   end
 
   private
