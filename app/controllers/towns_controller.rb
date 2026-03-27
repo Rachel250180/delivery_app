@@ -59,7 +59,4 @@ class TownsController < ApplicationController
   def town_params
     params.require(:town).permit(:name, :description)
   end
-
-
-
 end
