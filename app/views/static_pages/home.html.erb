@@ -25,9 +25,9 @@
 </div>
 
 <div>
-<% if logged_in? %>
-    <%= link_to "ログアウト", logout_path, data: { "turbo-method": :delete } %>
+  <% if logged_in? %>
+      <%= link_to "ログアウト", logout_path, data: { "turbo-method": :delete } %>
   <% else %>
-    <%= link_to "ログイン", login_path %>
-<% end %>
+      <%= link_to "ログイン", login_path %>
+  <% end %>
 </div>
