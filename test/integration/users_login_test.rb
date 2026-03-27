@@ -10,7 +10,7 @@ class UsersLoginTest < ActionDispatch::IntegrationTest
     assert_response :success
     post login_path, params: { session: { email: @user.email,
                                           password: "password" } }
-    assert_redirected_to root_path
+    assert_redirected_to @user
     follow_redirect!
     assert_response :success
 
@@ -32,7 +32,7 @@ class UsersLoginTest < ActionDispatch::IntegrationTest
    post login_path, params: { session: { email:    @user.email,
                                          password: "password" } }
     assert is_logged_in?
-    assert_redirected_to root_path
+    assert_redirected_to @user
     follow_redirect!
     assert_response :success
     delete logout_path
