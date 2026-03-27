@@ -23,3 +23,11 @@
 <div>
   <%= link_to "マイページ", current_user %>
 </div>
+
+<div>
+<% if logged_in? %>
+    <%= link_to "ログアウト", logout_path, data: { "turbo-method": :delete } %>
+  <% else %>
+    <%= link_to "ログイン", login_path %>
+<% end %>
+</div>
