@@ -2,6 +2,23 @@
 
 <p><%= @route.description %></p>
 
+<div id="map" style="height: 500px;"></div>
+
+<script>
+  function initMap() {
+    const otaten = { lat: 36.27883160931458, lng: 139.3873576767888 };
+
+    const map = new google.maps.Map(document.getElementById("map"), {
+      zoom: 14,
+      center: otaten
+    });
+  }
+</script>
+
+<script async
+  src="https://maps.googleapis.com/maps/api/js?key=<%= Rails.application.credentials.google_maps_api_key %>&callback=initMap">
+</script>
+
 <%= link_to "編集", edit_town_route_path(@town, @route) %>
 
 <%= link_to "一覧へ戻る", town_path(@town) %>
