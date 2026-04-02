@@ -2,6 +2,25 @@
 
 <p><%= @route.description %></p>
 
+<% points = @route.route_points.order(:position) %>
+
+<% if points.any? %>
+  <% origin = "#{points.first.latitude},#{points.first.longitude}" %>
+  <% destination = "#{points.last.latitude},#{points.last.longitude}" %>
+
+  <% waypoints = points[1...-1].map { |p| "#{p.latitude},#{p.longitude}" }.join("|") %>
+
+  <% url = "https://www.google.com/maps/dir/?api=1" %>
+  <% url += "&origin=#{origin}" %>
+  <% url += "&destination=#{destination}" %>
+  <% url += "&waypoints=#{waypoints}" if waypoints.present? %>
+  <% url += "&travelmode=driving" %>
+
+  <a href="<%= url %>" target="_blank">
+    Googleマップでルートを見る
+  </a>
+<% end %>
+
 <div id="map" style="height: 500px;"></div>
 
 <script>
