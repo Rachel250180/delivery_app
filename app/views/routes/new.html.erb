@@ -1,6 +1,7 @@
 <h1>ルート登録</h1>
 
 <%= form_with model: [@town, @route] do |f| %>
+
   <div>
     <%= f.label :name, "ルート名" %><br>
     <%= f.text_field :name %>
@@ -11,9 +12,58 @@
     <%= f.text_area :description %>
   </div>
 
+  <div id="points"></div>
+
   <div>
     <%= f.submit "登録する" %>
   </div>
+
 <% end %>
 
-<%= link_to "一覧へ戻る", town_path(@town) %>
+<div id="map" style="height: 500px;"></div>
+
+<script>
+let map;
+let markers = [];
+
+function initMap() {
+  const center = { lat: 36.27883160931458, lng: 139.3873576767888 };
+
+  map = new google.maps.Map(document.getElementById("map"), {
+    zoom: 14,
+    center: center,
+    streetViewControl: false, // ペグマン消す
+    mapTypeControl: false,    // 地図/航空写真切替
+    fullscreenControl: false  // 全画面ボタン
+  });
+
+  map.addListener("click", (e) => {
+    addPoint(e.latLng);
+  });
+}
+
+function addPoint(latLng) {
+  const lat = latLng.lat();
+  const lng = latLng.lng();
+
+  const marker = new google.maps.Marker({
+    position: { lat: lat, lng: lng },
+    map: map,
+    label: String(markers.length + 1)
+  });
+
+  markers.push(marker);
+
+  const container = document.getElementById("points");
+
+  container.insertAdjacentHTML("beforeend", `
+    <input type="hidden" name="route[route_points_attributes][${markers.length - 1}][latitude]" value="${lat}">
+    <input type="hidden" name="route[route_points_attributes][${markers.length - 1}][longitude]" value="${lng}">
+    <input type="hidden" name="route[route_points_attributes][${markers.length - 1}][position]" value="${markers.length}">
+  `);
+}
+</script>
+
+<script async
+  src="https://maps.googleapis.com/maps/api/js?key=<%= Rails.application.credentials.google_maps_api_key %>&callback=initMap">
+</script>

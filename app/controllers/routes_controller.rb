@@ -40,7 +40,9 @@ class RoutesController < ApplicationController
   private
 
   def route_params
-    params.require(:route).permit(:name, :description)
+    params.require(:route).permit(:name,
+                                  :description,
+                                  route_points_attributes: [ :latitude, :longitude, :position ])
   end
 
   def set_town
