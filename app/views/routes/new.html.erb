@@ -30,6 +30,8 @@
 <script>
 let map;
 let markers = [];
+let directionsService;
+let directionsRenderer;
 
 // 🔥 出発点
 const START_POINT = { lat: 36.27883160931458, lng: 139.3873576767888 };
@@ -42,6 +44,13 @@ function initMap() {
     mapTypeControl: false,
     fullscreenControl: false
   });
+
+  directionsService = new google.maps.DirectionsService();
+  directionsRenderer = new google.maps.DirectionsRenderer({
+    suppressMarkers: true // ← 自分のマーカーを使う
+  });
+
+  directionsRenderer.setMap(map);
 
   // 出発点を最初に追加
   addPoint(START_POINT);
@@ -80,6 +89,7 @@ function addPoint(latLng) {
   `);
 
   renumberMarkers();
+  drawRoute();
 }
 
 // 🔢 番号振り直し（ここも対応）
@@ -102,6 +112,7 @@ function undoLastPoint() {
   if (lastPoint) lastPoint.remove();
 
   renumberMarkers();
+  drawRoute();
 }
 
 // 🔄 リセット（出発点は残す）
@@ -118,6 +129,33 @@ function resetPoints() {
   }
 
   renumberMarkers();
+  drawRoute();
+}
+
+function drawRoute() {
+  if (markers.length < 2) {
+    directionsRenderer.setDirections({ routes: [] });
+    return;
+  }
+
+  const origin = markers[0].getPosition();
+  const destination = markers[markers.length - 1].getPosition();
+
+  const waypoints = markers.slice(1, -1).map(marker => ({
+    location: marker.getPosition(),
+    stopover: true
+  }));
+
+  directionsService.route({
+    origin: origin,
+    destination: destination,
+    waypoints: waypoints,
+    travelMode: google.maps.TravelMode.DRIVING
+  }, (result, status) => {
+    if (status === "OK") {
+      directionsRenderer.setDirections(result);
+    }
+  });
 }
 </script>
 
