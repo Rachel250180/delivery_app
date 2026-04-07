@@ -24,15 +24,51 @@
 <div id="map" style="height: 500px;"></div>
 
 <script>
+const points = <%= raw points.to_json %>;
+
+let directionsService;
+let directionsRenderer;
+
   function initMap() {
     const otaten = { lat: 36.27883160931458, lng: 139.3873576767888 };
 
     const map = new google.maps.Map(document.getElementById("map"), {
       zoom: 14,
-      center: otaten
+      center: otaten,
+      streetViewControl: false,
+      mapTypeControl: false,
     });
+    directionsService = new google.maps.DirectionsService();
+    directionsRenderer = new google.maps.DirectionsRenderer();
 
+    directionsRenderer.setMap(map);
+
+    drawingRoute();
   }
+
+  function drawingRoute() {
+    const coordinates = points.map((point) => {
+      return {
+        lat: point.latitude, 
+        lng: point.longitude
+        };
+    });
+  
+    directionsService.route({
+      origin: coordinates[0],
+      destination: coordinates[coordinates.length - 1],
+      waypoints: coordinates.slice( 1, -1).map((coordinate) =>{
+        return {location: coordinate,
+                stopover: true
+                }
+      }),
+      travelMode: google.maps.TravelMode.DRIVING
+    }, (result, status) => {
+    if (status === "OK") {
+      directionsRenderer.setDirections(result);
+      }
+    });
+  } 
 </script>
 
 <script async
