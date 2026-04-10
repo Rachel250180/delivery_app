@@ -23,56 +23,20 @@
 
 <div id="map" style="height: 500px;"></div>
 
-<script>
-const points = <%= raw points.to_json %>;
+//javascript読み込み
+<%= javascript_include_tag "map_route" %>
 
-let directionsService;
-let directionsRenderer;
+<script>
+  const points = <%= raw points.to_json %>;
 
   function initMap() {
-    const otaten = { lat: 36.27883160931458, lng: 139.3873576767888 };
-
-    const map = new google.maps.Map(document.getElementById("map"), {
-      zoom: 14,
-      center: otaten,
-      streetViewControl: false,
-      mapTypeControl: false,
-    });
-    directionsService = new google.maps.DirectionsService();
-    directionsRenderer = new google.maps.DirectionsRenderer();
-
-    directionsRenderer.setMap(map);
-
-    drawingRoute();
+    initMapShow(points);
   }
-
-  function drawingRoute() {
-    const coordinates = points.map((point) => {
-      return {
-        lat: point.latitude, 
-        lng: point.longitude
-        };
-    });
-  
-    directionsService.route({
-      origin: coordinates[0],
-      destination: coordinates[coordinates.length - 1],
-      waypoints: coordinates.slice( 1, -1).map((coordinate) =>{
-        return {location: coordinate,
-                stopover: true
-                }
-      }),
-      travelMode: google.maps.TravelMode.DRIVING
-    }, (result, status) => {
-    if (status === "OK") {
-      directionsRenderer.setDirections(result);
-      }
-    });
-  } 
 </script>
 
-<script async
-  src="https://maps.googleapis.com/maps/api/js?key=<%= Rails.application.credentials.google_maps_api_key %>&callback=initMap">
+<script
+  src="https://maps.googleapis.com/maps/api/js?key=<%= Rails.application.credentials.google_maps_api_key %>&callback=initMap"
+  defer>
 </script>
 
 <%= link_to "編集", edit_town_route_path(@town, @route) %>
