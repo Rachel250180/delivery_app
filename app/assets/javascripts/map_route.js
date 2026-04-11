@@ -2,6 +2,7 @@ let map;
 let markers = [];
 let directionsService;
 let directionsRenderer;
+let points = [];
 
 const START_POINT = { lat: 36.27883160931458, lng: 139.3873576767888 };
 
@@ -37,20 +38,45 @@ function addPoint(latLng) {
 
   markers.push(marker);
 
-  const container = document.getElementById("points");
+  points.push({ lat, lng });
 
-  if (container) {
-    container.insertAdjacentHTML("beforeend", `
-      <div class="point">
-        <input type="hidden" name="route[route_points_attributes][${index}][latitude]" value="${lat}">
-        <input type="hidden" name="route[route_points_attributes][${index}][longitude]" value="${lng}">
-        <input type="hidden" name="route[route_points_attributes][${index}][position]" value="${index + 1}">
-      </div>
-    `);
-  }
+  rebuildHiddenInputs();
 
   renumberMarkers();
   drawRoute();
+  renderList();
+
+}
+
+function rebuildHiddenInputs() {
+  const container = document.getElementById("points");
+  container.innerHTML = "";
+
+  points.forEach((p, index) => {
+    container.insertAdjacentHTML("beforeend", `
+      <div class="point">
+        <input type="hidden" name="route[route_points_attributes][${index}][latitude]" value="${p.lat}">
+        <input type="hidden" name="route[route_points_attributes][${index}][longitude]" value="${p.lng}">
+        <input type="hidden" name="route[route_points_attributes][${index}][position]" value="${index + 1}">
+      </div>
+    `);
+  });
+}
+
+function renderList() {
+  const container = document.getElementById("points-list");
+  container.innerHTML = "";
+
+  points.forEach((p, index) => {
+    const li = document.createElement("li");
+
+    li.innerHTML = `
+      ${index + 1}: ${p.lat.toFixed(5)}, ${p.lng.toFixed(5)}
+        ${index === 0 ? "": `<button onclick="removePoint(${index})">削除</button>`}
+    `;
+
+    container.appendChild(li);
+  });
 }
 
 // new用
@@ -62,6 +88,8 @@ window.initMapNew = function () {
   map.addListener("click", (e) => {
     addPoint(e.latLng);
   });
+
+    initSortable();
 };
 
 // show用
@@ -78,46 +106,35 @@ window.initMapShow = function (points) {
   drawRoute();
 };
 
+window.initMapEdit = function (points) {
+  createMap();
+
+  addPoint(START_POINT);
+
+  map.addListener("click", (e) => {
+    addPoint(e.latLng);
+  });
+  initSortable();
+};
+
+function removePoint(index) {
+  markers[index].setMap(null);
+
+  markers.splice(index, 1);
+  points.splice(index, 1);
+
+  rebuildHiddenInputs();
+
+  renumberMarkers();
+  drawRoute();
+  renderList();
+};
+
 function renumberMarkers() {
   markers.forEach((marker, i) => {
     marker.setLabel(i === 0 ? "S" : String(i + 1));
   });
 }
-
-window.undoLastPoint = function () {
-  if (markers.length <= 1) return;
-
-  const marker = markers.pop();
-  marker.setMap(null);
-
-  const container = document.getElementById("points");
-
-  if (container) {
-    const lastPoint = container.lastElementChild;
-    if (lastPoint) lastPoint.remove();
-  }
-
-  renumberMarkers();
-  drawRoute();
-};
-
-window.resetPoints = function () {
-  while (markers.length > 1) {
-    const marker = markers.pop();
-    marker.setMap(null);
-  }
-
-  const container = document.getElementById("points");
-
-  if (container) {
-    while (container.children.length > 1) {
-      container.lastElementChild.remove();
-    }
-  }
-
-  renumberMarkers();
-  drawRoute();
-};
 
 function drawRoute() {
   if (markers.length < 2) {
@@ -143,4 +160,37 @@ function drawRoute() {
       directionsRenderer.setDirections(result);
     }
   });
+}
+
+function initSortable() {
+  const el = document.getElementById("points-list");
+
+  new Sortable(el, {
+    animation: 150,
+
+    onEnd: function (evt) {
+      const oldIndex = evt.oldIndex;
+      const newIndex = evt.newIndex;
+
+      movePoint(oldIndex, newIndex);
+    }
+  });
+}
+
+function movePoint(oldIndex, newIndex) {
+    if (oldIndex === 0 || newIndex === 0) {
+    renderList();
+    return;
+  }
+
+  const marker = markers.splice(oldIndex, 1)[0];
+  markers.splice(newIndex, 0, marker);
+
+  const point = points.splice(oldIndex, 1)[0];
+  points.splice(newIndex, 0, point);
+
+  rebuildHiddenInputs();
+  renumberMarkers();
+  drawRoute();
+  renderList();
 }
