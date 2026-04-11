@@ -18,6 +18,31 @@
 
 <% end %>
 
+
+
+
+
+
+
+<div id="map" style="height: 500px;"></div>
+
+<div style="margin-top: 10px;">
+  <button type="button" onclick="undoLastPoint()">1つ戻る</button>
+  <button type="button" onclick="resetPoints()">やり直す</button>
+</div>
+
+<%= javascript_include_tag "map_route" %>
+
+<script
+src="https://maps.googleapis.com/maps/api/js?key=<%= Rails.application.credentials.google_maps_api_key %>&callback=initMap"
+defer>
+</script>
+
+
+
+
+
+
 <%= link_to "戻る", town_path(@town) %>
 
 <%= button_to "削除", [@town, @route],
