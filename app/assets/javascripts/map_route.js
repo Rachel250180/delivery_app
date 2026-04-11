@@ -41,11 +41,9 @@ function addPoint(latLng) {
   points.push({ lat, lng });
 
   rebuildHiddenInputs();
-
   renumberMarkers();
-  drawRoute();
   renderList();
-
+  drawRouteIfNeeded();
 }
 
 function rebuildHiddenInputs() {
@@ -78,9 +76,16 @@ function renderList() {
     container.appendChild(li);
   });
 }
+//何度もdrawRouteしない用
+function drawRouteIfNeeded() {
+  if (window.routeMode === "new") {
+    drawRoute();
+  }
+}
 
 // new用
 window.initMapNew = function () {
+  window.routeMode = "new";
   createMap();
 
   addPoint(START_POINT);
@@ -94,12 +99,13 @@ window.initMapNew = function () {
 
 // show用
 window.initMapShow = function (points) {
+  window.routeMode = "show";
   createMap();
 
   points.forEach(point => {
     addPoint({
-      lat: point.latitude,
-      lng: point.longitude
+      lat: Number(point.latitude),
+      lng: Number(point.longitude)
     });
   });
 
@@ -137,25 +143,27 @@ function renumberMarkers() {
 }
 
 function drawRoute() {
-  if (markers.length < 2) {
+  if (points.length < 2) {
     directionsRenderer.setDirections({ routes: [] });
     return;
   }
 
-  const origin = markers[0].getPosition();
-  const destination = markers[markers.length - 1].getPosition();
+  const origin = points[0];
+  const destination = points[points.length - 1];
 
-  const waypoints = markers.slice(1, -1).map(marker => ({
-    location: marker.getPosition(),
+  const waypoints = points.slice(1, -1).map(p => ({
+    location: p,
     stopover: true
   }));
 
   directionsService.route({
-    origin: origin,
-    destination: destination,
-    waypoints: waypoints,
+    origin,
+    destination,
+    waypoints,
     travelMode: google.maps.TravelMode.DRIVING
   }, (result, status) => {
+    console.log("route status:", status);
+
     if (status === "OK") {
       directionsRenderer.setDirections(result);
     }
