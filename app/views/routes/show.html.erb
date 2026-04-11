@@ -23,14 +23,14 @@
 
 <div id="map" style="height: 500px;"></div>
 
-//javascript読み込み
+<!-- javascript読み込み -->
 <%= javascript_include_tag "map_route" %>
 
 <script>
-  const points = <%= raw points.to_json %>;
-
+  const routePoints = <%= raw points.to_json %>;
+  
   function initMap() {
-    initMapShow(points);
+    initMapShow(routePoints);
   }
 </script>
 

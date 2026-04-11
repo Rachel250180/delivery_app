@@ -20,14 +20,16 @@
   <%= link_to "町登録", new_town_path %>
 </div>
 
-<div>
-  <%= link_to "マイページ", current_user %>
-</div>
+<% if logged_in? %>
+  <div>
+    <%= link_to "マイページ", user_path(current_user) %>
+  </div>
+<% end %>
 
 <div>
   <% if logged_in? %>
-      <%= link_to "ログアウト", logout_path, data: { "turbo-method": :delete } %>
+    <%= button_to "ログアウト", logout_path, method: :delete %>
   <% else %>
-      <%= link_to "ログイン", login_path %>
+    <%= button_to "ログイン", login_path, method: :get %>
   <% end %>
 </div>
