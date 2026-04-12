@@ -12,11 +12,26 @@
     <%= form.text_area :description %>
   </div>
 
+    <h3>経由地点</h3>
+  <div id="points"></div>
+  <ul id="points-list"></ul>
+
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
   <div>
     <%= form.submit "更新" %>
   </div>
 
 <% end %>
+
+<div id="map" style="height: 500px;"></div>
+
+<%= javascript_include_tag "map_route" %>
+
+<script
+src="https://maps.googleapis.com/maps/api/js?key=<%= Rails.application.credentials.google_maps_api_key %>&callback=initMapNew"
+defer>
+</script>
 
 
 
