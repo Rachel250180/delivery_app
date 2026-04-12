@@ -48,6 +48,7 @@ function addPoint(latLng) {
 
 function rebuildHiddenInputs() {
   const container = document.getElementById("points");
+  if (!container) return;
   container.innerHTML = "";
 
   points.forEach((p, index) => {
@@ -63,6 +64,7 @@ function rebuildHiddenInputs() {
 
 function renderList() {
   const container = document.getElementById("points-list");
+  if (!container) return;
   container.innerHTML = "";
 
   points.forEach((p, index) => {
@@ -76,6 +78,7 @@ function renderList() {
     container.appendChild(li);
   });
 }
+
 //何度もdrawRouteしない用
 function drawRouteIfNeeded() {
   if (window.routeMode === "new") {
@@ -102,10 +105,10 @@ window.initMapShow = function (points) {
   window.routeMode = "show";
   createMap();
 
-  points.forEach(point => {
+  points.forEach(routePoint => {
     addPoint({
-      lat: Number(point.latitude),
-      lng: Number(point.longitude)
+      lat: Number(routePoint.latitude),
+      lng: Number(routePoint.longitude)
     });
   });
 

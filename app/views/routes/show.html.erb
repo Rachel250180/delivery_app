@@ -27,11 +27,11 @@
 <%= javascript_include_tag "map_route" %>
 
 <script>
-  const routePoints = <%= raw points.to_json %>;
-  
-  function initMap() {
-    initMapShow(routePoints);
-  }
+  window.routePoints = <%= raw points.to_json %>;
+
+  window.initMap = function () {
+    initMapShow(window.routePoints);
+  };
 </script>
 
 <script
