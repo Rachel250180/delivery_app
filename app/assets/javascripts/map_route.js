@@ -3,6 +3,7 @@ let markers = [];
 let directionsService;
 let directionsRenderer;
 let points = [];
+let isInitializing = false;
 
 const START_POINT = { lat: 36.27883160931458, lng: 139.3873576767888 };
 
@@ -43,7 +44,11 @@ function addPoint(latLng) {
   updateHiddenField();
   renumberMarkers();
   renderList();
-  drawRouteIfNeeded();
+
+  if (!isInitializing) {
+    drawRoute();
+  }
+
 }
 
 function updateHiddenField() {
@@ -71,16 +76,8 @@ function renderList() {
   });
 }
 
-//何度もdrawRouteしない用
-function drawRouteIfNeeded() {
-  if (["new", "edit"].includes(window.routeMode)) {
-    drawRoute();
-  }
-}
-
 // new用
 window.initMapNew = function () {
-  window.routeMode = "new";
   createMap();
 
   addPoint(START_POINT);
@@ -93,24 +90,44 @@ window.initMapNew = function () {
 };
 
 // show用
-window.initMapShow = function (points) {
-  window.routeMode = "show";
+window.initMapShow = function (routePoints) {
   createMap();
 
-  points.forEach(routePoint => {
+  isInitializing = true;
+
+  routePoints.forEach(routePoint => {
     addPoint({
       lat: Number(routePoint.latitude),
       lng: Number(routePoint.longitude)
     });
   });
 
+  isInitializing = false;
+
   drawRoute();
 };
 
-window.initMapEdit = function (points) {
+// edit用
+window.initMapEdit = function (routePoints) {
+
+  markers.forEach(m => m.setMap(null));
+  markers = [];
+  points = [];
+
   createMap();
 
-  addPoint(START_POINT);
+  isInitializing = true;
+
+  routePoints.forEach(routePoint => {
+    addPoint({
+      lat: Number(routePoint.latitude),
+      lng: Number(routePoint.longitude)
+    });
+  });
+
+  isInitializing = false;
+
+  drawRoute();
 
   map.addListener("click", (e) => {
     addPoint(e.latLng);
