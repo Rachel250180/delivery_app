@@ -40,27 +40,19 @@ function addPoint(latLng) {
 
   points.push({ lat, lng });
 
-  rebuildHiddenInputs();
+  updateHiddenField();
   renumberMarkers();
   renderList();
   drawRouteIfNeeded();
 }
 
-function rebuildHiddenInputs() {
-  const container = document.getElementById("points");
-  if (!container) return;
-  container.innerHTML = "";
-
-  points.forEach((p, index) => {
-    container.insertAdjacentHTML("beforeend", `
-      <div class="point">
-        <input type="hidden" name="route[route_points_attributes][${index}][latitude]" value="${p.lat}">
-        <input type="hidden" name="route[route_points_attributes][${index}][longitude]" value="${p.lng}">
-        <input type="hidden" name="route[route_points_attributes][${index}][position]" value="${index + 1}">
-      </div>
-    `);
-  });
+function updateHiddenField() {
+  const input = document.getElementById("points_json");
+  if (!input) return;
+  
+  input.value = JSON.stringify(points);
 }
+
 
 function renderList() {
   const container = document.getElementById("points-list");
@@ -81,7 +73,7 @@ function renderList() {
 
 //何度もdrawRouteしない用
 function drawRouteIfNeeded() {
-  if (window.routeMode === "new") {
+  if (["new", "edit"].includes(window.routeMode)) {
     drawRoute();
   }
 }
@@ -97,7 +89,7 @@ window.initMapNew = function () {
     addPoint(e.latLng);
   });
 
-    initSortable();
+  initSortable();
 };
 
 // show用
@@ -123,6 +115,7 @@ window.initMapEdit = function (points) {
   map.addListener("click", (e) => {
     addPoint(e.latLng);
   });
+
   initSortable();
 };
 
@@ -132,7 +125,7 @@ function removePoint(index) {
   markers.splice(index, 1);
   points.splice(index, 1);
 
-  rebuildHiddenInputs();
+  updateHiddenField();
 
   renumberMarkers();
   drawRoute();
@@ -200,7 +193,7 @@ function movePoint(oldIndex, newIndex) {
   const point = points.splice(oldIndex, 1)[0];
   points.splice(newIndex, 0, point);
 
-  rebuildHiddenInputs();
+  updateHiddenField();
   renumberMarkers();
   drawRoute();
   renderList();

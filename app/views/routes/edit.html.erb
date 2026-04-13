@@ -1,16 +1,18 @@
 <h1>ルート編集</h1>
 
-<%= form_with model: [@town, @route] do |form| %>
+<%= form_with model: [@town, @route] do |f| %>
 
   <div>
-    <%= form.label :name, "ルート名" %>
-    <%= form.text_field :name %>
+    <%= f.label :name, "ルート名" %>
+    <%= f.text_field :name %>
   </div>
 
   <div>
-    <%= form.label :description, "説明" %><br>
-    <%= form.text_area :description %>
+    <%= f.label :description, "説明" %><br>
+    <%= f.text_area :description %>
   </div>
+
+    <input type="hidden" id="points_json" name="points_json">
 
     <h3>経由地点</h3>
   <div id="points"></div>
@@ -19,7 +21,7 @@
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
   <div>
-    <%= form.submit "更新" %>
+    <%= f.submit "更新" %>
   </div>
 
 <% end %>
