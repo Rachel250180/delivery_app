@@ -4,7 +4,6 @@ class RoutesController < ApplicationController
   before_action :set_route, only: [ :show, :edit, :update, :destroy ]
 
   def show
-    @route = @town.routes.find(params[:id])
     @points = @route.route_points.order(:position)
   end
 
@@ -35,12 +34,26 @@ class RoutesController < ApplicationController
   end
 
   def edit
+    @points = @route.route_points.order(:position)
   end
 
   def update
-    @route = @town.routes.find(params[:id])
-
     if @route.update(route_params)
+
+      if params[:points_json].present?
+        points = JSON.parse(params[:points_json])
+
+        @route.route_points.destroy_all
+
+        points.each_with_index do |p, i|
+          @route.route_points.create!(
+            latitude: p["lat"],
+            longitude: p["lng"],
+            position: i
+          )
+        end
+      end
+
       redirect_to town_route_path(@town, @route)
     else
       render :edit, status: :unprocessable_entity

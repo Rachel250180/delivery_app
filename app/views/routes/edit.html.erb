@@ -30,6 +30,14 @@
 
 <%= javascript_include_tag "map_route" %>
 
+<script>
+  window.routePoints = <%= raw @points.to_json %>;
+
+  window.initMap = function () {
+    initMapEdit(window.routePoints);
+  };
+</script>
+
 <script
 src="https://maps.googleapis.com/maps/api/js?key=<%= Rails.application.credentials.google_maps_api_key %>&callback=initMapNew"
 defer>
