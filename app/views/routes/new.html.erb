@@ -11,10 +11,12 @@
     <%= f.label :description, "説明" %><br>
     <%= f.text_area :description %>
   </div>
+
+  <input type="hidden" id="points_json" name="points_json">
   
   <h3>経由地点</h3>
-  <div id="points"></div>
-  <ul id="points-list"></ul>
+  <div id= "points"></div>
+  <ul id= "points-list"></ul>
 
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 

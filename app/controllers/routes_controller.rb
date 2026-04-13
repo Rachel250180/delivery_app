@@ -14,6 +14,17 @@ class RoutesController < ApplicationController
     @route = @town.routes.new(route_params)
     @route.user = current_user
 
+    if params[:points_json].present?
+      points = JSON.parse(params[:points_json])
+
+      points.each_with_index do |p, i|
+        @route.route_points.new(
+          latitude: p["lat"],
+          longitude: p["lng"],
+          position: i)
+      end
+    end
+
     if @route.save
       redirect_to town_route_path(@town, @route), notice: "ルートを作成しました！"
     else
@@ -25,6 +36,8 @@ class RoutesController < ApplicationController
   end
 
   def update
+    @route = @town.routes.find(params[:id])
+
     if @route.update(route_params)
       redirect_to town_route_path(@town, @route)
     else
@@ -41,8 +54,7 @@ class RoutesController < ApplicationController
 
   def route_params
     params.require(:route).permit(:name,
-                                  :description,
-                                  route_points_attributes: [ :latitude, :longitude, :position ])
+                                  :description,)
   end
 
   def set_town
