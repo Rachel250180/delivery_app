@@ -4,6 +4,8 @@ class RoutesController < ApplicationController
   before_action :set_route, only: [ :show, :edit, :update, :destroy ]
 
   def show
+    @route = @town.routes.find(params[:id])
+    @points = @route.route_points.order(:position)
   end
 
   def new

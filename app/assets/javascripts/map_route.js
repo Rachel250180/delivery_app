@@ -73,7 +73,7 @@ function renderList() {
 
 //何度もdrawRouteしない用
 function drawRouteIfNeeded() {
-  if (window.routeMode === "new") {
+  if (["new", "edit"].includes(window.routeMode)) {
     drawRoute();
   }
 }
@@ -115,6 +115,7 @@ window.initMapEdit = function (points) {
   map.addListener("click", (e) => {
     addPoint(e.latLng);
   });
+
   initSortable();
 };
 
