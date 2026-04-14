@@ -5,14 +5,20 @@ michael:
   email: user1@example.com
   password_digest: <%= BCrypt::Password.create('password') %>
   admin: true
+  activated: true
+  activated_at: <%= Time.zone.now %>
 
 archer:
   name: Archer Another
   email: user2@example.com
   password_digest: <%= BCrypt::Password.create('password') %>
+  activated: true
+  activated_at: <%= Time.zone.now %>
+
 
 malory:
   name: Malory Archer
   email: boss@example.gov
   password_digest: <%= User.digest('password') %>
-  
+  activated: true
+  activated_at: <%= Time.zone.now %>

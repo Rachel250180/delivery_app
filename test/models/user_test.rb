@@ -75,8 +75,7 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "authenticate should return false for user with nil digest" do
-    @user.password_digest = nil
-    assert_not @user.authenticate("password")
+    assert_not @user.authenticated?(:remember, "")
   end
 
   test "password confirmation should match password" do
