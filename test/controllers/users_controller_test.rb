@@ -27,7 +27,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
                       }
       }
     end
-    assert_redirected_to user_url(User.last)
+    assert_redirected_to root_url
   end
 
   test "should not create user with invalid data" do
