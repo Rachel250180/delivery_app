@@ -57,8 +57,18 @@ Rails.application.configure do
   # config.action_mailer.raise_delivery_errors = false
 
   # Set host to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = { host: "example.com" }
-
+  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.delivery_method = :smtp
+  host = "https://delivery_app.onrender.com"
+  config.action_mailer.default_url_options = { host: host }
+  ActionMailer::Base.smtp_settings = {
+    :port           => 2525, # rubocop:disable Style/HashSyntax
+    :address        => "smtp.mailgun.org", # rubocop:disable Style/HashSyntax
+    :user_name      => ENV["MAILGUN_SMTP_LOGIN"], # rubocop:disable Style/HashSyntax
+    :password       => ENV["MAILGUN_SMTP_PASSWORD"], # rubocop:disable Style/HashSyntax,Style/StringLiterals
+    :domain         => host, # rubocop:disable Style/HashSyntax
+    :authentication => :plain # rubocop:disable Style/HashSyntax
+  }
   # Specify outgoing SMTP server. Remember to add smtp/* credentials via bin/rails credentials:edit.
   # config.action_mailer.smtp_settings = {
   #   user_name: Rails.application.credentials.dig(:smtp, :user_name),
