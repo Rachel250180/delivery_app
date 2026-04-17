@@ -64,4 +64,5 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
   gem "bcrypt", "~> 3.1.22"
+  gem "rails-controller-testing"
 end
