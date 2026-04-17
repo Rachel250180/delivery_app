@@ -59,7 +59,7 @@ Rails.application.configure do
   # Set host to be used by links generated in mailer templates.
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.delivery_method = :smtp
-  host = "https://delivery_app.onrender.com"
+  host = "https://delivery-app-6k82.onrender.com"
   config.action_mailer.default_url_options = { host: host }
   ActionMailer::Base.smtp_settings = {
     :port           => 2525, # rubocop:disable Style/HashSyntax
