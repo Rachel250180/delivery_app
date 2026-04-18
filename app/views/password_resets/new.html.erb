@@ -3,7 +3,7 @@
 
 <div>
   <div>
-    <%= form_with(url: new_password_reset_path, scorp: :password_reset) do |f| %>
+    <%= form_with(url: password_resets_path, scope: :password_reset) do |f| %>
       <%= f.label :email %>
       <%= f.email_field :email %>
 
