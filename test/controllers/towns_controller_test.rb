@@ -4,6 +4,7 @@ class TownsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @town = towns(:one)
     @user = users(:michael)
+    log_in_as(@user)
   end
 
   test "should get index and show towns in index" do
