@@ -1,35 +1,46 @@
-<h1>配達ルート管理アプリ</h1>
-
-<p>
-  配達ルートを登録・管理できます。
-</p>
-
-<h1>ルート検索アプリ</h1>
-
-<%= form_with url: towns_path, method: :get, local: true do |f| %>
-  <%= f.label :name, "町名検索" %>
-  <%= f.text_field :name %>
-  <%= f.submit "検索" %>
-<% end %>
-
 <div>
-  <%= link_to "町一覧", towns_path %>
-</div>
+  <section class="hero">
+    <h1>配達ルート管理アプリ</h1>
+    <p>配達ルートを登録・管理できます。</p>
 
-<div>
-  <%= link_to "町登録", new_town_path %>
-</div>
+    <div class="search-route">
+      <h2>ルート検索アプリ</h2>
 
-<% if logged_in? %>
-  <div>
-    <%= link_to "マイページ", user_path(current_user) %>
-  </div>
-<% end %>
+      <%= form_with url: towns_path, method: :get, local: true, class: "search-form" do |f| %>
+        <%= f.text_field :name, placeholder: "町名を入力してください" %>
+        <%= f.submit "検索", class: "search-btn" %>
+      <% end %>
+    </div>
+  </section>
 
-<div>
-  <% if logged_in? %>
-    <%= button_to "ログアウト", logout_path, method: :delete %>
-  <% else %>
-    <%= button_to "ログイン", login_path, method: :get %>
-  <% end %>
+  <section class="menu-grid">
+
+    <%= link_to towns_path, class: "menu-card" do %>
+      <div class="icon">📋</div>
+      <h3>町一覧</h3>
+      <p>登録されている町の一覧</p>
+    <% end %>
+
+    <%= link_to new_town_path, class: "menu-card" do %>
+      <div class="icon">➕</div>
+      <h3>町登録</h3>
+      <p>新しい町を追加</p>
+    <% end %>
+
+    <% if logged_in? %>
+      <%= link_to user_path(current_user), class: "menu-card" do %>
+        <div class="icon">👤</div>
+        <h3>マイページ</h3>
+        <p>ユーザー情報</p>
+      <% end %>
+    <% end %>
+
+    <% unless logged_in? %>
+      <%= link_to login_path, class: "menu-card" do %>
+        <div class="icon">🔐</div>
+        <h3>ログイン</h3>
+        <p>アカウントにログイン</p>
+      <% end %>
+    <% end %>
+  </section>
 </div>
