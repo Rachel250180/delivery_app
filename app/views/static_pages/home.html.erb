@@ -33,9 +33,21 @@
         <h3>マイページ</h3>
         <p>ユーザー情報</p>
       <% end %>
+    <% else %>
+      <%= link_to login_path, class: "menu-card" do %>
+        <div class="icon">👤</div>
+        <h3>マイページ</h3>
+        <p>ユーザー情報</p>
+      <% end %>
     <% end %>
 
-    <% unless logged_in? %>
+    <% if logged_in? %>
+      <%= link_to logout_path, data: { turbo_method: :delete }, class: "menu-card" do %>
+        <div class="icon">🔒</div>
+        <h3>ログアウト</h3>
+        <p>アカウントをログアウト</p>
+      <% end %>
+    <% else %>
       <%= link_to login_path, class: "menu-card" do %>
         <div class="icon">🔐</div>
         <h3>ログイン</h3>

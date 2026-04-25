@@ -1,13 +1,17 @@
 body {
+  min-height: 100vh;
   margin: 0;
   font-family:
     "Hiragino Kaku Gothic ProN",
     "Yu Gothic",
     "Meiryo",
     sans-serif;
-  background: #fff9e6;
+  background-image: url("deli-background.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
 }
-
 /* ヘッダー */
 
 .header {
@@ -34,4 +38,73 @@ body {
 
 .btn.ghost {
   background: transparent;
+}
+
+/* ヒーロー */
+
+.hero {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.hero h1 {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.search-route {
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  width: 600px;
+  margin: 30px auto;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+
+.search-form {
+  display: flex;
+  gap: 10px;
+}
+
+.search-form input {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.search-btn {
+  background: #facc15;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+}
+
+
+/* メニュー */
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  padding: 40px;
+}
+
+.menu-card {
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  text-align: center;
+  text-decoration: none;
+  color: black;
+  transition: 0.2s;
+}
+
+.menu-card:hover {
+  transform: translateY(-5px);
+}
+
+.icon {
+  font-size: 32px;
+  margin-bottom: 10px;
 }
