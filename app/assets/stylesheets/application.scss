@@ -1,0 +1,88 @@
+/* app/assets/stylesheets/application.scss */
+
+/* Bootstrap */
+@import "bootstrap";
+
+/* 自作CSS */
+@import "home";
+@import "custom";
+@import "towns";
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  font-family:
+    "Hiragino Kaku Gothic ProN",
+    "Yu Gothic",
+    "Meiryo",
+    sans-serif;
+  background-image: url("deli-background.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+
+/* サイドバー */
+
+.sidebar {
+  width: 240px;
+  background: #f8f8f8;
+  border-right: 1px solid #eee;
+  padding: 20px;
+}
+
+.sidebar a {
+  display: block;
+  padding: 12px;
+  margin-bottom: 8px;
+  text-decoration: none;
+  color: #333;
+  border-radius: 8px;
+}
+
+.sidebar a:hover {
+  background: #ffe8a3;
+}
+
+
+/* 右側 */
+
+.main-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* ヘッダー */
+
+.header {
+  background: #facc15;
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 32px;
+  align-items: center;
+}
+
+
+/* main */
+
+.main {
+  flex: 1;
+  padding: 40px;
+}
+
+
+/* footer */
+
+.footer {
+  background: #f5f5f5;
+  padding: 20px;
+  text-align: center;
+}

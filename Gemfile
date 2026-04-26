@@ -65,5 +65,8 @@ group :test do
   gem "selenium-webdriver"
   gem "bcrypt", "~> 3.1.22"
   gem "rails-controller-testing"
-  gem "bootstrap", "~> 5.3"
 end
+
+gem "bootstrap", "~> 5.3"
+
+gem "dartsass-rails", "~> 0.5.1"

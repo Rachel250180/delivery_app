@@ -1,0 +1,19 @@
+
+
+.logo {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.btn {
+  background: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.btn.ghost {
+  background: transparent;
+}
