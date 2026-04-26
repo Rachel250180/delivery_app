@@ -1,7 +1,14 @@
-<% if logged_in? %>
-  <%= link_to "マイページ", current_user %>
-  <%= link_to "ログアウト", logout_path, data: { turbo_method: :delete } %>
-<% else %>
-  <%= link_to "ログイン", login_path %>
-  <%= link_to "新規登録", new_user_path %>
-<% end %>
+<div class="header">
+  <div class="logo">
+    🚚 配達ルート管理アプリ
+  </div>
+
+  <div class="authorization">
+    <% if logged_in? %>
+      <%= link_to "マイページ", user_path(current_user), class: "btn ghost" %>
+      <%= button_to "ログアウト", logout_path, method: :delete, class: "btn" %>
+    <% else %>
+      <%= link_to "ログイン", login_path, class: "btn" %>
+    <% end %>
+  </div>
+</div>

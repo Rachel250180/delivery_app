@@ -1,0 +1,46 @@
+/* Town-edit */
+
+
+/* Town-index */
+
+ul.index {
+  counter-reset: list;
+  list-style: none;
+  padding: 0;
+
+  li {
+    position: relative;
+    margin: 7px 0;
+    padding-left: 40px;
+    border: 1px solid #facc15;
+    border-radius: 20px;
+    transition: .3s;
+
+    &::before {
+      counter-increment: list;
+      content: counter(list);
+      position: absolute;
+      left: 0;
+      width: 30px;
+      height: 30px;
+      background: #facc15;
+      color: #fff;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 30px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    &:hover {
+      background: #facc15;
+      color: #fff;
+
+      &::before {
+        background: #fff;
+        color: #facc15;
+      }
+    }
+  }
+}
+
