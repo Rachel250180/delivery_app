@@ -33,10 +33,11 @@ body {
 .sidebar {
   width: 240px;
   background: #f8f8f8;
-  border-right: 1px solid #eee;
+  border-right: 3px solid #eee;
   height: 100vh;
   position: sticky;
   top: 0;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.05);
 }
 
 .sidebar a {
@@ -64,6 +65,16 @@ body {
   height: 32px;
   border-radius: 6px;
   cursor: pointer;
+}
+
+.sidebar-inner {
+  padding: 16px;
+}
+
+.sidebar-inner .title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 

@@ -1,6 +1,19 @@
 .logo {
-  font-size: 20px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-weight: bold;
+  font-size: 18px;
+  margin: 0;
+}
+
+.logo i {
+  font-size: 20px;
+}
+
+.logo span {
+  letter-spacing: 0.5px;
 }
 
 
