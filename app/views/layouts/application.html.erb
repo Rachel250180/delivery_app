@@ -28,6 +28,13 @@
 
         <main class="main">
           <div class="container">
+
+            <% flash.each do |type, message| %>
+              <div class="alert alert-<%= type %>">
+                <%= message %>
+              </div>
+            <% end %>
+
             <%= yield %>
           </div>
         </main>
