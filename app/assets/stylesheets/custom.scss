@@ -17,15 +17,18 @@
 }
 
 
-.btn {
+.btn.btn-white {
   background: white;
+  font-weight: bold;
   border: none;
   padding: 8px 16px;
   border-radius: 8px;
   margin-left: 10px;
   cursor: pointer;
-}
+  transition: .3s;
 
-.btn.ghost {
-  background: transparent;
+  &:hover {
+    background: white;
+    transform: scale(1.1);
+  }
 }

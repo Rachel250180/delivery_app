@@ -1,22 +1,20 @@
 <div class="header">
   <div class="logo">
-    🚚 配達ルート管理アプリ
+    <i class="fa-solid fa-truck"></i>
+    <span>Skip/配達ルート管理アプリ</span>
   </div>
 
   <div class="user-menu">
-    <button class="user-button" onclick="toggleMenu()">
-      👤 ゲストさん
-      <span class="arrow">▼</span>
-    </button>
+    <% if logged_in? %>
+      <%= link_to "マイページ", user_path(current_user), class: "btn btn-white" %>
 
-    <div class="dropdown" id="userDropdown">
-      <% if logged_in? %>
-        <%= link_to "マイページ", user_path(current_user) %>
-        <%= link_to "ログアウト", logout_path, data: { turbo_method: :delete } %>
-      <% else %>
-        <%= link_to "ログイン", login_path %>
-        <%= link_to "新規登録", signup_path %>
-      <% end %>
-    </div>
+      <%= link_to "ログアウト",
+          logout_path,
+          data: { turbo_method: :delete },
+          class: "btn btn-white" %>
+    <% else %>
+      <%= link_to "ログイン", login_path, class: "btn btn-white" %>
+      <%= link_to "新規登録", signup_path, class: "btn btn-white" %>
+    <% end %>
   </div>
 </div>
