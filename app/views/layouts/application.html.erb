@@ -13,18 +13,24 @@
 
   <body>
     <div class="wrapper">
-      <aside class="sidebar">
+      <aside class="sidebar" id="sidebar">
         <%= render "layouts/sidebar" %>
       </aside>
 
       <div class="main-area">
         <header class="header">
+          <button class="menu-toggle" id="menu-toggle">
+            ☰
+          </button>
+
           <%= render "layouts/header" %>
         </header>
 
-        <div class="main">
-          <%= yield %>
-        </div>
+        <main class="main">
+          <div class="container">
+            <%= yield %>
+          </div>
+        </main>
 
         <footer class="footer">
           <%= render "layouts/footer" %>
