@@ -3,6 +3,6 @@ class Route < ApplicationRecord
     accepts_nested_attributes_for :route_points, reject_if: :all_blank
     belongs_to :town
     belongs_to :user
-    validates :name, presence: true, length: { minimum: 3, maximum: 20 }
+    validates :name, presence: true, length: { minimum: 3, maximum: 20 }, uniqueness: { scope: :town_id }
     validates :description, length: { maximum: 255 }
 end
