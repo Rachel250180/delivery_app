@@ -6,30 +6,112 @@
   font-weight: bold;
   font-size: 18px;
   margin: 0;
-}
 
-.logo i {
-  font-size: 20px;
-}
-
-.logo span {
-  letter-spacing: 0.5px;
-}
-
-
-.btn.btn-white {
-  background: white;
-  font-weight: bold;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 8px;
-  margin-left: 10px;
-  cursor: pointer;
-  transition: .3s;
-
-  &:hover {
-    background: white;
-    transform: scale(1.1);
+  i {
+    font-size: 20px;
   }
 
+  span {
+    letter-spacing: 0.5px;
+  }
+}
+
+
+/* 共通ボタン */
+.btn-main {
+  display: inline-block;
+  padding: 0.8em 2em;
+  background-color: #facc15;
+  box-shadow: 0 5px 0 #eab308;
+  border-radius: 40px;
+  color: #fff;
+  cursor: pointer;
+  text-decoration: none;
+  transition: .1s;
+  margin: 16px 0;
+  font-weight: bold;
+
+  &:hover {
+    transform: translateY(2px);
+  }
+
+  &:active {
+    box-shadow: none;
+    transform: translateY(5px);
+  }
+}
+
+
+.btn {
+  &.btn-white {
+    background: white;
+    font-weight: bold;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    margin-left: 10px;
+    cursor: pointer;
+    transition: .3s;
+
+    &:hover {
+      background: white;
+      transform: scale(1.1);
+    }
+  }
+}
+
+.btn-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #103bfe;
+  padding: 14px 26px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #ffffff;
+  font-weight: bold;
+  transition: .2s;
+
+  &::before {
+    content: "＋";
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    background: white;
+    border-radius: 4px;
+    font-weight: bold;
+    color: #333;   // ← これ追加（黒っぽい）
+  }
+
+  &:hover {
+    background: #00046b;
+    transform: translateY(-2px);
+  }
+}
+
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: #666;
+  font-weight: bold;
+  margin-top: 20px;
+  transition: .2s;
+
+  &::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-left: 3px solid #facc15;
+    border-bottom: 3px solid #facc15;
+    transform: rotate(45deg);
+  }
+
+  &:hover {
+    color: #333;              // 少し暗く
+    transform: translateX(-2px); // ちょい動き（任意）
+  }
 }

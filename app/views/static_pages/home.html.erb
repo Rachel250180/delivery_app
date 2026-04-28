@@ -4,7 +4,7 @@
     <p>配達ルートを登録・管理できます。</p>
 
     <div class="search-town">
-      <h2>町を検索する</h2>
+      <h2><i class="fa-solid fa-magnifying-glass"></i>町を検索する</h2>
 
       <%= form_with url: towns_path, method: :get, local: true, class: "search-form" do |f| %>
         <%= f.text_field :name, placeholder: "町名を入力してください" %>
