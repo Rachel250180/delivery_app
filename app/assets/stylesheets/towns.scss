@@ -2,45 +2,49 @@
 
 
 /* Town-index */
+.towns-top {
+  background: #fffdf5;
+  max-width: 1000px;
+  margin: 40px auto;
+  border-radius: 20px;
+  padding: 30px;
 
-ul.index {
-  counter-reset: list;
-  list-style: none;
-  padding: 0;
+  h2 {
+    text-decoration: underline dotted #facc15;
+    text-underline-offset: 4px;
+  }
+}
 
-  li {
-    position: relative;
-    margin: 7px 0;
-    padding-left: 40px;
-    border: 1px solid #facc15;
-    border-radius: 20px;
-    transition: .3s;
+.towns-index {
+  max-width: 1000px;
+  margin: 0 auto;
+  border-radius: 20px;
+  padding: 30px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 
-    &::before {
-      counter-increment: list;
-      content: counter(list);
-      position: absolute;
-      left: 0;
-      width: 30px;
-      height: 30px;
-      background: #facc15;
-      color: #fff;
-      border-radius: 50%;
-      text-align: center;
-      line-height: 30px;
-      top: 50%;
-      transform: translateY(-50%);
-    }
 
-    &:hover {
-      background: #facc15;
-      color: #fff;
 
-      &::before {
-        background: #fff;
-        color: #facc15;
+  ul.index {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+      a {
+        display: block;
+        text-decoration: none;
+        color: inherit;
       }
     }
   }
 }
 
+.towns-bottom {
+  max-width: 200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 40px;
+}
