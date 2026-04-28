@@ -20,6 +20,8 @@ body {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+
+  overflow-x: hidden;
 }
 
 .wrapper {
@@ -81,13 +83,18 @@ body {
 /* メインエリア */
 
 .main-area {
+  min-width: 0;
   flex: 1;
   display: flex;
   flex-direction: column;
 }
 
+.main {
+  flex: 1;
+  padding: 40px 16px; /* ←スマホも考慮して統一 */
+}
 
-/* ヘッダー */
+/* ヘッダー/フッター */
 
 .header {
   background: #facc15;
@@ -98,6 +105,15 @@ body {
   width: 100%;
 }
 
+.footer {
+  background: #f5f5f5;
+  padding: 20px;
+  text-align: center;
+}
+
+/* ハンバーガー */
+
+
 .menu-toggle {
   display: none;
   background: none;
@@ -106,35 +122,19 @@ body {
   margin-right: 12px;
 }
 
-/* main */
-
-.main {
-  flex: 1;
-  padding: 40px;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  width: 100%;
-}
-
-
-/* footer */
-
-.footer {
-  background: #f5f5f5;
-  padding: 20px;
-  text-align: center;
-}
-
-
-
 /* =========================
-   スマホ
+   Bootstrap対策
 ========================= */
 
-@media (max-width: 768px) {
+.container {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* タブレット以下 */
+
+@media (max-width: 1000px) {
 
   .wrapper {
     flex-direction: column;
@@ -144,17 +144,13 @@ body {
     display: block;
   }
 
-  .sidebar-close {
-    display: block;
-  }
-
   .sidebar {
     position: fixed;
-    left: -260px;
+    left: -240px;
     top: 0;
     height: 100vh;
     z-index: 1000;
-    transition: 0.3s;
+      transition: left 0.3s ease;
     padding-top: 40px;
   }
 
@@ -162,12 +158,22 @@ body {
     left: 0;
   }
 
-  .main {
-    padding: 16px;
+  .sidebar-close {
+    display: block;
   }
 
-  .header {
-    padding: 12px 16px;
+  .hide-1000 {
+    display: none !important;
+  }
+}
+
+
+/* スマホ */
+
+@media (max-width: 670px) {
+
+  .main {
+    padding: 16px;
   }
 
 }
