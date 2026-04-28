@@ -1,6 +1,38 @@
-  <aside class="sidebar">
-    <h2 class="logo">Menu</h2>
+<div class="sidebar-inner">
+  <h3 class="logo">
+    <i class="fa-solid fa-truck"></i>
+    <span>Skip</span>
+  </h3>
 
-    <a href="#">ホーム</a>
-    <a href="#">注文</a>
-  </aside>
+  <button class="sidebar-close" id="sidebar-close">
+    ×
+  </button>
+
+  <div class="sidebar-list">
+    <nav>
+      <%= link_to root_path do %>
+        <i class="fa-solid fa-house"></i>
+        ダッシュボード
+      <% end %>
+
+      <%= link_to towns_path do %>
+        <i class="fa-solid fa-building"></i>
+        町一覧
+      <% end %>
+
+      <% if current_user.present? %>
+        <%= link_to user_path(current_user) do %>
+          <i class="fa-solid fa-user-gear"></i>
+          マイページ
+        <% end %>
+      <% else %>
+        <%= link_to login_path do %>
+          <i class="fa-solid fa-user-gear"></i>
+          ログイン
+        <% end %>
+      <% end %>
+
+
+    </nav>
+  </div>
+</div>

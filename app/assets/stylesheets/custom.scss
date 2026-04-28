@@ -1,19 +1,35 @@
-
-
 .logo {
-  font-size: 20px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-weight: bold;
+  font-size: 18px;
+  margin: 0;
 }
 
-.btn {
+.logo i {
+  font-size: 20px;
+}
+
+.logo span {
+  letter-spacing: 0.5px;
+}
+
+
+.btn.btn-white {
   background: white;
+  font-weight: bold;
   border: none;
   padding: 8px 16px;
   border-radius: 8px;
   margin-left: 10px;
   cursor: pointer;
-}
+  transition: .3s;
 
-.btn.ghost {
-  background: transparent;
+  &:hover {
+    background: white;
+    transform: scale(1.1);
+  }
+
 }

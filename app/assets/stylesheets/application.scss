@@ -20,6 +20,8 @@ body {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+
+  overflow-x: hidden;
 }
 
 .wrapper {
@@ -33,8 +35,11 @@ body {
 .sidebar {
   width: 240px;
   background: #f8f8f8;
-  border-right: 1px solid #eee;
-  padding: 20px;
+  border-right: 3px solid #eee;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.05);
 }
 
 .sidebar a {
@@ -50,39 +55,136 @@ body {
   background: #ffe8a3;
 }
 
+.sidebar-close {
+  display: none;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: #f8f8f8;
+  border: none;
+  font-size: 22px;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  cursor: pointer;
+}
 
-/* 右側 */
+.sidebar-inner {
+  padding: 16px;
+}
+
+.sidebar-inner .title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+
+/* メインエリア */
 
 .main-area {
+  min-width: 0;
   flex: 1;
   display: flex;
   flex-direction: column;
 }
 
+.main {
+  flex: 1;
+  padding: 40px 16px; /* ←スマホも考慮して統一 */
+}
 
-/* ヘッダー */
+/* ヘッダー/フッター */
 
 .header {
   background: #facc15;
   display: flex;
   justify-content: space-between;
-  padding: 16px 32px;
+  padding: 4px 4px;
   align-items: center;
+  width: 100%;
 }
-
-
-/* main */
-
-.main {
-  flex: 1;
-  padding: 40px;
-}
-
-
-/* footer */
 
 .footer {
   background: #f5f5f5;
   padding: 20px;
   text-align: center;
+}
+
+/* ハンバーガー */
+
+
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 24px;
+  margin-right: 12px;
+}
+
+/* =========================
+   Bootstrap対策
+========================= */
+
+.container {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* タブレット以下 */
+
+@media (max-width: 1000px) {
+
+  .wrapper {
+    flex-direction: column;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
+  .main-area {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .sidebar {
+    position: fixed;
+    left: -240px;
+    top: 0;
+    height: 100vh;
+    z-index: 1000;
+      transition: left 0.3s ease;
+    padding-top: 40px;
+  }
+
+  .sidebar.active {
+    left: 0;
+  }
+
+  .sidebar-close {
+    display: block;
+  }
+
+  .hide-1000 {
+    display: none !important;
+  }
+}
+
+.header,
+.footer {
+  width: 100%;
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+/* スマホ */
+
+@media (max-width: 670px) {
+
+  .main {
+    padding: 16px;
+  }
+
 }
