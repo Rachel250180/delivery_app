@@ -144,6 +144,11 @@ body {
     display: block;
   }
 
+  .main-area {
+    width: 100%;
+    min-width: 0;
+  }
+
   .sidebar {
     position: fixed;
     left: -240px;
@@ -167,6 +172,12 @@ body {
   }
 }
 
+.header,
+.footer {
+  width: 100%;
+  box-sizing: border-box;
+  max-width: 100%;
+}
 
 /* スマホ */
 

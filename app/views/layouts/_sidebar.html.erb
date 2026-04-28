@@ -20,9 +20,16 @@
         町一覧
       <% end %>
 
-      <%= link_to user_path(current_user) do %>
-        <i class="fa-solid fa-user-gear"></i>
-        マイページ
+      <% if current_user.present? %>
+        <%= link_to user_path(current_user) do %>
+          <i class="fa-solid fa-user-gear"></i>
+          マイページ
+        <% end %>
+      <% else %>
+        <%= link_to login_path do %>
+          <i class="fa-solid fa-user-gear"></i>
+          ログイン
+        <% end %>
       <% end %>
 
 
