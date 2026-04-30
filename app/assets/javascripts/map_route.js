@@ -83,6 +83,11 @@ window.initMapNew = function () {
   addPoint(START_POINT);
 
   map.addListener("click", (e) => {
+    if (points.length >= 10) {
+      alert("最大10地点までです");
+      return;
+    }
+
     addPoint(e.latLng);
   });
 

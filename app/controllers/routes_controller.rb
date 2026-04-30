@@ -26,6 +26,12 @@ class RoutesController < ApplicationController
       end
     end
 
+    if @route.route_points.size > 10
+      @route.errors.add(:route_points, "は10個までしか登録できません")
+      render :new, status: :unprocessable_entity
+      return
+    end
+
     if @route.save
       redirect_to town_route_path(@town, @route), notice: "ルートを作成しました！"
     else
