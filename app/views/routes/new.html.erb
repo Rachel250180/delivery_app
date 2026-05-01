@@ -1,6 +1,6 @@
 <h1>ルート登録</h1>
 <%= render "shared/error_messages", model: @route %>
-<%= form_with model: [@town, @route] do |f| %>
+<%= form_with model: [@town, @route], html: { id: "route-form" } do |f| %>
 
   <div>
     <%= f.label :name, "ルート名" %><br>

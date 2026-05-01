@@ -4,6 +4,7 @@ let directionsService;
 let directionsRenderer;
 let points = [];
 let isInitializing = false;
+let isNewPage = false;
 
 const START_POINT = { lat: 36.27883160931458, lng: 139.3873576767888 };
 
@@ -53,9 +54,14 @@ function addPoint(latLng) {
 
 function updateHiddenField() {
   const input = document.getElementById("points_json");
-  if (!input) return;
-  
-  input.value = JSON.stringify(points);
+  if (input) {
+    input.value = JSON.stringify(points);
+  }
+
+
+  if (isNewPage) {
+    sessionStorage.setItem("route_points", JSON.stringify(points));
+  }
 }
 
 
@@ -78,24 +84,64 @@ function renderList() {
 
 // new用
 window.initMapNew = function () {
+  isNewPage = true;
+  markers.forEach(m => m.setMap(null));
+  markers = [];
+  points = [];
+
   createMap();
 
-  addPoint(START_POINT);
+  const saved = sessionStorage.getItem("route_points");
+
+  if (saved) {
+    const parsed = JSON.parse(saved);
+
+    isInitializing = true;
+
+    parsed.forEach(p => {
+      addPoint(p);
+    });
+
+    isInitializing = false;
+
+    drawRoute();
+  } else {
+    addPoint(START_POINT);
+  }
 
   map.addListener("click", (e) => {
     if (points.length >= 10) {
       alert("最大10地点までです");
       return;
     }
-
     addPoint(e.latLng);
   });
 
   initSortable();
+
+  const form = document.getElementById("route-form");
+
+  if (form && !form.dataset.listenerAdded) {
+    form.dataset.listenerAdded = "true";
+
+    form.addEventListener("submit", () => {
+      sessionStorage.removeItem("route_points");
+    });
+  }
 };
 
 // show用
 window.initMapShow = function (routePoints) {
+  isNewPage = false;
+  if (directionsRenderer) {
+    directionsRenderer.setDirections({ routes: [] });
+  }
+
+  markers.forEach(m => m.setMap(null));
+  markers = [];
+  points = [];
+  
+  
   createMap();
 
   isInitializing = true;
@@ -114,6 +160,7 @@ window.initMapShow = function (routePoints) {
 
 // edit用
 window.initMapEdit = function (routePoints) {
+  isNewPage = false;
 
   markers.forEach(m => m.setMap(null));
   markers = [];
@@ -220,3 +267,16 @@ function movePoint(oldIndex, newIndex) {
   drawRoute();
   renderList();
 }
+
+window.addEventListener("pageshow", (e) => {
+  if (e.persisted) {
+    markers.forEach(m => m.setMap(null));
+
+    markers = [];
+    points = [];
+
+    if (directionsRenderer) {
+      directionsRenderer.setDirections({ routes: [] });
+    }
+  }
+});
