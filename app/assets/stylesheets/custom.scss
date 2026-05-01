@@ -60,6 +60,8 @@
   }
 }
 
+
+
 .btn-add {
   display: inline-flex;
   align-items: center;
@@ -71,6 +73,7 @@
   color: #ffffff;
   font-weight: bold;
   transition: .2s;
+  border: none;
 
   &::before {
     content: "＋";
@@ -113,5 +116,34 @@
   &:hover {
     color: #333;              // 少し暗く
     transform: translateX(-2px); // ちょい動き（任意）
+  }
+}
+
+
+
+.form-group {
+  margin-bottom: 20px;
+
+  label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #555;
+  }
+
+  input, textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 14px;
+    transition: 0.2s;
+  }
+
+  /* フォーカス時 */
+  input:focus, textarea:focus {
+    border-color: #facc15;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.2);
   }
 }

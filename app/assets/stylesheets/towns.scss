@@ -23,7 +23,9 @@
   background: #fff;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 
-
+  h1 {
+    padding-bottom: 12px;
+  }
 
   ul.index {
     list-style: none;
@@ -47,4 +49,11 @@
   flex-direction: column;
   gap: 10px;
   padding-top: 40px;
+}
+
+
+/* Town-new */
+.towns-submit {
+  display: flex;
+  justify-content: center;
 }
