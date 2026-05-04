@@ -22,6 +22,7 @@
   padding: 30px;
   background: #fff;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  
 
   h1 {
     padding-bottom: 12px;
@@ -42,8 +43,8 @@
   }
 }
 
-.towns-bottom {
-  max-width: 200px;
+.towns-container-bottom {
+  max-width: 240px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -56,4 +57,14 @@
 .towns-submit {
   display: flex;
   justify-content: center;
+}
+
+/* Town-show */
+.towns-secondary-container {
+  max-width: 1000px;
+  margin: 16px auto;
+  border-radius: 20px;
+  padding: 16px;
+  background: #fff;
+  gap: 12px;
 }
