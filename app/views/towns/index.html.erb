@@ -1,6 +1,6 @@
 <div>
   <div class="towns-top">
-      <h2><i class="fa-solid fa-magnifying-glass"></i>町を検索する</h2>
+      <h2><i class="fa-solid fa-magnifying-glass"></i> 町を検索する</h2>
       <section class="search-town">
 
           <%= form_with url: towns_path, method: :get, local: true, class: "search-form" do |f| %>
@@ -11,7 +11,7 @@
   </div>
 
   <section class="towns-container">
-    <h1><i class="fa-solid fa-flag"></i>町一覧</h1>
+    <h1><i class="fa-solid fa-flag"></i> 町一覧</h1>
 
     <ul class="index">
       <% @towns.each do |town| %>
@@ -23,8 +23,8 @@
       <% end %>
     </ul>
 
-    <div class="towns-bottom">
-      <%= link_to "町を登録する", new_town_path, class: "btn-add" %>
+    <div class="towns-container-bottom">
+      <%= link_to "新しい町を登録する", new_town_path, class: "btn-add" %>
       <%= link_to "戻る", root_path, class: "btn-back" %>
     </div>
   </section>
