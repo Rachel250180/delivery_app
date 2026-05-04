@@ -1,5 +1,10 @@
 /* Town-edit */
-
+.towns-action-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16px;
+}
 
 /* Town-index */
 .towns-top {
@@ -44,12 +49,24 @@
 }
 
 .towns-container-bottom {
-  max-width: 240px;
+  max-width: 600px;
   margin: 0 auto;
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  justify-content: space-between;
+  align-items: center;
   padding-top: 40px;
+}
+
+@media (max-width: 600px) {
+  .towns-container-bottom {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .towns-container-bottom a,
+  .towns-container-bottom form {
+    width: 100%; /* ボタンを横いっぱいに */
+  }
 }
 
 
@@ -60,11 +77,3 @@
 }
 
 /* Town-show */
-.towns-secondary-container {
-  max-width: 1000px;
-  margin: 16px auto;
-  border-radius: 20px;
-  padding: 16px;
-  background: #fff;
-  gap: 12px;
-}

@@ -1,6 +1,36 @@
-<%= @user.name %>
-<%= @user.email %>
+<div class="users-container">
+  <h1><i class="fa-solid fa-user"></i> マイページ</h1>
 
-<%= link_to "登録情報を編集する" , edit_user_path(@user) %>
-<%= link_to "戻る" , root_path %>
+  <div class="users-profile">
+    <div class="users-profile-card">
+      <div class="profile-icon">
+        <i class="fa-solid fa-circle-user"></i>
+      </div>
+
+      <div class="profile-text">
+        <p class="profile-name-furigana">名前</p>
+        <p class="profile-name"><%= @user.name %></p>
+      </div>
+    </div>
+
+    <div class="users-profile-card">
+      <div class="profile-icon">
+        <i class="fa-regular fa-envelope"></i>
+      </div>
+
+      <div class="profile-text">
+        <p class="profile-name-furigana">メールアドレス</p>
+        <p class="profile-name"><%= @user.email %></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="users-container-bottom">
+    <%= link_to "登録情報を編集する" , edit_user_path(@user), class:"btn-edit" %>
+  </div>
+</div>
+
+
+
+<%= link_to "戻る" , root_path, class: "btn-back" %>
 <%= button_to "ログアウト", logout_path, method: :delete %>
