@@ -1,18 +1,26 @@
- <h1>マイページ</h1>
+<div class="users-container">
+  <h1><i class="fa-solid fa-pencil"></i> マイページ</h1>
 
- <%= form_with model: @user do |f| %>
-    <div>
+  <%= form_with model: @user do |f| %>
+
+    <div class="form-group">
         <%= f.label :name, "名前" %>
         <%= f.text_field :name %>
     </div>
 
-    <div>
+    <div class="form-group">
         <%= f.label :email, "メールアドレス" %>
         <%= f.email_field :email %>
     </div>
 
-    <%= f.submit "更新" %>
+    <div class="users-container-sub">
+      <%= f.submit "更新する", class:"btn-add" %>
+    </div>
 
-    <%= link_to "戻る", user_path(@user) %>
+  <% end %>
 
-<% end %>
+</div>
+
+<div class="users-bottom">
+  <%= link_to "戻る", user_path(@user), class:"btn-back" %>
+</div>
