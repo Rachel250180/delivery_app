@@ -1,0 +1,75 @@
+/* Usser-show */
+.users-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  border-radius: 20px;
+  padding: 30px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.users-profile {
+  padding-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.users-profile-card {
+  max-width: 1000px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #f0f0f0;
+  border-radius: 10px;
+  border: 1px solid #d0d0d0;
+  padding: 12px;
+}
+
+.profile-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-name-furigana {
+  font-size: 22px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.profile-name {
+  font-size: 20px;
+  color: #666;
+  margin: 0;
+  word-break: break-all;
+}
+
+.users-container-sub {
+  display: flex;
+  justify-content: center;
+  padding-top: 30px;
+}
+
+.users-profile-card {
+  width: 100%;
+}
+
+.users-bottom {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px auto 0;
+  max-width: 1000px;
+}
+
+
+/* スマホ用　*/
+
+@media (max-width: 600px) {
+  .profile-name-furigana {
+    font-size: 16px;
+  }
+
+  .profile-name {
+    font-size: 14px;
+  }
+}
