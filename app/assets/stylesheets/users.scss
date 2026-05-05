@@ -48,5 +48,28 @@
   display: flex;
   justify-content: center;
   padding-top: 30px;
-  padding-top: 20px;
+}
+
+.users-profile-card {
+  width: 100%;
+}
+
+.users-bottom {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px auto 0;
+  max-width: 1000px;
+}
+
+
+/* スマホ用　*/
+
+@media (max-width: 600px) {
+  .profile-name-furigana {
+    font-size: 16px;
+  }
+
+  .profile-name {
+    font-size: 14px;
+  }
 }
