@@ -1,19 +1,36 @@
-<h1>ユーザー登録</h1>
+<div class="users-container">
+  <h1><i class="fa-solid fa-user-gear"></i> ユーザー登録</h1>
 
-<%= form_with model: @user do |f| %>
 
-  <%= f.label :name %>
-  <%= f.text_field :name %>
+  <%= form_with model: @user do |f| %>
 
-  <%= f.label :email %>
-  <%= f.email_field :email %>
+  <div class="form-group">
+    <%= f.label :name %>
+    <%= f.text_field :name %>
+  </div>
 
-  <%= f.label :password %>
-  <%= f.password_field :password %>
+  <div class="form-group">
+    <%= f.label :email %>
+    <%= f.email_field :email %>
+  </div>
 
-  <%= f.label :password_confirmation %>
-  <%= f.password_field :password_confirmation %>
+  <div class="form-group">
+    <%= f.label :password %>
+    <%= f.password_field :password %>
+  </div>
 
-  <%= f.submit "登録" %>
+  <div class="form-group">
+    <%= f.label :password_confirmation %>
+    <%= f.password_field :password_confirmation %>
+  </div>
 
-<% end %>
+  <div class="users-container-sub">
+    <%= f.submit "登録する", class:"btn-add" %>
+  </div>
+
+  <% end %>
+</div>
+
+<div class="users-bottom">
+  <%= link_to "戻る", root_path, class:"btn-back" %>
+</div>
