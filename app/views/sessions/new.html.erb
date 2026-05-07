@@ -1,24 +1,35 @@
-<h1>Log in</h1>
+<div class="sessions-container">
+  <h1><i class="fa-solid fa-check"></i> ログイン</h1>
 
-<%= form_with url: login_path, scope: :session do |f| %>
+  <%= form_with url: login_path, scope: :session do |f| %>
 
-  <%= f.label :email %>
-  <%= f.email_field :email %>
+    <div class="form-group">
+      <%= f.label :"メールアドレス" %>
+      <%= f.email_field :email %>
+    </div>
 
-  <%= f.label :password %>
-  <%= link_to "(forgot password)", new_password_reset_path %>
-  <%= f.password_field :password %>
+    <div class="form-group">
+      <%= f.label :"パスワード" %>
+      <%= f.password_field :password %>
+      <%= link_to "パスワードを忘れてしまったら", new_password_reset_path %>
+    </div>
 
-  <%= f.label :remember_me, class: "checkbox inline" do %>
-    <%= f.check_box :remember_me %>
-    <span>Remember me on this computer</span>
+    <%= f.label :remember_me, class: "checkbox inline" do %>
+      <%= f.check_box :remember_me %>
+      <span>ログイン状態を保持する</span>
+    <% end %>
+
+    <div class="sessions-submit">
+      <%= f.submit "ログイン" , class:"btn-add"%>
+    </div>
   <% end %>
 
-  <%= f.submit "ログイン" %>
+</div>
 
-<% end %>
+<div class="sessions-footer" >
+  <p>
+    はじめての方は
+    <%= link_to "新規会員登録", new_user_path %>
+  </p>
+</div>
 
-<p>
-  はじめての方は
-  <%= link_to "新規会員登録", new_user_path %>
-</p>
