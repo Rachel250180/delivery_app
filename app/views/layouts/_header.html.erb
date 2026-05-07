@@ -1,20 +1,24 @@
 <div class="header">
-  <div class="logo">
-    <i class="fa-solid fa-truck"></i>
+  <div class="header-left">
+    <button class="menu-toggle" id="menu-toggle">
+      ☰
+    </button>
+
+    <i class="fa-solid fa-truck" style="color: rgb(250, 204, 21);"></i>
     <span>Skip</span>
   </div>
 
-  <div class="user-menu">
+  <div class="header-right">
     <% if logged_in? %>
-      <%= link_to "マイページ", user_path(current_user), class: "btn btn-white" %>
+      <%= link_to "マイページ", user_path(current_user), class: "btn btn-header" %>
 
       <%= link_to "ログアウト",
           logout_path,
           data: { turbo_method: :delete },
-          class: "btn btn-white hide-1000" %>
+          class: "btn btn-header hide-1000" %>
     <% else %>
-      <%= link_to "ログイン", login_path, class: "btn btn-white" %>
-      <%= link_to "新規登録", signup_path, class: "btn btn-white hide-1000" %>
+      <%= link_to "ログイン", login_path, class: "btn btn-header" %>
+      <%= link_to "新規登録", signup_path, class: "btn btn-header hide-1000" %>
     <% end %>
   </div>
 </div>

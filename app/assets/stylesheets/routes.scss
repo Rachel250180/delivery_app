@@ -1,0 +1,80 @@
+.routes-show {
+
+  .main {
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 5px;
+  }
+
+  .container-fluid {
+    padding-left: 0;
+    padding-right: 0;
+    max-width: 100%;
+  }
+
+  #map {
+    width: 100%;
+    height: 500px;
+  }
+
+  @media (min-width: 1001px) {
+
+    #map {
+      height: 85vh;
+    }
+
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* PCだけ */
+.pc-only {
+  display: block;
+}
+
+/* スマホ用下部 */
+.mobile-extra {
+  display: none;
+}
+
+/* 情報カード */
+.route-info-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 5px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* =========================
+   スマホ
+========================= */
+
+@media (max-width: 1000px) {
+
+  /* サイドバー側消す */
+  .pc-only {
+    display: none;
+  }
+
+  /* 下に出す */
+  .mobile-extra {
+    display: block;
+    margin-top: 32px;
+  }
+
+}

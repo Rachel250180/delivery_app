@@ -1,0 +1,19 @@
+.sessions-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  border-radius: 20px;
+  padding: 30px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.sessions-footer {
+  max-width: 1000px;
+  margin: 16px auto 0;
+}
+
+.sessions-submit {
+  display: flex;
+  justify-content: center;
+  margin: 16px;
+}

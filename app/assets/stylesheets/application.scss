@@ -8,6 +8,8 @@
 @import "custom";
 @import "towns";
 @import "users";
+@import "sessions";
+@import "routes";
 
 body {
   min-height: 100vh;
@@ -17,6 +19,7 @@ body {
     "Yu Gothic",
     "Meiryo",
     sans-serif;
+
   background-image: url("deli-background.png");
   background-size: cover;
   background-position: center;
@@ -25,53 +28,33 @@ body {
   overflow-x: hidden;
 }
 
+/* =========================
+   レイアウト
+========================= */
+
 .wrapper {
   display: flex;
   min-height: 100vh;
 }
 
-
-/* サイドバー */
+/* =========================
+   サイドバー（PC）
+========================= */
 
 .sidebar {
-  width: 240px;
+  width: 320px;
   background: #f8f8f8;
   border-right: 3px solid #eee;
+
   height: 100vh;
   position: sticky;
   top: 0;
+
   box-shadow: 2px 0 8px rgba(0,0,0,0.05);
 }
 
-.sidebar a {
-  display: block;
-  padding: 12px;
-  margin-bottom: 8px;
-  text-decoration: none;
-  color: #333;
-  border-radius: 8px;
-}
-
-.sidebar a:hover {
-  background: #ffe8a3;
-}
-
-.sidebar-close {
-  display: none;
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: #f8f8f8;
-  border: none;
-  font-size: 22px;
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
 .sidebar-inner {
-  padding: 16px;
+  padding: 20px;
 }
 
 .sidebar-inner .title {
@@ -80,31 +63,90 @@ body {
   gap: 8px;
 }
 
+/* PC時だけ文字を少し大きく */
+.sidebar-list a {
+  display: block;
+  padding: 14px 16px;
+  margin-bottom: 10px;
 
-/* メインエリア */
+  text-decoration: none;
+  color: #333;
+
+  border-radius: 10px;
+
+  font-size: 17px;
+  font-weight: 500;
+
+  transition: 0.2s;
+}
+
+.sidebar-list a:hover {
+  background: #ffe8a3;
+}
+
+/* 閉じるボタン */
+
+.sidebar-close {
+  display: none;
+
+  position: absolute;
+  top: 12px;
+  right: 12px;
+
+  background: #f8f8f8;
+  border: none;
+
+  font-size: 22px;
+
+  width: 32px;
+  height: 32px;
+
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* =========================
+   メイン
+========================= */
 
 .main-area {
   min-width: 0;
   flex: 1;
+
   display: flex;
   flex-direction: column;
 }
 
 .main {
   flex: 1;
-  padding: 40px 16px; /* ←スマホも考慮して統一 */
+  padding: 40px 16px;
 }
 
-/* ヘッダー/フッター */
+/* =========================
+   ヘッダー
+========================= */
 
 .header {
-  background: #facc15;
+  background: #fff;
+
   display: flex;
   justify-content: space-between;
-  padding: 4px 4px;
   align-items: center;
+  gap: 12px;
+
+  padding: 8px 16px;
+
   width: 100%;
+  box-sizing: border-box;
+
+  border-bottom: 1px solid #ddd;
+
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
+
+/* =========================
+   フッター
+========================= */
 
 .footer {
   background: #f5f5f5;
@@ -112,15 +154,28 @@ body {
   text-align: center;
 }
 
-/* ハンバーガー */
-
+/* =========================
+   ハンバーガー
+========================= */
 
 .menu-toggle {
   display: none;
-  background: none;
+
+  background: transparent;
   border: none;
-  font-size: 24px;
-  margin-right: 12px;
+
+  padding: 0;
+  padding-right: 10px;
+  font-size: 28px;
+  line-height: 1;
+
+  cursor: pointer;
+
+  color: #333;
+}
+
+.menu-toggle:hover {
+  opacity: 0.7;
 }
 
 /* =========================
@@ -133,13 +188,11 @@ body {
   box-sizing: border-box;
 }
 
-/* タブレット以下 */
+/* =========================
+   タブレット以下
+========================= */
 
 @media (max-width: 1000px) {
-
-  .wrapper {
-    flex-direction: column;
-  }
 
   .menu-toggle {
     display: block;
@@ -150,18 +203,30 @@ body {
     min-width: 0;
   }
 
+  /* スマホ時は幅を戻す */
   .sidebar {
+    width: 240px;
+
     position: fixed;
     left: -240px;
     top: 0;
+
     height: 100vh;
+
     z-index: 1000;
-      transition: left 0.3s ease;
+
+    transition: left 0.3s ease;
+
     padding-top: 40px;
   }
 
   .sidebar.active {
     left: 0;
+  }
+
+  .sidebar a {
+    font-size: 15px;
+    padding: 12px;
   }
 
   .sidebar-close {
@@ -173,14 +238,9 @@ body {
   }
 }
 
-.header,
-.footer {
-  width: 100%;
-  box-sizing: border-box;
-  max-width: 100%;
-}
-
-/* スマホ */
+/* =========================
+   スマホ
+========================= */
 
 @media (max-width: 670px) {
 
