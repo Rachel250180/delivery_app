@@ -1,10 +1,54 @@
+<div class="route-show-map">
+  <div id="map"></div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <h1><%= @route.name %></h1>
 
 <p><%= @route.description %></p>
 
 <%= google_maps_link(@points) %>
 
-<div id="map" style="height: 500px;"></div>
+
+
+
+
+<%= link_to "編集", edit_town_route_path(@town, @route) %>
+
+<% content_for :sidebar_pc do %>
+  <%= render "route_info" %>
+<% end %>
+
+<% content_for :sidebar_mobile do %>
+  <%= render "route_info" %>
+<% end %>
+
+
+
+
+
+
+
+
+
 
 <!-- javascript読み込み -->
 <%= javascript_include_tag "map_route" %>
@@ -21,7 +65,3 @@
   src="https://maps.googleapis.com/maps/api/js?key=<%= Rails.application.credentials.google_maps_api_key %>&callback=initMap"
   defer>
 </script>
-
-<%= link_to "編集", edit_town_route_path(@town, @route) %>
-
-<%= link_to "一覧へ戻る", town_path(@town) %>

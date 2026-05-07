@@ -9,6 +9,7 @@
 @import "towns";
 @import "users";
 @import "sessions";
+@import "routes";
 
 body {
   min-height: 100vh;
@@ -63,7 +64,7 @@ body {
 }
 
 /* PC時だけ文字を少し大きく */
-.sidebar a {
+.sidebar-list a {
   display: block;
   padding: 14px 16px;
   margin-bottom: 10px;
@@ -79,7 +80,7 @@ body {
   transition: 0.2s;
 }
 
-.sidebar a:hover {
+.sidebar-list a:hover {
   background: #ffe8a3;
 }
 

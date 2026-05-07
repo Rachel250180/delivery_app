@@ -1,0 +1,18 @@
+<div class="route-info-card">
+  <%= link_to "一覧へ戻る", town_path(@town), class:"btn-back" %>
+</div>
+
+<div class="route-info-card">
+  <h4>ルート詳細</h4>
+  <p>ルート名</p>
+  <h5><%= @route.name %></h5>
+
+  <p>ルート作成日</p>
+  <h5><%= @route.created_at.strftime("%Y/%m/%d") %></h5>
+</div>
+
+<div class="route-info-card">
+  <p>配達経由地点</p>
+</div>  
+
+
