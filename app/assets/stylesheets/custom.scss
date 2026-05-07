@@ -1,4 +1,4 @@
-.logo {
+.header-left {
   padding: 12px;
   display: flex;
   align-items: center;
@@ -44,8 +44,8 @@
 
 
 .btn {
-  &.btn-white {
-    background: white;
+  &.btn-header {
+    background: #facc15;
     font-weight: bold;
     border: none;
     padding: 8px 16px;
@@ -55,7 +55,7 @@
     transition: .3s;
 
     &:hover {
-      background: white;
+      background: #facc15;
       transform: scale(1.1);
     }
   }

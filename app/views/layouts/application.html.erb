@@ -13,38 +13,31 @@
   </head>
 
   <body>
+    <header>
+      <%= render "layouts/header" %>
+    </header>
+
     <div class="wrapper">
       <aside class="sidebar" id="sidebar">
         <%= render "layouts/sidebar" %>
       </aside>
 
-      <div class="main-area">
-        <header class="header">
-          <button class="menu-toggle" id="menu-toggle">
-            ☰
-          </button>
+      <main class="main">
+        <div class="container-fluid">
 
-          <%= render "layouts/header" %>
-        </header>
+          <% flash.each do |type, message| %>
+            <div class="alert alert-<%= type %>">
+              <%= message %>
+            </div>
+          <% end %>
 
-        <main class="main">
-          <div class="container-fluid">
-
-            <% flash.each do |type, message| %>
-              <div class="alert alert-<%= type %>">
-                <%= message %>
-              </div>
-            <% end %>
-
-            <%= yield %>
-          </div>
-        </main>
-
-        <footer class="footer">
-          <%= render "layouts/footer" %>
-        </footer>
-      </div>
-
+          <%= yield %>
+        </div>
+      </main>
     </div>
+
+    <footer class="footer">
+      <%= render "layouts/footer" %>
+    </footer>
   </body>
 </html>
