@@ -2,11 +2,14 @@ let map;
 let markers = [];
 let directionsService;
 let directionsRenderer;
+let geocoder;
 let points = [];
 let isInitializing = false;
 let isNewPage = false;
 
-const START_POINT = { lat: 36.27883160931458, lng: 139.3873576767888 };
+const START_POINT = { lat: 36.27883160931458, lng: 139.3873576767888, address: 
+  "銀のさら太田店"
+ };
 
 function createMap() {
   map = new google.maps.Map(document.getElementById("map"), {
@@ -22,26 +25,75 @@ function createMap() {
   });
 
   directionsRenderer.setMap(map);
+
+  geocoder = new google.maps.Geocoder();
 }
 
 // ポイント追加
-function addPoint(latLng) {
-  const lat = typeof latLng.lat === "function" ? latLng.lat() : latLng.lat;
-  const lng = typeof latLng.lng === "function" ? latLng.lng() : latLng.lng;
+function addPoint(point) {
+  const lat =
+    typeof point.lat === "function"
+      ? point.lat()
+      : point.lat;
+
+  const lng =
+    typeof point.lng === "function"
+      ? point.lng()
+      : point.lng;
 
   const index = markers.length;
 
   const marker = new google.maps.Marker({
-    position: { lat: lat, lng: lng },
-    map: map,
+    position: { lat, lng },
+    map,
     label: index === 0 ? "S" : String(index + 1),
-    icon: index === 0 ? "http://maps.google.com/mapfiles/ms/icons/green-dot.png" : null
+    icon: index === 0
+      ? "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
+      : null
   });
 
   markers.push(marker);
 
-  points.push({ lat, lng });
+  points.push({
+    lat,
+    lng,
+    address: point.address || ""
+  });
 
+  refreshUI();
+}
+
+
+/*初期化専用関数*/
+function resetMapState() {
+  markers.forEach(marker => marker.setMap(null));
+
+  markers = [];
+  points = [];
+
+  if (directionsRenderer) {
+    directionsRenderer.setDirections({ routes: [] });
+  }
+}
+
+
+/*登録地点の読み込み*/
+function loadRoutePoints(routePoints) {
+  isInitializing = true;
+
+  routePoints.forEach(routePoint => {
+    addPoint({
+      lat: Number(routePoint.latitude),
+      lng: Number(routePoint.longitude)
+    });
+  });
+
+  isInitializing = false;
+}
+
+
+/*画面更新*/
+function refreshUI() {
   updateHiddenField();
   renumberMarkers();
   renderList();
@@ -49,8 +101,29 @@ function addPoint(latLng) {
   if (!isInitializing) {
     drawRoute();
   }
-
 }
+
+function fetchAddress(lat, lng, callback) {
+  geocoder.geocode(
+    {
+      location: { lat, lng }
+    },
+    (results, status) => {
+
+      let address = "";
+
+      if (status === "OK" && results[0]) {
+        address = results[0].formatted_address;
+      }
+
+      callback(address);
+    }
+  );
+}
+
+
+
+
 
 function updateHiddenField() {
   const input = document.getElementById("points_json");
@@ -74,7 +147,7 @@ function renderList() {
     const li = document.createElement("li");
 
     li.innerHTML = `
-      ${index + 1}: ${p.lat.toFixed(5)}, ${p.lng.toFixed(5)}
+      ${index + 1}: ${p.address || `${p.lat.toFixed(5)}, ${p.lng.toFixed(5)}`}
         ${index === 0 ? "": `<button onclick="removePoint(${index})">削除</button>`}
     `;
 
@@ -85,9 +158,7 @@ function renderList() {
 // new用
 window.initMapNew = function () {
   isNewPage = true;
-  markers.forEach(m => m.setMap(null));
-  markers = [];
-  points = [];
+  resetMapState();
 
   createMap();
 
@@ -110,11 +181,24 @@ window.initMapNew = function () {
   }
 
   map.addListener("click", (e) => {
+
     if (points.length >= 10) {
       alert("最大10地点までです");
       return;
     }
-    addPoint(e.latLng);
+
+    const lat = e.latLng.lat();
+    const lng = e.latLng.lng();
+
+    fetchAddress(lat, lng, (address) => {
+
+      addPoint({
+        lat,
+        lng,
+        address
+      });
+
+    });
   });
 
   initSortable();
@@ -133,27 +217,13 @@ window.initMapNew = function () {
 // show用
 window.initMapShow = function (routePoints) {
   isNewPage = false;
-  if (directionsRenderer) {
-    directionsRenderer.setDirections({ routes: [] });
-  }
 
-  markers.forEach(m => m.setMap(null));
-  markers = [];
-  points = [];
+  resetMapState();
   
   
   createMap();
 
-  isInitializing = true;
-
-  routePoints.forEach(routePoint => {
-    addPoint({
-      lat: Number(routePoint.latitude),
-      lng: Number(routePoint.longitude)
-    });
-  });
-
-  isInitializing = false;
+  loadRoutePoints();
 
   drawRoute();
 };
@@ -162,22 +232,11 @@ window.initMapShow = function (routePoints) {
 window.initMapEdit = function (routePoints) {
   isNewPage = false;
 
-  markers.forEach(m => m.setMap(null));
-  markers = [];
-  points = [];
+  resetMapState();
 
   createMap();
 
-  isInitializing = true;
-
-  routePoints.forEach(routePoint => {
-    addPoint({
-      lat: Number(routePoint.latitude),
-      lng: Number(routePoint.longitude)
-    });
-  });
-
-  isInitializing = false;
+  loadRoutePoints();
 
   drawRoute();
 
@@ -187,6 +246,11 @@ window.initMapEdit = function (routePoints) {
 
   initSortable();
 };
+
+
+
+
+
 
 function removePoint(index) {
   markers[index].setMap(null);
