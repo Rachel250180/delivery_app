@@ -22,6 +22,7 @@ class RoutesController < ApplicationController
         @route.route_points.new(
           latitude: p["lat"],
           longitude: p["lng"],
+          address: point["address"],
           position: i)
       end
     end

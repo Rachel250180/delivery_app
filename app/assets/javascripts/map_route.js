@@ -2,11 +2,14 @@ let map;
 let markers = [];
 let directionsService;
 let directionsRenderer;
-let points = [];
+let geocoder;
+let deliveryPoints = [];
 let isInitializing = false;
 let isNewPage = false;
 
-const START_POINT = { lat: 36.27883160931458, lng: 139.3873576767888 };
+const START_POINT = { lat: 36.27883160931458, lng: 139.3873576767888, address: 
+  "銀のさら太田店"
+ };
 
 function createMap() {
   map = new google.maps.Map(document.getElementById("map"), {
@@ -22,26 +25,79 @@ function createMap() {
   });
 
   directionsRenderer.setMap(map);
+
+  geocoder = new google.maps.Geocoder();
+
+  new google.maps.Marker({
+    position: START_POINT,
+    map,
+    label: "S",
+    icon: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
+  });
 }
 
 // ポイント追加
-function addPoint(latLng) {
-  const lat = typeof latLng.lat === "function" ? latLng.lat() : latLng.lat;
-  const lng = typeof latLng.lng === "function" ? latLng.lng() : latLng.lng;
+function addPoint(point) {
+  const lat =
+    typeof point.lat === "function"
+      ? point.lat()
+      : point.lat;
+
+  const lng =
+    typeof point.lng === "function"
+      ? point.lng()
+      : point.lng;
 
   const index = markers.length;
 
   const marker = new google.maps.Marker({
-    position: { lat: lat, lng: lng },
-    map: map,
-    label: index === 0 ? "S" : String(index + 1),
-    icon: index === 0 ? "http://maps.google.com/mapfiles/ms/icons/green-dot.png" : null
+    position: { lat, lng },
+    map,
+    label: String(index + 1),
   });
 
   markers.push(marker);
 
-  points.push({ lat, lng });
+  deliveryPoints.push({
+    lat,
+    lng,
+    address: point.address || ""
+  });
 
+  refreshUI();
+}
+
+
+/*初期化専用関数*/
+function resetMapState() {
+  markers.forEach(marker => marker.setMap(null));
+
+  markers = [];
+  deliveryPoints = [];
+
+  if (directionsRenderer) {
+    directionsRenderer.setDirections({ routes: [] });
+  }
+}
+
+
+/*登録地点の読み込み*/
+function loadRoutePoints(routePoints) {
+  isInitializing = true;
+
+  routePoints.forEach(routePoint => {
+    addPoint({
+      lat: Number(routePoint.latitude),
+      lng: Number(routePoint.longitude)
+    });
+  });
+
+  isInitializing = false;
+}
+
+
+/*画面更新*/
+function refreshUI() {
   updateHiddenField();
   renumberMarkers();
   renderList();
@@ -49,33 +105,63 @@ function addPoint(latLng) {
   if (!isInitializing) {
     drawRoute();
   }
-
 }
+
+function fetchAddress(lat, lng, callback) {
+  geocoder.geocode(
+    {
+      location: { lat, lng }
+    },
+    (results, status) => {
+
+      let address = "";
+
+      if (status === "OK" && results[0]) {
+        address = results[0].formatted_address;
+      }
+
+      callback(address);
+    }
+  );
+}
+
+
+
+
 
 function updateHiddenField() {
   const input = document.getElementById("points_json");
   if (input) {
-    input.value = JSON.stringify(points);
+    input.value = JSON.stringify(deliveryPoints);
   }
 
 
   if (isNewPage) {
-    sessionStorage.setItem("route_points", JSON.stringify(points));
+    sessionStorage.setItem("route_points", JSON.stringify(deliveryPoints));
   }
 }
 
 
 function renderList() {
   const container = document.getElementById("points-list");
+
   if (!container) return;
+
   container.innerHTML = "";
 
-  points.forEach((p, index) => {
+  deliveryPoints.forEach((p, index) => {
     const li = document.createElement("li");
 
     li.innerHTML = `
-      ${index + 1}: ${p.lat.toFixed(5)}, ${p.lng.toFixed(5)}
-        ${index === 0 ? "": `<button onclick="removePoint(${index})">削除</button>`}
+      <span>
+        ${index + 1}: ${
+          p.address || `${p.lat.toFixed(5)}, ${p.lng.toFixed(5)}`
+        }
+      </span>
+
+      <button type="button" onclick="removePoint(${index})">
+        削除
+      </button>
     `;
 
     container.appendChild(li);
@@ -85,9 +171,7 @@ function renderList() {
 // new用
 window.initMapNew = function () {
   isNewPage = true;
-  markers.forEach(m => m.setMap(null));
-  markers = [];
-  points = [];
+  resetMapState();
 
   createMap();
 
@@ -105,16 +189,27 @@ window.initMapNew = function () {
     isInitializing = false;
 
     drawRoute();
-  } else {
-    addPoint(START_POINT);
-  }
+  } 
 
   map.addListener("click", (e) => {
-    if (points.length >= 10) {
-      alert("最大10地点までです");
+
+    if (deliveryPoints.length >= 9) {
+      alert("最大9地点までです");
       return;
     }
-    addPoint(e.latLng);
+
+    const lat = e.latLng.lat();
+    const lng = e.latLng.lng();
+
+    fetchAddress(lat, lng, (address) => {
+
+      addPoint({
+        lat,
+        lng,
+        address
+      });
+
+    });
   });
 
   initSortable();
@@ -133,27 +228,13 @@ window.initMapNew = function () {
 // show用
 window.initMapShow = function (routePoints) {
   isNewPage = false;
-  if (directionsRenderer) {
-    directionsRenderer.setDirections({ routes: [] });
-  }
 
-  markers.forEach(m => m.setMap(null));
-  markers = [];
-  points = [];
+  resetMapState();
   
   
   createMap();
 
-  isInitializing = true;
-
-  routePoints.forEach(routePoint => {
-    addPoint({
-      lat: Number(routePoint.latitude),
-      lng: Number(routePoint.longitude)
-    });
-  });
-
-  isInitializing = false;
+  loadRoutePoints(routePoints);
 
   drawRoute();
 };
@@ -162,22 +243,11 @@ window.initMapShow = function (routePoints) {
 window.initMapEdit = function (routePoints) {
   isNewPage = false;
 
-  markers.forEach(m => m.setMap(null));
-  markers = [];
-  points = [];
+  resetMapState();
 
   createMap();
 
-  isInitializing = true;
-
-  routePoints.forEach(routePoint => {
-    addPoint({
-      lat: Number(routePoint.latitude),
-      lng: Number(routePoint.longitude)
-    });
-  });
-
-  isInitializing = false;
+  loadRoutePoints(routePoints);
 
   drawRoute();
 
@@ -188,35 +258,36 @@ window.initMapEdit = function (routePoints) {
   initSortable();
 };
 
+
+
+
+
+
 function removePoint(index) {
   markers[index].setMap(null);
 
   markers.splice(index, 1);
-  points.splice(index, 1);
+  deliveryPoints.splice(index, 1);
 
-  updateHiddenField();
-
-  renumberMarkers();
-  drawRoute();
-  renderList();
+  refreshUI();
 };
 
 function renumberMarkers() {
   markers.forEach((marker, i) => {
-    marker.setLabel(i === 0 ? "S" : String(i + 1));
+    marker.setLabel(String(i + 1));
   });
 }
 
 function drawRoute() {
-  if (points.length < 2) {
+  if (deliveryPoints.length === 0) {
     directionsRenderer.setDirections({ routes: [] });
     return;
   }
 
-  const origin = points[0];
-  const destination = points[points.length - 1];
+  const origin = START_POINT;
+  const destination = deliveryPoints[deliveryPoints.length - 1];
 
-  const waypoints = points.slice(1, -1).map(p => ({
+  const waypoints = deliveryPoints.slice(0, -1).map(p => ({
     location: p,
     stopover: true
   }));
@@ -251,32 +322,18 @@ function initSortable() {
 }
 
 function movePoint(oldIndex, newIndex) {
-    if (oldIndex === 0 || newIndex === 0) {
-    renderList();
-    return;
-  }
 
   const marker = markers.splice(oldIndex, 1)[0];
   markers.splice(newIndex, 0, marker);
 
-  const point = points.splice(oldIndex, 1)[0];
-  points.splice(newIndex, 0, point);
+  const point = deliveryPoints.splice(oldIndex, 1)[0];
+  deliveryPoints.splice(newIndex, 0, point);
 
-  updateHiddenField();
-  renumberMarkers();
-  drawRoute();
-  renderList();
+  refreshUI();
 }
 
 window.addEventListener("pageshow", (e) => {
   if (e.persisted) {
-    markers.forEach(m => m.setMap(null));
-
-    markers = [];
-    points = [];
-
-    if (directionsRenderer) {
-      directionsRenderer.setDirections({ routes: [] });
-    }
+    resetMapState();
   }
 });
