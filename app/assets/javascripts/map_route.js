@@ -88,7 +88,8 @@ function loadRoutePoints(routePoints) {
   routePoints.forEach(routePoint => {
     addPoint({
       lat: Number(routePoint.latitude),
-      lng: Number(routePoint.longitude)
+      lng: Number(routePoint.longitude),
+      address: routePoint.address
     });
   });
 
@@ -149,6 +150,20 @@ function renderList() {
 
   container.innerHTML = "";
 
+  // スタート地点表示
+  const startLi = document.createElement("li");
+
+  startLi.innerHTML = `
+    <span>
+      S: ${START_POINT.address}
+    </span>
+  `;
+
+  startLi.classList.add("start-point");
+
+  container.appendChild(startLi);
+
+  // 配達地点表示
   deliveryPoints.forEach((p, index) => {
     const li = document.createElement("li");
 
@@ -193,10 +208,7 @@ window.initMapNew = function () {
 
   map.addListener("click", (e) => {
 
-    if (deliveryPoints.length >= 9) {
-      alert("最大9地点までです");
-      return;
-    }
+    if (!canAddPoint()) return;
 
     const lat = e.latLng.lat();
     const lng = e.latLng.lng();
@@ -252,7 +264,21 @@ window.initMapEdit = function (routePoints) {
   drawRoute();
 
   map.addListener("click", (e) => {
-    addPoint(e.latLng);
+
+    if (!canAddPoint()) return;
+
+    const lat = e.latLng.lat();
+    const lng = e.latLng.lng();
+
+    fetchAddress(lat, lng, (address) => {
+
+      addPoint({
+        lat,
+        lng,
+        address
+      });
+
+    });
   });
 
   initSortable();
@@ -312,9 +338,17 @@ function initSortable() {
   new Sortable(el, {
     animation: 150,
 
+    filter: ".start-point",
+
+    onMove: function (evt) {
+      return !evt.related.classList.contains("start-point");
+    },
+
     onEnd: function (evt) {
-      const oldIndex = evt.oldIndex;
-      const newIndex = evt.newIndex;
+
+      // Sの分だけズラす
+      const oldIndex = evt.oldIndex - 1;
+      const newIndex = evt.newIndex - 1;
 
       movePoint(oldIndex, newIndex);
     }
@@ -322,6 +356,10 @@ function initSortable() {
 }
 
 function movePoint(oldIndex, newIndex) {
+
+  if (oldIndex < 0 || newIndex < 0) {
+    return;
+  }
 
   const marker = markers.splice(oldIndex, 1)[0];
   markers.splice(newIndex, 0, marker);
@@ -337,3 +375,13 @@ window.addEventListener("pageshow", (e) => {
     resetMapState();
   }
 });
+
+
+function canAddPoint() {
+  if (deliveryPoints.length >= 9) {
+    alert("最大9地点までです");
+    return false;
+  }
+
+  return true;
+}
