@@ -3,7 +3,7 @@ let markers = [];
 let directionsService;
 let directionsRenderer;
 let geocoder;
-let points = [];
+let deliveryPoints = [];
 let isInitializing = false;
 let isNewPage = false;
 
@@ -27,6 +27,13 @@ function createMap() {
   directionsRenderer.setMap(map);
 
   geocoder = new google.maps.Geocoder();
+
+  new google.maps.Marker({
+    position: START_POINT,
+    map,
+    label: "S",
+    icon: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
+  });
 }
 
 // ポイント追加
@@ -46,15 +53,12 @@ function addPoint(point) {
   const marker = new google.maps.Marker({
     position: { lat, lng },
     map,
-    label: index === 0 ? "S" : String(index + 1),
-    icon: index === 0
-      ? "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
-      : null
+    label: String(index + 1),
   });
 
   markers.push(marker);
 
-  points.push({
+  deliveryPoints.push({
     lat,
     lng,
     address: point.address || ""
@@ -69,7 +73,7 @@ function resetMapState() {
   markers.forEach(marker => marker.setMap(null));
 
   markers = [];
-  points = [];
+  deliveryPoints = [];
 
   if (directionsRenderer) {
     directionsRenderer.setDirections({ routes: [] });
@@ -128,27 +132,36 @@ function fetchAddress(lat, lng, callback) {
 function updateHiddenField() {
   const input = document.getElementById("points_json");
   if (input) {
-    input.value = JSON.stringify(points);
+    input.value = JSON.stringify(deliveryPoints);
   }
 
 
   if (isNewPage) {
-    sessionStorage.setItem("route_points", JSON.stringify(points));
+    sessionStorage.setItem("route_points", JSON.stringify(deliveryPoints));
   }
 }
 
 
 function renderList() {
   const container = document.getElementById("points-list");
+
   if (!container) return;
+
   container.innerHTML = "";
 
-  points.forEach((p, index) => {
+  deliveryPoints.forEach((p, index) => {
     const li = document.createElement("li");
 
     li.innerHTML = `
-      ${index + 1}: ${p.address || `${p.lat.toFixed(5)}, ${p.lng.toFixed(5)}`}
-        ${index === 0 ? "": `<button onclick="removePoint(${index})">削除</button>`}
+      <span>
+        ${index + 1}: ${
+          p.address || `${p.lat.toFixed(5)}, ${p.lng.toFixed(5)}`
+        }
+      </span>
+
+      <button type="button" onclick="removePoint(${index})">
+        削除
+      </button>
     `;
 
     container.appendChild(li);
@@ -176,14 +189,12 @@ window.initMapNew = function () {
     isInitializing = false;
 
     drawRoute();
-  } else {
-    addPoint(START_POINT);
-  }
+  } 
 
   map.addListener("click", (e) => {
 
-    if (points.length >= 10) {
-      alert("最大10地点までです");
+    if (deliveryPoints.length >= 9) {
+      alert("最大9地点までです");
       return;
     }
 
@@ -223,7 +234,7 @@ window.initMapShow = function (routePoints) {
   
   createMap();
 
-  loadRoutePoints();
+  loadRoutePoints(routePoints);
 
   drawRoute();
 };
@@ -236,7 +247,7 @@ window.initMapEdit = function (routePoints) {
 
   createMap();
 
-  loadRoutePoints();
+  loadRoutePoints(routePoints);
 
   drawRoute();
 
@@ -256,31 +267,27 @@ function removePoint(index) {
   markers[index].setMap(null);
 
   markers.splice(index, 1);
-  points.splice(index, 1);
+  deliveryPoints.splice(index, 1);
 
-  updateHiddenField();
-
-  renumberMarkers();
-  drawRoute();
-  renderList();
+  refreshUI();
 };
 
 function renumberMarkers() {
   markers.forEach((marker, i) => {
-    marker.setLabel(i === 0 ? "S" : String(i + 1));
+    marker.setLabel(String(i + 1));
   });
 }
 
 function drawRoute() {
-  if (points.length < 2) {
+  if (deliveryPoints.length === 0) {
     directionsRenderer.setDirections({ routes: [] });
     return;
   }
 
-  const origin = points[0];
-  const destination = points[points.length - 1];
+  const origin = START_POINT;
+  const destination = deliveryPoints[deliveryPoints.length - 1];
 
-  const waypoints = points.slice(1, -1).map(p => ({
+  const waypoints = deliveryPoints.slice(0, -1).map(p => ({
     location: p,
     stopover: true
   }));
@@ -315,32 +322,18 @@ function initSortable() {
 }
 
 function movePoint(oldIndex, newIndex) {
-    if (oldIndex === 0 || newIndex === 0) {
-    renderList();
-    return;
-  }
 
   const marker = markers.splice(oldIndex, 1)[0];
   markers.splice(newIndex, 0, marker);
 
-  const point = points.splice(oldIndex, 1)[0];
-  points.splice(newIndex, 0, point);
+  const point = deliveryPoints.splice(oldIndex, 1)[0];
+  deliveryPoints.splice(newIndex, 0, point);
 
-  updateHiddenField();
-  renumberMarkers();
-  drawRoute();
-  renderList();
+  refreshUI();
 }
 
 window.addEventListener("pageshow", (e) => {
   if (e.persisted) {
-    markers.forEach(m => m.setMap(null));
-
-    markers = [];
-    points = [];
-
-    if (directionsRenderer) {
-      directionsRenderer.setDirections({ routes: [] });
-    }
+    resetMapState();
   }
 });
