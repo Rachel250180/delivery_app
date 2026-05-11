@@ -34,7 +34,7 @@ body {
 
 .wrapper {
   display: flex;
-  min-height: 100vh;
+  align-items: flex-start;
 }
 
 /* =========================
@@ -46,15 +46,13 @@ body {
   background: #f8f8f8;
   border-right: 3px solid #eee;
 
-  height: 100vh;
   position: sticky;
   top: 0;
 
-  box-shadow: 2px 0 8px rgba(0,0,0,0.05);
-}
+  align-self: flex-start;
+  min-height: 100vh;
 
-.sidebar-inner {
-  padding: 20px;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.05);
 }
 
 .sidebar-inner .title {
@@ -66,7 +64,8 @@ body {
 /* PC時だけ文字を少し大きく */
 .sidebar-list a {
   display: block;
-  padding: 14px 16px;
+  padding: 16px 16px;
+  margin-top: 10px;
   margin-bottom: 10px;
 
   text-decoration: none;
@@ -109,16 +108,13 @@ body {
    メイン
 ========================= */
 
-.main-area {
+.main {
   min-width: 0;
   flex: 1;
 
   display: flex;
   flex-direction: column;
-}
 
-.main {
-  flex: 1;
   padding: 40px 16px;
 }
 

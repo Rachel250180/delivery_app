@@ -385,3 +385,6 @@ function canAddPoint() {
 
   return true;
 }
+
+
+

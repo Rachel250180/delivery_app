@@ -20,7 +20,7 @@
   @media (min-width: 1001px) {
 
     #map {
-      height: 85vh;
+      height: calc(100vh - 80px);
     }
 
   }
