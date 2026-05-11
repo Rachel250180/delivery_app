@@ -28,7 +28,7 @@
 
 <div id="map" style="height: 500px;"></div>
 
-<%= javascript_include_tag "map_route" %>
+
 
 <script>
   window.routePoints = <%= raw @points.to_json %>;
@@ -56,7 +56,7 @@ defer>
   <button type="button" onclick="resetPoints()">やり直す</button>
 </div>
 
-<%= javascript_include_tag "map_route" %>
+
 
 <script
 src="https://maps.googleapis.com/maps/api/js?key=<%= Rails.application.credentials.google_maps_api_key %>&callback=initMap"
