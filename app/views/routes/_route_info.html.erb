@@ -13,6 +13,13 @@
 
 <div class="route-info-card">
   <p>配達経由地点</p>
+  <ol class="route-points-list">
+    <% @points.each do |point| %>
+      <li>
+        <%= point.address %>
+      </li>
+    <% end %>
+  </ol>
 </div>  
 
 

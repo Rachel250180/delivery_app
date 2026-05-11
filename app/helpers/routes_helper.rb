@@ -9,10 +9,12 @@ module RoutesHelper
   def google_maps_url(points)
     return nil if points.empty?
 
-    origin = "#{points.first.latitude},#{points.first.longitude}"
-    destination = "#{points.last.latitude},#{points.last.longitude}"
+    origin = "My Location"
 
-    waypoints = points[1...-1]
+    destination =
+      "#{points.last.latitude},#{points.last.longitude}"
+
+    waypoints = points[0...-1]
       .map { |p| "#{p.latitude},#{p.longitude}" }
       .join("|")
 

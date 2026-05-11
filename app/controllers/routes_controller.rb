@@ -22,7 +22,7 @@ class RoutesController < ApplicationController
         @route.route_points.new(
           latitude: p["lat"],
           longitude: p["lng"],
-          address: point["address"],
+          address: p["address"],
           position: i)
       end
     end
@@ -56,6 +56,7 @@ class RoutesController < ApplicationController
           @route.route_points.create!(
             latitude: p["lat"],
             longitude: p["lng"],
+            address: p["address"],
             position: i
           )
         end
