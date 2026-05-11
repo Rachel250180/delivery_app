@@ -58,7 +58,8 @@ class TownsControllerTest < ActionDispatch::IntegrationTest
 
     get town_url(@town)
 
-    assert_select "li", text: route.name
+    assert_select "h1", "#{@town.name}のルート一覧"
+    assert_select "a", route.name
   end
 
   test "should get edit" do
