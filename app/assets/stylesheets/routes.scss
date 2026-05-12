@@ -27,6 +27,79 @@
 
 }
 
+.delivery-item {
+  display: flex;
+  align-items: flex-start;
+
+  padding: 14px 16px;
+  margin-bottom: 10px;
+
+  border-radius: 14px;
+  background: #fff;
+
+  border: 1px solid #f3f3f3;
+
+  transition: .2s;
+  cursor: pointer;
+}
+
+.delivery-item:hover {
+  background: #fafafa;
+  transform: translateY(-2px);
+}
+
+/* 左側 */
+
+.delivery-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+
+  width: 100%;
+}
+
+/* 番号丸 */
+
+.delivery-number {
+  width: 32px;
+  height: 32px;
+
+  min-width: 32px;
+
+  border-radius: 50%;
+
+  background: #facc15;
+  color: #222;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 13px;
+  font-weight: bold;
+}
+
+/* 住所 */
+
+.delivery-address {
+  margin: 0;
+
+  max-width: 220px;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  color: #333;
+  line-height: 1.6;
+
+  word-break: break-word;
+}
+
+
+
+
+
+
 
 
 
@@ -59,6 +132,8 @@
   margin-top: 5px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
+
+
 
 /* =========================
    スマホ
