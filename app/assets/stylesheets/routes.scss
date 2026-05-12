@@ -1,5 +1,7 @@
-.routes-show {
+.routes-show,
+.routes-edit {
 
+  /* レイアウト調整 */
   .main {
     padding-left: 0;
     padding-right: 0;
@@ -12,10 +14,101 @@
     max-width: 100%;
   }
 
+  /* 地図 */
   #map {
     width: 100%;
     height: 500px;
   }
+
+  /* 配達カード */
+  .delivery-item {
+    display: flex;
+    align-items: flex-start;
+
+    padding: 14px 16px;
+    margin-bottom: 10px;
+
+    border-radius: 14px;
+    background: #fff;
+    border: 1px solid #f3f3f3;
+
+    transition: .2s;
+    cursor: pointer;
+
+    &:hover {
+      background: #fafafa;
+      transform: translateY(-2px);
+    }
+  }
+
+  /* 左側 */
+  .delivery-left {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+
+    width: 100%;
+  }
+
+  /* 番号丸 */
+  .delivery-number {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+
+    border-radius: 50%;
+
+    background: #facc15;
+    color: #222;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 13px;
+    font-weight: bold;
+  }
+
+  /* 住所 */
+  .delivery-address {
+    margin: 0;
+
+    max-width: 220px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    color: #333;
+    line-height: 1.6;
+
+    word-break: break-word;
+  }
+
+  /* 情報カード */
+  .route-info-card {
+    background: #fff;
+
+    border-radius: 12px;
+
+    padding: 20px;
+    margin-top: 5px;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+
+  /* PC only */
+  .pc-only {
+    display: block;
+  }
+
+  /* スマホ下部 */
+  .mobile-extra {
+    display: none;
+  }
+
+  /* =========================
+     PC
+  ========================= */
 
   @media (min-width: 1001px) {
 
@@ -25,131 +118,21 @@
 
   }
 
-}
+  /* =========================
+     スマホ
+  ========================= */
 
-.delivery-item {
-  display: flex;
-  align-items: flex-start;
+  @media (max-width: 1000px) {
 
-  padding: 14px 16px;
-  margin-bottom: 10px;
+    .pc-only {
+      display: none;
+    }
 
-  border-radius: 14px;
-  background: #fff;
+    .mobile-extra {
+      display: block;
+      margin-top: 5px;
+    }
 
-  border: 1px solid #f3f3f3;
-
-  transition: .2s;
-  cursor: pointer;
-}
-
-.delivery-item:hover {
-  background: #fafafa;
-  transform: translateY(-2px);
-}
-
-/* 左側 */
-
-.delivery-left {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-
-  width: 100%;
-}
-
-/* 番号丸 */
-
-.delivery-number {
-  width: 32px;
-  height: 32px;
-
-  min-width: 32px;
-
-  border-radius: 50%;
-
-  background: #facc15;
-  color: #222;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 13px;
-  font-weight: bold;
-}
-
-/* 住所 */
-
-.delivery-address {
-  margin: 0;
-
-  max-width: 220px;
-
-  font-size: 14px;
-  font-weight: 600;
-
-  color: #333;
-  line-height: 1.6;
-
-  word-break: break-word;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* PCだけ */
-.pc-only {
-  display: block;
-}
-
-/* スマホ用下部 */
-.mobile-extra {
-  display: none;
-}
-
-/* 情報カード */
-.route-info-card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 20px;
-  margin-top: 5px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
-
-
-
-/* =========================
-   スマホ
-========================= */
-
-@media (max-width: 1000px) {
-
-  /* サイドバー側消す */
-  .pc-only {
-    display: none;
-  }
-
-  /* 下に出す */
-  .mobile-extra {
-    display: block;
-    margin-top: 5px;
   }
 
 }

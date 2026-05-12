@@ -150,7 +150,7 @@ function renderList() {
 
   container.innerHTML = "";
 
-  // スタート地点表示
+  // スタート地点
   const startLi = document.createElement("li");
 
   startLi.innerHTML = `
@@ -163,7 +163,7 @@ function renderList() {
 
   container.appendChild(startLi);
 
-  // 配達地点表示
+  // 配達地点
   deliveryPoints.forEach((p, index) => {
     const li = document.createElement("li");
 
@@ -174,10 +174,19 @@ function renderList() {
         }
       </span>
 
-      <button type="button" onclick="removePoint(${index})">
+      <button
+        type="button"
+        class="delete-btn"
+        data-index="${index}"
+      >
         削除
       </button>
     `;
+
+    li.querySelector(".delete-btn")
+      .addEventListener("click", (e) => {
+        removePoint(Number(e.target.dataset.index));
+      });
 
     container.appendChild(li);
   });
