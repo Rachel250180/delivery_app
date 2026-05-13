@@ -34,13 +34,4 @@
 
 <script>
   window.routePoints = <%= raw @points.to_json %>;
-
-  window.initMap = function () {
-    initMapShow(window.routePoints);
-  };
-</script>
-
-<script
-  src="https://maps.googleapis.com/maps/api/js?key=<%= Rails.application.credentials.google_maps_api_key %>&callback=initMap"
-  defer>
 </script>

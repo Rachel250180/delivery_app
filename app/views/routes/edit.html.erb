@@ -47,9 +47,6 @@
 
 
 
-    <h3>経由地点</h3>
-  <div id="points"></div>
-  <ul id="points-list"></ul>
 
 
 <%= link_to "戻る", town_path(@town) %>
@@ -61,15 +58,5 @@
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
 <script>
-
   window.routePoints = <%= raw @points.to_json %>;
-
-  window.initMap = function () {
-    initMapEdit(window.routePoints);
-  };
-</script>
-
-<script
-src="https://maps.googleapis.com/maps/api/js?key=<%= Rails.application.credentials.google_maps_api_key %>&callback=initMap"
-defer>
 </script>

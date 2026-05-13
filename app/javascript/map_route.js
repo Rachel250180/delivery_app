@@ -150,7 +150,7 @@ function renderList() {
 
   container.innerHTML = "";
 
-  // スタート地点
+  // スタート地点表示
   const startLi = document.createElement("li");
 
   startLi.innerHTML = `
@@ -163,7 +163,7 @@ function renderList() {
 
   container.appendChild(startLi);
 
-  // 配達地点
+  // 配達地点表示
   deliveryPoints.forEach((p, index) => {
     const li = document.createElement("li");
 
@@ -174,19 +174,10 @@ function renderList() {
         }
       </span>
 
-      <button
-        type="button"
-        class="delete-btn"
-        data-index="${index}"
-      >
+      <button type="button" onclick="removePoint(${index})">
         削除
       </button>
     `;
-
-    li.querySelector(".delete-btn")
-      .addEventListener("click", (e) => {
-        removePoint(Number(e.target.dataset.index));
-      });
 
     container.appendChild(li);
   });
@@ -395,5 +386,18 @@ function canAddPoint() {
   return true;
 }
 
+document.addEventListener("turbo:load", () => {
 
+  if (!window.google || !window.google.maps) return;
 
+  const mapElement = document.getElementById("map");
+
+  if (!mapElement) return;
+
+  if (window.location.pathname.includes("/edit")) {
+    window.initMapEdit(window.routePoints);
+
+  } else if (window.location.pathname.includes("/routes/")) {
+    window.initMapShow(window.routePoints);
+  }
+});
