@@ -12,14 +12,25 @@
 </div>
 
 <div class="route-info-card">
-  <p>配達経由地点</p>
-  <ol class="route-points-list">
-    <% @points.each do |point| %>
-      <li>
-        <%= point.address %>
-      </li>
-    <% end %>
-  </ol>
+  <h4>配達経由地点（経由順）</h4>
+
+  <% @points.each_with_index do |point, i| %>
+
+    <div class="delivery-item">
+
+      <div class="delivery-left">
+
+        <div class="delivery-number">
+          <%= i + 1 %>
+        </div>
+
+        <p class="delivery-address">
+          <%= point.address %>
+        </p>
+
+      </div>
+
+    </div>
+
+  <% end %>
 </div>  
-
-

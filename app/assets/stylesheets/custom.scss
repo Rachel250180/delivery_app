@@ -212,3 +212,36 @@
     transform: translateY(-2px);
   }
 }
+
+
+.btn-simple {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #facc15;
+  padding: 14px 26px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #ffffff;
+  font-weight: bold;
+  transition: .2s;
+  border: none;
+
+  &::before {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    background: white;
+    border-radius: 4px;
+    font-weight: bold;
+    color: #333;
+  }
+
+  &:hover {
+    background: #78630b;
+    transform: translateY(-2px);
+  }
+}

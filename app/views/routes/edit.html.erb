@@ -1,6 +1,22 @@
 <h1>ルート編集</h1>
 
-<%= form_with model: [@town, @route] do |f| %>
+<div class="route-edit-map">
+  <div id="map"></div>
+</div>
+
+<div class="route-info-card">
+  <div class="bottom-submit">
+    <%= button_tag "更新",
+        type: "submit",
+        form: "route-form" %>
+  </div>
+
+  <%= button_to "削除", [@town, @route],
+        method: :delete,
+        data: { confirm: "このルートを削除しますか？" } %>
+</div>
+
+<%= form_with model: [@town, @route], id: "route-form" do |f| %>
 
   <div>
     <%= f.label :name, "ルート名" %>
@@ -12,56 +28,25 @@
     <%= f.text_area :description %>
   </div>
 
-    <input type="hidden" id="points_json" name="points_json">
-
-    <h3>経由地点</h3>
-  <div id="points"></div>
-  <ul id="points-list"></ul>
-
-  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-
-  <div>
-    <%= f.submit "更新" %>
-  </div>
+  <input type="hidden" id="points_json" name="points_json">
 
 <% end %>
 
-<div id="map" style="height: 500px;"></div>
+<% content_for :sidebar_pc do %>
+  <%= render "route_info" %>
+<% end %>
+
+<% content_for :sidebar_mobile do %>
+  <%= render "route_info" %>
+<% end %>
 
 
 
-<script>
-  window.routePoints = <%= raw @points.to_json %>;
+<div class="route-info-card">
+  <h4>配達経由地点（経由順）</h4>
 
-  window.initMap = function () {
-    initMapEdit(window.routePoints);
-  };
-</script>
-
-<script
-src="https://maps.googleapis.com/maps/api/js?key=<%= Rails.application.credentials.google_maps_api_key %>&callback=initMapNew"
-defer>
-</script>
-
-
-
-
-
-
-
-<div id="map" style="height: 500px;"></div>
-
-<div style="margin-top: 10px;">
-  <button type="button" onclick="undoLastPoint()">1つ戻る</button>
-  <button type="button" onclick="resetPoints()">やり直す</button>
+  <div id="points-list"></div>
 </div>
-
-
-
-<script
-src="https://maps.googleapis.com/maps/api/js?key=<%= Rails.application.credentials.google_maps_api_key %>&callback=initMap"
-defer>
-</script>
 
 
 
@@ -70,6 +55,10 @@ defer>
 
 <%= link_to "戻る", town_path(@town) %>
 
-<%= button_to "削除", [@town, @route],
-      method: :delete,
-      data: { confirm: "このルートを削除しますか？" } %>
+
+
+<!-- javascript関連 -->
+
+<script>
+  window.routePoints = <%= raw @points.to_json %>;
+</script>

@@ -3,15 +3,15 @@
 </div>
 
 <div class="route-info-card">
-  <button onclick="goToGoogleMap()">
+  <button onclick="goToGoogleMap()", class="btn-simple">
     GoogleMapで確認する
   </button>
   <%= link_to "編集する", edit_town_route_path(@town, @route), class:"btn-edit" %>
 </div>
 
 <div class="route-info-card">
-  <h4>制作者のコメント</h4>
-  <p><%= @route.description %></p>
+  <p>制作者：<%= @route.user&.name || "不明" %></p>
+  <p>コメント：<%= @route.description %></p>
 </div>
 
 <% content_for :sidebar_pc do %>
@@ -34,13 +34,4 @@
 
 <script>
   window.routePoints = <%= raw @points.to_json %>;
-
-  window.initMap = function () {
-    initMapShow(window.routePoints);
-  };
-</script>
-
-<script
-  src="https://maps.googleapis.com/maps/api/js?key=<%= Rails.application.credentials.google_maps_api_key %>&callback=initMap"
-  defer>
 </script>
