@@ -335,6 +335,9 @@ function drawRoute() {
 function initSortable() {
   const el = document.getElementById("points-list");
 
+  if (!el) return;
+
+
   new Sortable(el, {
     animation: 150,
 
