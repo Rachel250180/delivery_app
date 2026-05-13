@@ -150,36 +150,38 @@ function renderList() {
 
   container.innerHTML = "";
 
-  // スタート地点表示
-  const startLi = document.createElement("li");
-
-  startLi.innerHTML = `
-    <span>
-      S: ${START_POINT.address}
-    </span>
-  `;
-
-  startLi.classList.add("start-point");
-
-  container.appendChild(startLi);
-
-  // 配達地点表示
   deliveryPoints.forEach((p, index) => {
-    const li = document.createElement("li");
 
-    li.innerHTML = `
-      <span>
-        ${index + 1}: ${
-          p.address || `${p.lat.toFixed(5)}, ${p.lng.toFixed(5)}`
-        }
-      </span>
+    const item = document.createElement("div");
 
-      <button type="button" onclick="removePoint(${index})">
+    item.classList.add("delivery-item");
+
+    item.innerHTML = `
+      <div class="delivery-left">
+
+        <div class="delivery-number">
+          ${index + 1}
+        </div>
+
+        <p class="delivery-address">
+          ${
+            p.address ||
+            `${p.lat.toFixed(5)}, ${p.lng.toFixed(5)}`
+          }
+        </p>
+
+      </div>
+
+      <button
+        type="button"
+        class="delete-point-btn"
+        onclick="removePoint(${index})"
+      >
         削除
       </button>
     `;
 
-    container.appendChild(li);
+    container.appendChild(item);
   });
 }
 
