@@ -16,6 +16,7 @@
         data: { confirm: "このルートを削除しますか？" } %>
 </div>
 
+
 <%= form_with model: [@town, @route], id: "route-form" do |f| %>
 
   <div>
@@ -32,6 +33,7 @@
 
 <% end %>
 
+
 <% content_for :sidebar_pc do %>
   <%= render "route_info" %>
 <% end %>
@@ -40,13 +42,6 @@
   <%= render "route_info" %>
 <% end %>
 
-
-
-<div class="route-info-card">
-  <h4>配達経由地点（経由順）</h4>
-
-  <div id="points-list"></div>
-</div>
 
 
 
@@ -59,6 +54,8 @@
 
 <!-- javascript関連 -->
 
-<script>
-  window.routePoints = <%= raw @points.to_json %>;
-</script>
+<div id="route-data"
+     data-points="<%= @route.route_points.map { |p|
+       { lat: p.latitude, lng: p.longitude }
+     }.to_json %>">
+</div>

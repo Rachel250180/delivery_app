@@ -1,3 +1,23 @@
+const apiCounter = {};
+
+function countApi(name) {
+  apiCounter[name] = (apiCounter[name] || 0) + 1;
+
+  console.log(
+    `${name}: ${apiCounter[name]}回`
+  );
+
+  console.trace();
+}
+
+
+
+
+
+
+
+
+
 let map;
 let markers = [];
 let directionsService;
@@ -7,11 +27,15 @@ let deliveryPoints = [];
 let isInitializing = false;
 let isNewPage = false;
 
+
+
 const START_POINT = { lat: 36.27883160931458, lng: 139.3873576767888, address: 
   "銀のさら太田店"
  };
 
 function createMap() {
+  countApi("Map API");
+
   map = new google.maps.Map(document.getElementById("map"), {
     zoom: 14,
     center: START_POINT,
@@ -64,7 +88,10 @@ function addPoint(point) {
     address: point.address || ""
   });
 
-  refreshUI();
+  // 初期読み込み中は更新しない
+  if (!isInitializing) {
+    refreshUI();
+  }
 }
 
 
@@ -83,14 +110,17 @@ function resetMapState() {
 
 /*登録地点の読み込み*/
 function loadRoutePoints(routePoints) {
+
   isInitializing = true;
 
   routePoints.forEach(routePoint => {
+
     addPoint({
-      lat: Number(routePoint.latitude),
-      lng: Number(routePoint.longitude),
+      lat: Number(routePoint.lat),
+      lng: Number(routePoint.lng),
       address: routePoint.address
     });
+
   });
 
   isInitializing = false;
@@ -109,6 +139,9 @@ function refreshUI() {
 }
 
 function fetchAddress(lat, lng, callback) {
+
+  countApi("Geocoder API");
+
   geocoder.geocode(
     {
       location: { lat, lng }
@@ -175,11 +208,17 @@ function renderList() {
       <button
         type="button"
         class="delete-point-btn"
-        onclick="removePoint(${index})"
       >
         削除
       </button>
     `;
+
+    const deleteBtn =
+      item.querySelector(".delete-point-btn");
+
+    deleteBtn.addEventListener("click", () => {
+      removePoint(index);
+    });
 
     container.appendChild(item);
   });
@@ -240,26 +279,25 @@ window.initMapNew = function () {
 };
 
 // show用
-window.initMapShow = function (routePoints) {
-  isNewPage = false;
+window.initMapShow = function () {
 
   resetMapState();
-  
-  
   createMap();
 
-  loadRoutePoints(routePoints);
+  const routePoints = getRoutePoints();
 
+  loadRoutePoints(routePoints);
   drawRoute();
 };
 
 // edit用
-window.initMapEdit = function (routePoints) {
+window.initMapEdit = function () {
   isNewPage = false;
 
   resetMapState();
-
   createMap();
+
+  const routePoints = getRoutePoints();
 
   loadRoutePoints(routePoints);
 
@@ -312,6 +350,8 @@ function drawRoute() {
     return;
   }
 
+  countApi("Directions API");
+  
   const origin = START_POINT;
   const destination = deliveryPoints[deliveryPoints.length - 1];
 
@@ -400,9 +440,17 @@ document.addEventListener("turbo:load", () => {
   if (!mapElement) return;
 
   if (window.location.pathname.includes("/edit")) {
-    window.initMapEdit(window.routePoints);
+    window.initMapEdit();
 
   } else if (window.location.pathname.includes("/routes/")) {
-    window.initMapShow(window.routePoints);
+    window.initMapShow();
   }
 });
+
+function getRoutePoints() {
+  const routeData = document.getElementById("route-data");
+
+  if (!routeData) return [];
+
+  return JSON.parse(routeData.dataset.points || "[]");
+}

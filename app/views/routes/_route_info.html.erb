@@ -14,23 +14,28 @@
 <div class="route-info-card">
   <h4>配達経由地点（経由順）</h4>
 
-  <% @points.each_with_index do |point, i| %>
 
-    <div class="delivery-item">
+  <% if current_page?(town_route_path(@town, @route)) %>
 
-      <div class="delivery-left">
+    <% @points.each_with_index do |point, i| %>
 
-        <div class="delivery-number">
-          <%= i + 1 %>
+      <div class="delivery-item">
+
+        <div class="delivery-left">
+
+          <div class="delivery-number">
+            <%= i + 1 %>
+          </div>
+
+          <p class="delivery-address">
+            <%= point.address %>
+          </p>
         </div>
-
-        <p class="delivery-address">
-          <%= point.address %>
-        </p>
-
       </div>
+    <% end %>
 
-    </div>
-
+  <% else %>
+    <div id="points-list"></div>
   <% end %>
+  
 </div>  
