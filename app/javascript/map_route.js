@@ -124,6 +124,8 @@ function loadRoutePoints(routePoints) {
   });
 
   isInitializing = false;
+
+  refreshUI();
 }
 
 
@@ -177,13 +179,20 @@ function updateHiddenField() {
 
 
 function renderList() {
+  console.log("renderList 呼ばれた");
+
   const container = document.getElementById("points-list");
 
+  console.log("container:", container);
+
   if (!container) return;
+
+  console.log("deliveryPoints:", deliveryPoints);
 
   container.innerHTML = "";
 
   deliveryPoints.forEach((p, index) => {
+    console.log("描画中", p);
 
     const item = document.createElement("div");
 
@@ -191,7 +200,6 @@ function renderList() {
 
     item.innerHTML = `
       <div class="delivery-left">
-
         <div class="delivery-number">
           ${index + 1}
         </div>
@@ -202,7 +210,6 @@ function renderList() {
             `${p.lat.toFixed(5)}, ${p.lng.toFixed(5)}`
           }
         </p>
-
       </div>
 
       <button
@@ -278,6 +285,7 @@ window.initMapNew = function () {
   }
 };
 
+
 // show用
 window.initMapShow = function () {
 
@@ -287,8 +295,9 @@ window.initMapShow = function () {
   const routePoints = getRoutePoints();
 
   loadRoutePoints(routePoints);
-  drawRoute();
 };
+
+
 
 // edit用
 window.initMapEdit = function () {
@@ -300,8 +309,6 @@ window.initMapEdit = function () {
   const routePoints = getRoutePoints();
 
   loadRoutePoints(routePoints);
-
-  drawRoute();
 
   map.addListener("click", (e) => {
 
