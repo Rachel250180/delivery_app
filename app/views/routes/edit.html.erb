@@ -34,14 +34,10 @@
 <% end %>
 
 
-<% content_for :sidebar_pc do %>
-  <%= render "route_info" %>
+<% content_for :sidebar do %>
+  <%= render "route_info",
+    editable: true %>
 <% end %>
-
-<% content_for :sidebar_mobile do %>
-  <%= render "route_info" %>
-<% end %>
-
 
 
 
@@ -55,7 +51,13 @@
 <!-- javascript関連 -->
 
 <div id="route-data"
-     data-points="<%= @route.route_points.map { |p|
-       { lat: p.latitude, lng: p.longitude }
-     }.to_json %>">
+  data-points='<%= raw(
+    @route.route_points.map { |p|
+      {
+        lat: p.latitude,
+        lng: p.longitude,
+        address: p.address
+      }
+    }.to_json
+  ) %>'>
 </div>

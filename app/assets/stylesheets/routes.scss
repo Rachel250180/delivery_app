@@ -1,39 +1,63 @@
 .routes-show,
 .routes-edit {
 
-  /* レイアウト調整 */
+  /* =========================
+     レイアウト
+  ========================= */
+
   .main {
+    padding-top: 5px;
     padding-left: 0;
     padding-right: 0;
-    padding-top: 5px;
   }
 
   .container-fluid {
+    max-width: 100%;
     padding-left: 0;
     padding-right: 0;
-    max-width: 100%;
   }
 
-  /* 地図 */
+  /* =========================
+     地図
+  ========================= */
+
   #map {
     width: 100%;
     height: 500px;
   }
 
-  /* 配達カード */
+  /* =========================
+     情報カード
+  ========================= */
+
+  .route-info-card {
+    margin-top: 5px;
+    padding: 20px;
+
+    background: #fff;
+    border-radius: 12px;
+
+    box-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+
+  /* =========================
+     配達リスト
+  ========================= */
+
   .delivery-item {
     display: flex;
     align-items: flex-start;
 
-    padding: 14px 16px;
     margin-bottom: 10px;
+    padding: 14px 16px;
 
-    border-radius: 14px;
     background: #fff;
     border: 1px solid #f3f3f3;
+    border-radius: 14px;
 
-    transition: .2s;
     cursor: pointer;
+    transition: 0.2s;
 
     &:hover {
       background: #fafafa;
@@ -41,7 +65,6 @@
     }
   }
 
-  /* 左側 */
   .delivery-left {
     display: flex;
     align-items: flex-start;
@@ -50,8 +73,15 @@
     width: 100%;
   }
 
-  /* 番号丸 */
-  .delivery-number {
+  /* 番号 */
+
+  .delivery-number,
+  .delivery-item__number {
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     width: 32px;
     height: 32px;
     min-width: 32px;
@@ -61,48 +91,46 @@
     background: #facc15;
     color: #222;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
     font-size: 13px;
     font-weight: bold;
   }
 
   /* 住所 */
-  .delivery-address {
+
+  .delivery-address,
+  .delivery-item__address {
+
     margin: 0;
 
     max-width: 220px;
 
+    color: #333;
+
     font-size: 14px;
     font-weight: 600;
-
-    color: #333;
     line-height: 1.6;
 
     word-break: break-word;
   }
 
-  /* 情報カード */
-  .route-info-card {
-    background: #fff;
+  /* 削除ボタン */
 
-    border-radius: 12px;
+  .delivery-item__delete-btn {
+    border: none;
+    background: transparent;
 
-    padding: 20px;
-    margin-top: 5px;
+    color: #e53935;
 
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    font-size: 13px;
+    font-weight: bold;
+
+    cursor: pointer;
   }
 
-  /* PC only */
-  .pc-only {
-    display: block;
-  }
+  /* editable=false の時 */
 
-  /* スマホ下部 */
-  .mobile-extra {
+  #points-list[data-editable="false"]
+  .delivery-item__delete-btn {
     display: none;
   }
 
@@ -115,7 +143,6 @@
     #map {
       height: calc(100vh - 80px);
     }
-
   }
 
   /* =========================
@@ -124,15 +151,13 @@
 
   @media (max-width: 1000px) {
 
-    .pc-only {
-      display: none;
+    .route-info-card {
+      border-radius: 0;
     }
 
-    .mobile-extra {
-      display: block;
-      margin-top: 5px;
+    .delivery-address,
+    .delivery-item__address {
+      max-width: 100%;
     }
-
   }
-
 }

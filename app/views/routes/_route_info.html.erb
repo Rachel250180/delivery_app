@@ -14,28 +14,60 @@
 <div class="route-info-card">
   <h4>配達経由地点（経由順）</h4>
 
-
-  <% if current_page?(town_route_path(@town, @route)) %>
+  <div
+    id="points-list"
+    data-editable="<%= action_name != 'show' %>"
+  >
 
     <% @points.each_with_index do |point, i| %>
 
       <div class="delivery-item">
 
-        <div class="delivery-left">
+        <div class="delivery-item__left">
 
-          <div class="delivery-number">
+          <div class="delivery-item__number">
             <%= i + 1 %>
           </div>
 
-          <p class="delivery-address">
+          <p class="delivery-item__address">
             <%= point.address %>
           </p>
+
         </div>
+
+        <button
+          type="button"
+          class="delivery-item__delete-btn"
+        >
+          削除
+        </button>
+
       </div>
+
     <% end %>
 
-  <% else %>
-    <div id="points-list"></div>
-  <% end %>
-  
-</div>  
+  </div>
+</div>
+
+<template id="delivery-item-template">
+
+  <div class="delivery-item">
+
+    <div class="delivery-item__left">
+
+      <div class="delivery-item__number"></div>
+
+      <p class="delivery-item__address"></p>
+
+    </div>
+
+    <button
+      type="button"
+      class="delivery-item__delete-btn"
+    >
+      削除
+    </button>
+
+  </div>
+
+</template>
