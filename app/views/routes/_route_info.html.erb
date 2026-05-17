@@ -1,11 +1,14 @@
-<div class="route-info-card">
-  <h4>ルート詳細</h4>
-  <p>ルート名</p>
-  <h5><%= @route.name %></h5>
+<% if @route.persisted? %>
+  <div class="route-info-card">
+    <h4>ルート詳細</h4>
 
-  <p>ルート作成日</p>
-  <h5><%= @route.created_at.strftime("%Y/%m/%d") %></h5>
-</div>
+    <p>ルート名</p>
+    <h5><%= @route.name %></h5>
+
+    <p>ルート作成日</p>
+    <h5><%= @route.created_at.strftime("%Y/%m/%d") %></h5>
+  </div>
+<% end %>
 
 <div class="route-info-card">
   <h4>配達経由地点（経由順）</h4>

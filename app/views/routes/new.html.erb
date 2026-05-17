@@ -1,31 +1,55 @@
-<h1>ルート登録</h1>
+<div class="route-title">
+  <h5>ルート登録画面</h5>
+</div>
+
 <%= render "shared/error_messages", model: @route %>
-<%= form_with model: [@town, @route], html: { id: "route-form" } do |f| %>
 
-  <div>
-    <%= f.label :name, "ルート名" %><br>
-    <%= f.text_field :name %>
+<div class="route-new-map">
+  <div id="map"></div>
+</div>
+
+<div class="route-info-card">
+  <div class="btn-submit">
+    <%= button_tag "登録する",
+        type: "submit",
+        form: "route-form",
+        class: "btn-add" %>
   </div>
+</div>
 
-  <div>
-    <%= f.label :description, "説明" %><br>
-    <%= f.text_area :description %>
-  </div>
+<div class="route-info-card">
+  <%= form_with model: [@town, @route], id: "route-form" do |f| %>
 
-  <input type="hidden" id="points_json" name="points_json">
-  
-  <h3>経由地点</h3>
-  <div id="points"></div>
-  <ul id="points-list"></ul>
+    <div>
+      <%= f.label :name, "ルート名" %><br>
+      <%= f.text_field :name %>
+    </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <div>
+      <%= f.label :description, "備考欄" %><br>
+      <%= f.text_area :description %>
+    </div>
 
-  <div>
-    <%= f.submit "登録する" %>
-  </div>
+    <input type="hidden" id="points_json" name="points_json">
+    
+  <% end %>
+</div>
 
-<% end %>
+<div class="route-info-card">
+  <%= link_to "一覧へ戻る", town_path(@town), class:"btn-back" %>
+</div>
 
-<div id="map" style="height: 500px;"></div>
 
+<!-- javascript関連 -->
 
+<div id="route-data"
+  data-points='<%= raw(
+    @route.route_points.map { |p|
+      {
+        lat: p.latitude,
+        lng: p.longitude,
+        address: p.address
+      }
+    }.to_json
+  ) %>'>
+</div>
