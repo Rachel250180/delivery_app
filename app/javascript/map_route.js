@@ -124,6 +124,8 @@ function loadRoutePoints(routePoints) {
   });
 
   isInitializing = false;
+
+  refreshUI();
 }
 
 
@@ -177,52 +179,102 @@ function updateHiddenField() {
 
 
 function renderList() {
-  const container = document.getElementById("points-list");
+
+  const container =
+    document.getElementById("points-list");
 
   if (!container) return;
 
   container.innerHTML = "";
 
-  deliveryPoints.forEach((p, index) => {
+  deliveryPoints.forEach((point, index) => {
 
-    const item = document.createElement("div");
-
-    item.classList.add("delivery-item");
-
-    item.innerHTML = `
-      <div class="delivery-left">
-
-        <div class="delivery-number">
-          ${index + 1}
-        </div>
-
-        <p class="delivery-address">
-          ${
-            p.address ||
-            `${p.lat.toFixed(5)}, ${p.lng.toFixed(5)}`
-          }
-        </p>
-
-      </div>
-
-      <button
-        type="button"
-        class="delete-point-btn"
-      >
-        削除
-      </button>
-    `;
-
-    const deleteBtn =
-      item.querySelector(".delete-point-btn");
-
-    deleteBtn.addEventListener("click", () => {
-      removePoint(index);
-    });
+    const item =
+      createDeliveryItem(point, index);
 
     container.appendChild(item);
+
   });
 }
+
+function createDeliveryItem(point, index) {
+
+  const template =
+    document.getElementById(
+      "delivery-item-template"
+    );
+
+  const item =
+    template.content.firstElementChild.cloneNode(true);
+
+  item.dataset.index = index;
+
+  item.querySelector(".delivery-item__number")
+    .textContent = index + 1;
+
+  item.querySelector(".delivery-item__address")
+    .textContent =
+      getPointLabel(point);
+
+  setupDeleteButton(item, index);
+
+  return item;
+}
+
+function setupDeleteButton(item, index) {
+
+  const deleteBtn =
+    item.querySelector(
+      ".delivery-item__delete-btn"
+    );
+
+  if (!isEditable()) return;
+
+  deleteBtn.addEventListener(
+    "click",
+    () => removePoint(index)
+  );
+}
+
+function isEditable() {
+
+  const container =
+    document.getElementById("points-list");
+
+  return (
+    container?.dataset.editable === "true"
+  );
+}
+
+function getPointLabel(point) {
+
+  console.log("point:", point);
+
+  if (point.address) {
+    return point.address;
+  }
+
+  return formatLatLng(point);
+}
+
+function formatLatLng(point) {
+
+  return (
+    `${point.lat.toFixed(5)}, ` +
+    `${point.lng.toFixed(5)}`
+  );
+}
+
+
+
+
+
+
+
+
+
+
+
 
 // new用
 window.initMapNew = function () {
@@ -278,6 +330,7 @@ window.initMapNew = function () {
   }
 };
 
+
 // show用
 window.initMapShow = function () {
 
@@ -287,8 +340,9 @@ window.initMapShow = function () {
   const routePoints = getRoutePoints();
 
   loadRoutePoints(routePoints);
-  drawRoute();
 };
+
+
 
 // edit用
 window.initMapEdit = function () {
@@ -300,8 +354,6 @@ window.initMapEdit = function () {
   const routePoints = getRoutePoints();
 
   loadRoutePoints(routePoints);
-
-  drawRoute();
 
   map.addListener("click", (e) => {
 
@@ -392,8 +444,8 @@ function initSortable() {
     onEnd: function (evt) {
 
       // Sの分だけズラす
-      const oldIndex = evt.oldIndex - 1;
-      const newIndex = evt.newIndex - 1;
+      const oldIndex = evt.oldDraggableIndex;
+      const newIndex = evt.newDraggableIndex;
 
       movePoint(oldIndex, newIndex);
     }

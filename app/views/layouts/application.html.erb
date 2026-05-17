@@ -47,13 +47,9 @@
       
       <aside class="sidebar" id="sidebar">
 
-        <% if content_for?(:sidebar_pc) %>
-          <div class="sidebar-extra pc-only">
-            <%= yield :sidebar_pc %>
-          </div>
-        <% end %>
-
         <%= render "layouts/sidebar" %>
+
+        <%= yield :sidebar %>
 
       </aside>
 
@@ -68,12 +64,6 @@
           <% end %>
 
           <%= yield %>
-
-          <% if content_for?(:sidebar_mobile) %>
-            <div class="mobile-extra">
-              <%= yield :sidebar_mobile %>
-            </div>
-          <% end %>
 
         </div>
       </main>
