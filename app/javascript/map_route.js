@@ -313,7 +313,6 @@ window.initMapNew = function () {
         lng,
         address
       });
-
     });
   });
 
@@ -491,10 +490,18 @@ document.addEventListener("turbo:load", () => {
 
   if (!mapElement) return;
 
-  if (window.location.pathname.includes("/edit")) {
+  const path = window.location.pathname;
+
+  if (/\/routes\/new$/.test(path)) {
+
+    window.initMapNew();
+
+  } else if (/\/routes\/\d+\/edit$/.test(path)) {
+
     window.initMapEdit();
 
-  } else if (window.location.pathname.includes("/routes/")) {
+  } else if (/\/routes\/\d+$/.test(path)) {
+
     window.initMapShow();
   }
 });
