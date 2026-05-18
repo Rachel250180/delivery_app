@@ -9,6 +9,7 @@ class RoutesController < ApplicationController
 
   def new
     @route = @town.routes.new
+    @points = []
   end
 
   def create
@@ -29,6 +30,9 @@ class RoutesController < ApplicationController
 
     if @route.route_points.size > 10
       @route.errors.add(:route_points, "は10個までしか登録できません")
+
+      @points = @route.route_points
+
       render :new, status: :unprocessable_entity
       return
     end
