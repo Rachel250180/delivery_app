@@ -8,7 +8,7 @@
   <div id="map"></div>
 </div>
 
-<div class="route-info-card">
+<div class="route-info-card-btn">
   <div class="btn-submit">
     <%= button_tag "登録する",
         type: "submit",
@@ -18,7 +18,9 @@
 </div>
 
 <div class="route-info-card">
-  <%= form_with model: [@town, @route], id: "route-form" do |f| %>
+  <%= form_with model: [@town, @route],
+              id: "route-form",
+              data: { turbo: false } do |f| %>
 
     <div class="form-group">
       <%= f.label :name, "ルート名" %><br>

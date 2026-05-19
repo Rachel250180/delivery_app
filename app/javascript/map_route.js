@@ -6,8 +6,6 @@ function countApi(name) {
   console.log(
     `${name}: ${apiCounter[name]}回`
   );
-
-  console.trace();
 }
 
 
@@ -58,6 +56,10 @@ function createMap() {
     label: "S",
     icon: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
   });
+
+  google.maps.event.trigger(map, "resize");
+
+  map.setCenter(START_POINT);
 }
 
 // ポイント追加
@@ -278,54 +280,60 @@ function formatLatLng(point) {
 
 // new用
 window.initMapNew = function () {
+
   isNewPage = true;
+
   resetMapState();
 
-  createMap();
+  setTimeout(() => {
 
-  const saved = sessionStorage.getItem("route_points");
+    createMap();
 
-  if (saved) {
-    const parsed = JSON.parse(saved);
+    const routePoints = getRoutePoints();
 
-    isInitializing = true;
+    if (routePoints.length > 0) {
 
-    parsed.forEach(p => {
-      addPoint(p);
-    });
+      loadRoutePoints(routePoints);
 
-    isInitializing = false;
+    } else {
 
-    drawRoute();
-  } 
+      const saved =
+        sessionStorage.getItem("route_points");
 
-  map.addListener("click", (e) => {
+      if (saved) {
 
-    if (!canAddPoint()) return;
+        loadRoutePoints(
+          JSON.parse(saved)
+        );
+      }
+    }
 
-    const lat = e.latLng.lat();
-    const lng = e.latLng.lng();
+    map.addListener("click", (e) => {
 
-    fetchAddress(lat, lng, (address) => {
+      if (!canAddPoint()) return;
 
-      addPoint({
-        lat,
-        lng,
-        address
+      const lat = e.latLng.lat();
+      const lng = e.latLng.lng();
+
+      fetchAddress(lat, lng, (address) => {
+
+        addPoint({
+          lat,
+          lng,
+          address
+        });
       });
     });
-  });
 
-  initSortable();
+    initSortable();
+
+  }, 100);
+
 
   const form = document.getElementById("route-form");
 
   if (form && !form.dataset.listenerAdded) {
     form.dataset.listenerAdded = "true";
-
-    form.addEventListener("submit", () => {
-      sessionStorage.removeItem("route_points");
-    });
   }
 };
 
@@ -482,29 +490,50 @@ function canAddPoint() {
   return true;
 }
 
-document.addEventListener("turbo:load", () => {
+
+
+
+
+
+
+
+function initializeMapPage() {
 
   if (!window.google || !window.google.maps) return;
 
-  const mapElement = document.getElementById("map");
+  const mapElement =
+    document.getElementById("map");
 
   if (!mapElement) return;
 
   const path = window.location.pathname;
 
-  if (/\/routes\/new$/.test(path)) {
-
-    window.initMapNew();
-
-  } else if (/\/routes\/\d+\/edit$/.test(path)) {
-
+  if (/\/routes\/\d+\/edit$/.test(path)) {
     window.initMapEdit();
-
+  } else if (/\/routes\/new$/.test(path)) {
+    window.initMapNew();
   } else if (/\/routes\/\d+$/.test(path)) {
-
     window.initMapShow();
   }
+}
+
+document.addEventListener(
+  "turbo:load",
+  initializeMapPage
+);
+
+document.addEventListener("turbo:render", () => {
+  requestAnimationFrame(initializeMapPage);
 });
+
+
+
+
+
+
+
+
+
 
 function getRoutePoints() {
   const routeData = document.getElementById("route-data");

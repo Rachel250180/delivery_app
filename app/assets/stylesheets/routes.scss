@@ -1,5 +1,7 @@
 .routes-show,
 .routes-edit,
+.routes-create,
+.routes-update,
 .routes-new {
 
   /* =========================
@@ -33,15 +35,6 @@
   }
 
   /* =========================
-     地図
-  ========================= */
-
-  #map {
-    width: 100%;
-    height: 500px;
-  }
-
-  /* =========================
      情報カード
   ========================= */
 
@@ -54,6 +47,21 @@
 
     box-shadow:
       0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+
+  .route-info-card-btn {
+    margin-top: 5px;
+    padding: 20px;
+
+    background: #fff;
+    border-radius: 12px;
+
+    box-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.05);
+
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
   }
 
   /* =========================
@@ -185,17 +193,6 @@
   }
 
   /* =========================
-     PC
-  ========================= */
-
-  @media (min-width: 1001px) {
-
-    #map {
-      height: calc(100vh - 80px);
-    }
-  }
-
-  /* =========================
      スマホ
   ========================= */
 
@@ -209,5 +206,17 @@
     .delivery-item__address {
       max-width: 100%;
     }
+  }
+}
+
+
+#map {
+  width: 100%;
+  height: 500px;
+}
+
+@media (min-width: 1001px) {
+  #map {
+    height: calc(100vh - 80px);
   }
 }

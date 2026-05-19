@@ -247,3 +247,32 @@
     transform: translateY(-2px);
   }
 }
+
+#error_explanation {
+  margin-top: 5px;
+  padding: 20px;
+
+  background: #fff;
+  border-radius: 12px;
+
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+#error_explanation div,
+#error_explanation h2 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #d32f2f;
+}
+
+#error_explanation ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+#error_explanation li {
+  margin-bottom: 6px;
+  color: #555;
+}

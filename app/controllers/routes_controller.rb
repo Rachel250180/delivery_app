@@ -3,13 +3,17 @@ class RoutesController < ApplicationController
   before_action :set_town
   before_action :set_route, only: [ :show, :edit, :update, :destroy ]
 
+  def index
+    redirect_to town_path(@town)
+  end
+
   def show
-    @points = @route.route_points.order(:position)
+    @route_points = @route.route_points.order(:position)
   end
 
   def new
     @route = @town.routes.new
-    @points = []
+    @route_points = []
   end
 
   def create
@@ -24,14 +28,15 @@ class RoutesController < ApplicationController
           latitude: p["lat"],
           longitude: p["lng"],
           address: p["address"],
-          position: i)
+          position: i
+        )
       end
     end
 
     if @route.route_points.size > 10
       @route.errors.add(:route_points, "は10個までしか登録できません")
 
-      @points = @route.route_points
+      @route_points = @route.route_points
 
       render :new, status: :unprocessable_entity
       return
@@ -40,12 +45,13 @@ class RoutesController < ApplicationController
     if @route.save
       redirect_to town_route_path(@town, @route), notice: "ルートを作成しました！"
     else
+      @route_points = []
       render :new, status: :unprocessable_entity
     end
   end
 
   def edit
-    @points = @route.route_points.order(:position)
+    @route_points = @route.route_points.order(:position)
   end
 
   def update
@@ -68,6 +74,8 @@ class RoutesController < ApplicationController
 
       redirect_to town_route_path(@town, @route)
     else
+      @route_points = @route.route_points.order(:position)
+
       render :edit, status: :unprocessable_entity
     end
   end
@@ -80,8 +88,10 @@ class RoutesController < ApplicationController
   private
 
   def route_params
-    params.require(:route).permit(:name,
-                                  :description,)
+    params.require(:route).permit(
+      :name,
+      :description
+    )
   end
 
   def set_town

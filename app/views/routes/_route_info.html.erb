@@ -18,7 +18,7 @@
     data-editable="<%= action_name != 'show' %>"
   >
 
-    <% @points.each_with_index do |point, i| %>
+    <% @route_points.each_with_index do |routepoint, i| %>
 
       <div class="delivery-item">
 
@@ -29,7 +29,7 @@
           </div>
 
           <p class="delivery-item__address">
-            <%= point.address %>
+            <%= routepoint.address %>
           </p>
 
         </div>
