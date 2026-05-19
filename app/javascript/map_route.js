@@ -490,6 +490,13 @@ function canAddPoint() {
   return true;
 }
 
+
+
+
+
+
+
+
 function initializeMapPage() {
 
   if (!window.google || !window.google.maps) return;
@@ -501,19 +508,11 @@ function initializeMapPage() {
 
   const path = window.location.pathname;
 
-  if (
-  /\/routes\/new$/.test(path) ||
-  /\/routes$/.test(path)
-) {
-
-    window.initMapNew();
-
-  } else if (/\/routes\/\d+\/edit$/.test(path)) {
-
+  if (/\/routes\/\d+\/edit$/.test(path)) {
     window.initMapEdit();
-
+  } else if (/\/routes\/new$/.test(path)) {
+    window.initMapNew();
   } else if (/\/routes\/\d+$/.test(path)) {
-
     window.initMapShow();
   }
 }
@@ -522,6 +521,19 @@ document.addEventListener(
   "turbo:load",
   initializeMapPage
 );
+
+document.addEventListener("turbo:render", () => {
+  requestAnimationFrame(initializeMapPage);
+});
+
+
+
+
+
+
+
+
+
 
 function getRoutePoints() {
   const routeData = document.getElementById("route-data");
