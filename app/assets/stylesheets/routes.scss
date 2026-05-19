@@ -47,6 +47,21 @@
       0 2px 8px rgba(0, 0, 0, 0.05);
   }
 
+  .route-info-card-btn {
+    margin-top: 5px;
+    padding: 20px;
+
+    background: #fff;
+    border-radius: 12px;
+
+    box-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.05);
+
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
   /* =========================
      配達リスト
   ========================= */
