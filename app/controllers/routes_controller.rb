@@ -3,6 +3,10 @@ class RoutesController < ApplicationController
   before_action :set_town
   before_action :set_route, only: [ :show, :edit, :update, :destroy ]
 
+  def index
+    redirect_to town_path(@town)
+  end
+
   def show
     @points = @route.route_points.order(:position)
   end
@@ -40,6 +44,7 @@ class RoutesController < ApplicationController
     if @route.save
       redirect_to town_route_path(@town, @route), notice: "ルートを作成しました！"
     else
+      @points = []
       render :new, status: :unprocessable_entity
     end
   end
