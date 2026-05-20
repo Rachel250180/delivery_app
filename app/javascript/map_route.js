@@ -32,6 +32,8 @@ const START_POINT = { lat: 36.27883160931458, lng: 139.3873576767888, address:
  };
 
 function createMap() {
+  if (map) return;
+
   countApi("Map API");
 
   map = new google.maps.Map(document.getElementById("map"), {
@@ -107,6 +109,8 @@ function resetMapState() {
   if (directionsRenderer) {
     directionsRenderer.setDirections({ routes: [] });
   }
+
+  map = null;
 }
 
 
@@ -489,22 +493,16 @@ function canAddPoint() {
 
   return true;
 }
-
-
-
-
-
-
-
-
+let mapBooted = false;
 function initializeMapPage() {
+  if (mapBooted) return;
 
-  if (!window.google || !window.google.maps) return;
+  if (!window.google?.maps) return;
 
-  const mapElement =
-    document.getElementById("map");
-
+  const mapElement = document.getElementById("map");
   if (!mapElement) return;
+
+  mapBooted = true;
 
   const path = window.location.pathname;
 
@@ -517,23 +515,17 @@ function initializeMapPage() {
   }
 }
 
-document.addEventListener(
-  "turbo:load",
-  initializeMapPage
-);
-
 document.addEventListener("turbo:render", () => {
-  requestAnimationFrame(initializeMapPage);
+  mapBooted = false;
+
+  resetMapState();
+
+  requestAnimationFrame(() => {
+    initializeMapPage();
+  });
 });
 
-
-
-
-
-
-
-
-
+document.addEventListener("turbo:load", initializeMapPage);
 
 function getRoutePoints() {
   const routeData = document.getElementById("route-data");
