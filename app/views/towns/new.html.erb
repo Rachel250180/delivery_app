@@ -21,6 +21,8 @@
   <% end %>
 </div>
 
-
-
-<%= link_to "戻る", towns_path, class:"btn-back" %>
+<button type="button"
+        onclick="window.history.length > 1 ? history.back() : location.href='<%= root_path %>'"
+        class="btn-back">
+  戻る
+</button>
