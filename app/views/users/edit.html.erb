@@ -22,5 +22,9 @@
 </div>
 
 <div class="users-bottom">
-  <%= link_to "戻る", user_path(@user), class:"btn-back" %>
+  <button type="button"
+          onclick="window.history.length > 1 ? history.back() : location.href='<%= root_path %>'"
+          class="btn-back">
+    戻る
+  </button>
 </div>

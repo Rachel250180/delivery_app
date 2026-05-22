@@ -43,9 +43,11 @@
 <% end %>
 
 
-<div class="route-info-card">
-  <%= link_to "一覧へ戻る", town_path(@town), class:"btn-back" %>
-</div>
+<button type="button"
+        onclick="window.history.length > 1 ? history.back() : location.href='<%= root_path %>'"
+        class="btn-back">
+  戻る
+</button>
 
 
 <!-- javascript関連 -->
