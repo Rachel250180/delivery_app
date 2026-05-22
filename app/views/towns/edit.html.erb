@@ -5,6 +5,11 @@
   <%= form_with model: @town do |f| %>
 
     <div class="form-group">
+      <%= f.label :kana, "ふりがな" %>
+      <%= f.text_field :kana %>
+    </div>
+
+    <div class="form-group">
         <%= f.label :name, "町名" %>
         <%= f.text_field :name %>
     </div>

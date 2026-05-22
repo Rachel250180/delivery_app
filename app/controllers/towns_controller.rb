@@ -4,7 +4,16 @@ class TownsController < ApplicationController
     @towns = Town.all
 
     if params[:name].present?
-      @towns = @towns.where("name LIKE ?", "%#{params[:name]}%")
+      keyword = params[:name].to_s
+
+      # カタカナ → ひらがな
+      normalized = keyword.tr("ァ-ン", "ぁ-ん")
+
+      @towns = @towns.where(
+        "name LIKE :keyword OR kana LIKE :normalized",
+        keyword: "%#{keyword}%",
+        normalized: "%#{normalized}%"
+      )
     end
   end
 
@@ -58,6 +67,6 @@ class TownsController < ApplicationController
   private
 
   def town_params
-    params.require(:town).permit(:name, :description)
+    params.require(:town).permit(:name, :kana, :description)
   end
 end
