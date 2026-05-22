@@ -1,8 +1,8 @@
 <% content_for :title, "Home" %>
 <div>
   <section class="hero">
-    <h1>配達ルート管理アプリ</h1>
-    <p>配達ルートを登録・管理できます。</p>
+    <h1>配達ルート管理アプリ <i class="fa-solid fa-truck" style="color: rgb(250, 204, 21);"></i>Skip</h1>
+    <p>配達ルートを登録・確認できます。</p>
 
     <div class="search-town">
       <h2><i class="fa-solid fa-magnifying-glass"></i> 町を検索する</h2>
@@ -17,42 +17,42 @@
   <section class="menu-grid">
 
     <%= link_to towns_path, class: "menu-card" do %>
-      <div class="icon">📋</div>
+      <i class="fa-regular fa-file-lines icon"></i>
       <h3>町一覧</h3>
-      <p>登録されている町の一覧</p>
+      <p>登録されている町の一覧をチェック</p>
     <% end %>
 
     <%= link_to new_town_path, class: "menu-card" do %>
-      <div class="icon">➕</div>
+      <i class="fa-solid fa-plus icon"></i>
       <h3>町登録</h3>
-      <p>新しい町を追加</p>
+      <p>新しい町を追加、登録する</p>
     <% end %>
 
     <% if logged_in? %>
       <%= link_to user_path(current_user), class: "menu-card" do %>
-        <div class="icon">👤</div>
+        <i class="fa-solid fa-user-gear icon"></i>
         <h3>マイページ</h3>
-        <p>ユーザー情報</p>
+        <p>ユーザー情報を確認する</p>
       <% end %>
     <% else %>
       <%= link_to login_path, class: "menu-card" do %>
-        <div class="icon">👤</div>
+        <i class="fa-solid fa-user-gear icon"></i>
         <h3>マイページ</h3>
-        <p>ユーザー情報</p>
+        <p>ユーザー情報を確認する</p>
       <% end %>
     <% end %>
 
     <% if logged_in? %>
       <%= link_to logout_path, data: { turbo_method: :delete }, class: "menu-card" do %>
-        <div class="icon">🔒</div>
+        <i class="fa-solid fa-lock icon"></i>
         <h3>ログアウト</h3>
-        <p>アカウントをログアウト</p>
+        <p>アカウントをログアウトする</p>
       <% end %>
     <% else %>
       <%= link_to login_path, class: "menu-card" do %>
-        <div class="icon">🔐</div>
+        <i class="fa-solid fa-lock-open icon"></i>
         <h3>ログイン</h3>
-        <p>アカウントにログイン</p>
+        <p>アカウントにログインする</p>
       <% end %>
     <% end %>
   </section>
