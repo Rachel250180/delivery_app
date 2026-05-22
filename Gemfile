@@ -68,5 +68,5 @@ group :test do
 end
 
 gem "bootstrap", "~> 5.3"
-
+gem "kaminari"
 gem "dartsass-rails", "~> 0.5.1"

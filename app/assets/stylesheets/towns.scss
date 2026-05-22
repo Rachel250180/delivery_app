@@ -51,9 +51,11 @@
 .towns-container-bottom {
   max-width: 600px;
   margin: 0 auto;
+
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+
   padding-top: 40px;
 }
 
@@ -82,4 +84,29 @@
   justify-content: space-between;
   margin: 20px auto 0;
   max-width: 1000px;
+}
+
+/* ページネーション */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 32px;
+
+  a,
+  span {
+    text-decoration: none;
+    color: #666;
+    font-weight: bold;
+    transition: .2s;
+  }
+
+  a:hover {
+    color: #333;
+    transform: translateX(-2px);
+  }
+
+  .current {
+    color: #facc15;
+  }
 }

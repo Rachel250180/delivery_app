@@ -5,8 +5,6 @@ class TownsController < ApplicationController
 
     if params[:name].present?
       keyword = params[:name].to_s
-
-      # カタカナ → ひらがな
       normalized = keyword.tr("ァ-ン", "ぁ-ん")
 
       @towns = @towns.where(
@@ -15,6 +13,8 @@ class TownsController < ApplicationController
         normalized: "%#{normalized}%"
       )
     end
+
+    @towns = @towns.page(params[:page]).per(5)
   end
 
   def show
@@ -55,11 +55,6 @@ class TownsController < ApplicationController
     @town.destroy
     redirect_to towns_path
   end
-
-
-
-
-
 
 
 

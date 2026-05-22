@@ -280,3 +280,27 @@
   margin-bottom: 6px;
   color: #555;
 }
+
+.alert {
+  margin-top: 2px;
+  margin-bottom: 2px !important;
+  padding: 20px;
+
+  background-color: #fff !important;
+
+  border-radius: 12px;
+
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.05);
+
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.alert-notice {
+  color: #2e7d32;
+}
+
+.alert-alert {
+  color: #d32f2f;
+}
