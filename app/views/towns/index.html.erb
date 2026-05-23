@@ -32,9 +32,5 @@
     </div>
   </section>
 
-  <button type="button"
-          onclick="window.history.length > 1 ? history.back() : location.href='<%= root_path %>'"
-          class="btn-back">
-    戻る
-  </button>
+<%= link_to "戻る", root_path, class: "btn-back" %>
 </div>

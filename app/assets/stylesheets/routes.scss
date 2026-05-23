@@ -7,20 +7,6 @@
   /* =========================
      レイアウト
   ========================= */
-  .route-title {
-    padding: 15px;
-
-    background: #fff;
-    border-radius: 12px;
-
-    box-shadow:
-      0 2px 8px rgba(0, 0, 0, 0.05);
-  }
-
-  .btn-submit {
-    display: flex;
-    gap: 5px;
-  }
 
   .main {
     padding-top: 0;
@@ -34,14 +20,9 @@
     padding-right: 0;
   }
 
-  /* =========================
-     情報カード
-  ========================= */
-
-  .route-info-card {
-    margin-top: 5px;
-    padding: 20px;
-
+  .route-title,
+  .route-info-card,
+  .route-info-card-btn {
     background: #fff;
     border-radius: 12px;
 
@@ -49,19 +30,63 @@
       0 2px 8px rgba(0, 0, 0, 0.05);
   }
 
-  .route-info-card-btn {
+  .route-title {
+    padding: 15px;
+  }
+
+  .route-info-card {
     margin-top: 5px;
     padding: 20px;
 
-    background: #fff;
-    border-radius: 12px;
+    h4 {
+      margin-bottom: 20px;
 
-    box-shadow:
-      0 2px 8px rgba(0, 0, 0, 0.05);
+      color: #333;
+      font-size: 20px;
+    }
+  }
 
+  .route-info-card-btn {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
+
+    margin-top: 5px;
+    padding: 20px;
+  }
+
+  .btn-submit {
+    display: flex;
+    gap: 5px;
+  }
+
+  /* =========================
+     ルート詳細
+  ========================= */
+
+  .route-info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 12px 0;
+
+    border-bottom: 1px solid #f0f0f0;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    span {
+      color: #888;
+      font-size: 14px;
+    }
+
+    strong {
+      color: #222;
+      font-size: 16px;
+      font-weight: 600;
+    }
   }
 
   /* =========================
@@ -86,6 +111,80 @@
       background: #fafafa;
       transform: translateY(-2px);
     }
+
+    &__number {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+
+      border-radius: 50%;
+
+      background: #facc15;
+      color: #222;
+
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    &__address {
+      margin: 0;
+
+      max-width: 220px;
+
+      color: #333;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.6;
+
+      word-break: break-word;
+    }
+
+    &__delete-btn {
+      position: relative;
+
+      width: 26px;
+      height: 26px;
+
+      border: none;
+      border-radius: 50%;
+
+      background: #e53935;
+      cursor: pointer;
+
+      transition: .2s;
+
+      &::before,
+      &::after {
+        content: "";
+
+        position: absolute;
+        top: 50%;
+        left: 50%;
+
+        width: 12px;
+        height: 2px;
+
+        background: #fff;
+        border-radius: 2px;
+      }
+
+      &::before {
+        transform: translate(-50%, -50%) rotate(45deg);
+      }
+
+      &::after {
+        transform: translate(-50%, -50%) rotate(-45deg);
+      }
+
+      &:hover {
+        background: #c62828;
+        transform: scale(1.08);
+      }
+    }
   }
 
   .delivery-left {
@@ -96,100 +195,16 @@
     width: 100%;
   }
 
-  /* 番号 */
-
-  .delivery-number,
-  .delivery-item__number {
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    width: 32px;
-    height: 32px;
-    min-width: 32px;
-
-    border-radius: 50%;
-
-    background: #facc15;
-    color: #222;
-
-    font-size: 13px;
-    font-weight: bold;
-  }
-
-  /* 住所 */
-
-  .delivery-address,
-  .delivery-item__address {
-
-    margin: 0;
-
-    max-width: 220px;
-
-    color: #333;
-
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 1.6;
-
-    word-break: break-word;
-  }
-
-  /* ボタン */
-
-  .delivery-item__delete-btn {
-    position: relative;
-
-    width: 26px;
-    height: 26px;
-
-    border: none;
-    border-radius: 50%;
-
-    background: #e53935;
-    cursor: pointer;
-
-    transition: .2s;
-
-    &::before,
-    &::after {
-      content: "";
-
-      position: absolute;
-      top: 50%;
-      left: 50%;
-
-      width: 12px;
-      height: 2px;
-
-      background: #fff;
-      border-radius: 2px;
-    }
-
-    &::before {
-      transform: translate(-50%, -50%) rotate(45deg);
-    }
-
-    &::after {
-      transform: translate(-50%, -50%) rotate(-45deg);
-    }
-
-    &:hover {
-      background: #c62828;
-      transform: scale(1.08);
-    }
-  }
-
   .btn-add::before {
     content: none;
   }
 
-  /* editable=false の時 */
+  /* editable=false */
 
-  #points-list[data-editable="false"]
-  .delivery-item__delete-btn {
-    display: none;
+  #points-list[data-editable="false"] {
+    .delivery-item__delete-btn {
+      display: none;
+    }
   }
 
   /* =========================
@@ -202,13 +217,17 @@
       border-radius: 0;
     }
 
-    .delivery-address,
-    .delivery-item__address {
-      max-width: 100%;
+    .delivery-item {
+      &__address {
+        max-width: 100%;
+      }
     }
   }
 }
 
+/* =========================
+   Map
+========================= */
 
 #map {
   width: 100%;
@@ -216,6 +235,7 @@
 }
 
 @media (min-width: 1001px) {
+
   #map {
     height: calc(100vh - 80px);
   }
