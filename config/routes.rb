@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get "contacts/new"
+  get "contacts/create"
   get "password_resets/new"
   get "password_resets/edit"
   get "sessions/new"
@@ -15,4 +17,5 @@ Rails.application.routes.draw do
   resources :towns do
     resources :routes
   end
+  resources :contacts, only: [ :new, :create ]
 end
