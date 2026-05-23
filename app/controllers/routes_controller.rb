@@ -90,7 +90,8 @@ class RoutesController < ApplicationController
   def route_params
     params.require(:route).permit(
       :name,
-      :description
+      :description,
+      :estimated_duration
     )
   end
 

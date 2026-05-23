@@ -14,11 +14,7 @@
   <p>コメント：<%= @route.description %></p>
 </div>
 
-<button type="button"
-        onclick="window.history.length > 1 ? history.back() : location.href='<%= root_path %>'"
-        class="btn-back">
-  戻る
-</button>
+<%= link_to "戻る", town_path(@town), class: "btn-back" %>
 
 <% content_for :sidebar do %>
   <%= render "route_info", editable: false %>
