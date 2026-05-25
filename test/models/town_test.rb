@@ -7,7 +7,7 @@ class TownTest < ActiveSupport::TestCase
   end
 
   test "name should not be too short" do
-    town = Town.new(name: "aa")
+    town = Town.new(name: "a")
     assert_not town.valid?
   end
 
