@@ -1,5 +1,5 @@
 class ContactMailer < ApplicationMailer
-  default to: ENV["CONTACT_EMAIL"]
+default to: ENV["CONTACT_EMAIL"] || "test@example.com"
 
   def contact_email(name, email, message)
     @name = name
