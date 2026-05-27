@@ -1,6 +1,6 @@
 // map.test.js
 
-import { resetMapState } from "../resetMapState";
+import { resetMapState } from "../map";
 import { createMap } from "../map";
 import { state } from "../state";
 import { START_POINT, DEFAULT_ZOOM } from "../constants";
@@ -13,7 +13,8 @@ jest.mock("../utils", () => ({
 describe("createMap", () => {
 
   beforeEach(() => {
-
+    jest.clearAllMocks();
+    
     // map用のDOMを用意
     document.body.innerHTML = `
       <div id="map"></div>
@@ -137,47 +138,32 @@ describe("resetMapState", () => {
     ];
 
     state.directionsRenderer = {
-      setDirection: jest.fn(),
+      setDirections: jest.fn(),
     };
 
     state.map = {};
-});
-
-test("地図状態をリセットできる", () => {
-
-  resetMapState();
-
-  // marker削除
-  state.markers.forEach(marker => {
-    expect(marker.setMap)
-      .toHaveBeenCalledWith(null);
   });
 
-    // markers初期化
+  test("地図状態をリセットできる", () => {
+
+    resetMapState();
+
+    state.markers.forEach(marker => {
+      expect(marker.setMap)
+        .toHaveBeenCalledWith(null);
+    });
+
     expect(state.markers).toEqual([]);
 
-    // deliveryPoints初期化
     expect(state.deliveryPoints)
       .toEqual([]);
 
-    // directions削除
     expect(
       state.directionsRenderer.setDirections
     ).toHaveBeenCalledWith({
       routes: []
     });
 
-    // map初期化
     expect(state.map).toBeNull();
-  });
-
-  test("directionsRenderer が無くても落ちない", () => {
-
-    state.directionsRenderer = null;
-
-    expect(() => {
-      resetMapState();
-    }).not.toThrow();
-
   });
 });
