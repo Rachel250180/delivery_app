@@ -1,11 +1,10 @@
 import {
-  addPoint,
-  removePoint
+  loadRoutePoints
 } from "../../markers";
 
 import { state } from "../../state";
 
-describe("remove point flow", () => {
+describe("load route points flow", () => {
 
   beforeEach(() => {
 
@@ -68,35 +67,15 @@ describe("remove point flow", () => {
   });
 
   test(
-    "removePointで状態とUIが更新される",
+    "loadRoutePointsで地点を復元できる",
     () => {
 
-      addPoint({
-        lat: 35,
-        lng: 139,
-        address: "東京"
-      });
-
-      addPoint({
-        lat: 36,
-        lng: 140,
-        address: "大阪"
-      });
-
-      const firstMarker =
-        state.markers[0];
-
-      removePoint(0);
-
-      // marker削除
-      expect(
-        firstMarker.setMap
-      ).toHaveBeenCalledWith(null);
-
-      // state更新
-      expect(
-        state.deliveryPoints
-      ).toEqual([
+      loadRoutePoints([
+        {
+          lat: 35,
+          lng: 139,
+          address: "東京"
+        },
         {
           lat: 36,
           lng: 140,
@@ -104,38 +83,53 @@ describe("remove point flow", () => {
         }
       ]);
 
+      // state復元
+      expect(
+        state.deliveryPoints
+      ).toEqual([
+        {
+          lat: 35,
+          lng: 139,
+          address: "東京"
+        },
+        {
+          lat: 36,
+          lng: 140,
+          address: "大阪"
+        }
+      ]);
+
+      // marker復元
+      expect(
+        state.markers.length
+      ).toBe(2);
+
       // hidden更新
       expect(
         document
           .getElementById("points_json")
           .value
-      ).toBe(
-        JSON.stringify([
-          {
-            lat: 36,
-            lng: 140,
-            address: "大阪"
-          }
-        ])
-      );
+      ).toContain("東京");
 
-      // リスト再描画
+      // リスト描画
       expect(
         document.querySelectorAll(
           ".delivery-item"
         ).length
-      ).toBe(1);
+      ).toBe(2);
 
-      expect(
-        document.querySelector(
-          ".delivery-item__address"
-        ).textContent
-      ).toBe("大阪");
-
-      // ルート再計算
+      // route描画
       expect(
         state.directionsService.route
-      ).toHaveBeenCalled();
+      ).toHaveBeenCalledTimes(1);
+
+      // renderer更新
+      expect(
+        state.directionsRenderer
+          .setDirections
+      ).toHaveBeenCalledWith({
+        routes: ["dummy"]
+      });
     }
   );
 });

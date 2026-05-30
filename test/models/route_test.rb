@@ -39,4 +39,20 @@ class RouteTest < ActiveSupport::TestCase
     @route.town = nil
     assert_not @route.valid?
   end
+
+  test "routes should be destroyed with user" do
+    @route.save
+
+    assert_difference "Route.count", -2 do
+      @user.destroy
+    end
+  end
+
+  test "routes should be destroyed with town" do
+    @route.save
+
+    assert_difference "Route.count", -2 do
+      @town.destroy
+    end
+  end
 end
