@@ -45,4 +45,28 @@ class RoutesCreateTest < ActionDispatch::IntegrationTest
       town_route_path(@town, route)
     )
   end
+
+  test "should reject more than 9 route points" do
+    points = []
+
+    10.times do |i|
+      points << {
+        lat: i,
+        lng: i,
+        address: "test#{i}"
+      }
+    end
+
+    assert_no_difference "Route.count" do
+      post town_routes_path(@town),
+          params: {
+            route: {
+              name: "配送ルートA"
+            },
+            points_json: points.to_json
+          }
+    end
+
+    assert_response :unprocessable_entity
+  end
 end

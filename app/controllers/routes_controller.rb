@@ -33,8 +33,8 @@ class RoutesController < ApplicationController
       end
     end
 
-    if @route.route_points.size > 10
-      @route.errors.add(:route_points, "は10個までしか登録できません")
+    if @route.route_points.size > 9
+      @route.errors.add(:route_points, "は9個までしか登録できません")
 
       @route_points = @route.route_points
 
