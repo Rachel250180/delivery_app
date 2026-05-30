@@ -1,0 +1,141 @@
+import {
+  addPoint,
+  removePoint
+} from "../../markers";
+
+import { state } from "../../state";
+
+describe("remove point flow", () => {
+
+  beforeEach(() => {
+
+    document.body.innerHTML = `
+      <input id="points_json">
+
+      <div
+        id="points-list"
+        data-editable="true">
+      </div>
+
+      <template id="delivery-item-template">
+        <div class="delivery-item">
+          <span class="delivery-item__number"></span>
+          <span class="delivery-item__address"></span>
+
+          <button
+            class="delivery-item__delete-btn">
+          </button>
+        </div>
+      </template>
+    `;
+
+    state.deliveryPoints = [];
+    state.markers = [];
+
+    state.isInitializing = false;
+    state.isNewPage = false;
+
+    global.google = {
+      maps: {
+
+        Marker: jest.fn(() => ({
+          setLabel: jest.fn(),
+          setMap: jest.fn()
+        })),
+
+        TravelMode: {
+          DRIVING: "DRIVING"
+        }
+      }
+    };
+
+    state.map = {};
+
+    state.directionsRenderer = {
+      setDirections: jest.fn()
+    };
+
+    state.directionsService = {
+      route: jest.fn(
+        (request, callback) => {
+          callback(
+            { routes: ["dummy"] },
+            "OK"
+          );
+        }
+      )
+    };
+  });
+
+  test(
+    "removePointで状態とUIが更新される",
+    () => {
+
+      addPoint({
+        lat: 35,
+        lng: 139,
+        address: "東京"
+      });
+
+      addPoint({
+        lat: 36,
+        lng: 140,
+        address: "大阪"
+      });
+
+      const firstMarker =
+        state.markers[0];
+
+      removePoint(0);
+
+      // marker削除
+      expect(
+        firstMarker.setMap
+      ).toHaveBeenCalledWith(null);
+
+      // state更新
+      expect(
+        state.deliveryPoints
+      ).toEqual([
+        {
+          lat: 36,
+          lng: 140,
+          address: "大阪"
+        }
+      ]);
+
+      // hidden更新
+      expect(
+        document
+          .getElementById("points_json")
+          .value
+      ).toBe(
+        JSON.stringify([
+          {
+            lat: 36,
+            lng: 140,
+            address: "大阪"
+          }
+        ])
+      );
+
+      // リスト再描画
+      expect(
+        document.querySelectorAll(
+          ".delivery-item"
+        ).length
+      ).toBe(1);
+
+      expect(
+        document.querySelector(
+          ".delivery-item__address"
+        ).textContent
+      ).toBe("大阪");
+
+      // ルート再計算
+      expect(
+        state.directionsService.route
+      ).toHaveBeenCalled();
+    }
+  );
+});
