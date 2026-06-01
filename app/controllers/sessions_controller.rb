@@ -12,8 +12,8 @@ class SessionsController < ApplicationController
         log_in user
         redirect_to forwarding_url || user
       else
-        message = "Account not activated."
-        message += "Check your email for the activation link."
+        message = "アカウントが承認されていません。"
+        message += "メールから承認リンクをチェックしてください"
         flash[:warning] = message
         redirect_to root_url
       end
