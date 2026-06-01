@@ -8,20 +8,17 @@ class LogoutTest < ApplicationSystemTestCase
 
     visit login_path
 
-    fill_in "Email",
-            with: user.email
+    fill_in "session_email", with: user.email
+    fill_in "session_password", with: "password"
 
-    fill_in "Password",
-            with: "password"
+    click_button "ログイン"
 
-    click_button "Log in"
-
-    click_link "Log out"
+    click_link "ログアウト"
 
     assert_current_path(root_path)
 
-    assert_text "Log in"
+    assert_text "ログイン"
 
-    assert_no_text "Log out"
+    assert_no_link "ログアウト"
   end
 end
