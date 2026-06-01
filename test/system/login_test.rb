@@ -3,14 +3,22 @@ require "application_system_test_case"
 class LoginTest < ApplicationSystemTestCase
   test "user logs in successfully" do
     user = users(:michael)
+
     visit login_path
 
-    fill_in "Email", with: user.email
-    fill_in "Password", with: "password"
-    click_button "Log in"
+    puts current_path
+    puts page.text
 
-    assert_current_path(
-      user_path(user)
-    )
+    fill_in "session_email", with: user.email
+    fill_in "session_password", with: "password"
+
+    click_button "ログイン"
+
+    puts page.text
+
+    assert_current_path(user_path(user))
+
+    assert_text user.name
+    assert_link "ログアウト"
   end
 end
