@@ -72,3 +72,4 @@ end
 gem "bootstrap", "~> 5.3"
 gem "kaminari"
 gem "dartsass-rails", "~> 0.5.1"
+gem "letter_opener_web"

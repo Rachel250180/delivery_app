@@ -11,12 +11,12 @@ class ContactMailerTest < ActionMailer::TestCase
     assert_equal "お問い合わせが届きました。", mail.subject
 
     assert_equal(
-      [ ENV["CONTACT_EMAIL"] || "test@example.com" ],
+    [ ENV["GMAIL_ADDRESS"] || "test@example.com" ],
       mail.to
     )
 
     assert_equal(
-      [ ENV["MAIL_FROM"] || "test@example.com" ],
+      [ ENV["GMAIL_ADDRESS"] || "test@example.com" ],
       mail.from
     )
 
