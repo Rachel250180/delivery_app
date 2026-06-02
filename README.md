@@ -1,7 +1,8 @@
-# README
+# Catch-up
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+ルート表示アプリです。
+お店から配達する地域までの最短ルートを自分で登録、検索することができます。
+スマホから操作でき、そのままグーグルマップにルートを反映できます。
 
 Things you may want to cover:
 
