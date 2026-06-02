@@ -1,5 +1,5 @@
 class ContactMailer < ApplicationMailer
-default to: ENV["CONTACT_EMAIL"] || "test@example.com"
+default to: Rails.application.credentials.contact_email
 
   def contact_email(name, email, message)
     @name = name
