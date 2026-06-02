@@ -61,14 +61,7 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :smtp
   host = "https://delivery-app-6k82.onrender.com"
   config.action_mailer.default_url_options = { host: host }
-  ActionMailer::Base.smtp_settings = {
-    :port           => 2525, # rubocop:disable Style/HashSyntax
-    :address        => "smtp.mailgun.org", # rubocop:disable Style/HashSyntax
-    :user_name      => ENV["MAILGUN_SMTP_LOGIN"], # rubocop:disable Style/HashSyntax
-    :password       => ENV["MAILGUN_SMTP_PASSWORD"], # rubocop:disable Style/HashSyntax,Style/StringLiterals
-    :domain         => host, # rubocop:disable Style/HashSyntax
-    :authentication => :plain # rubocop:disable Style/HashSyntax
-  }
+
   # Specify outgoing SMTP server. Remember to add smtp/* credentials via bin/rails credentials:edit.
   # config.action_mailer.smtp_settings = {
   #   user_name: Rails.application.credentials.dig(:smtp, :user_name),
@@ -96,4 +89,15 @@ Rails.application.configure do
   #
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+  #
+  config.action_mailer.delivery_method = :smtp
+
+  config.action_mailer.smtp_settings = {
+    address: "smtp.gmail.com",
+    port: 587,
+    user_name: ENV["GMAIL_ADDRESS"],
+    password: ENV["GMAIL_APP_PASSWORD"],
+    authentication: :plain,
+    enable_starttls_auto: true
+  }
 end

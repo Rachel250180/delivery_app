@@ -1,14 +1,13 @@
 class ContactMailer < ApplicationMailer
-default to: ENV["CONTACT_EMAIL"] || "test@example.com"
-
   def contact_email(name, email, message)
     @name = name
-    @message = message
     @email = email
+    @message = message
 
     mail(
-      subject: "お問い合わせが届きました。",
-      reply_to: email
+      to: ENV["GMAIL_ADDRESS"],
+      reply_to: email,
+      subject: "お問い合わせが届きました。"
     )
   end
 end
