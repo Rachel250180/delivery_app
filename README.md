@@ -11,8 +11,9 @@
 
 # 使用技術
 
-Ruby 2.5.7
-Ruby on Rails 5.2.4
+Ruby 3.2.10
+Ruby on Rails 8.1.3
+
 MySQL 5.7
 Nginx
 Puma
