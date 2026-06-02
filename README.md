@@ -14,20 +14,43 @@ https://delivery-app-6k82.onrender.com/
 **Backend**
 * Ruby 3.2.10
 * Ruby on Rails 8.1.3
+  
 **frontend**
 * JavaScript (ES6)
 * Bootstrap
 * Sass
+  
 **Databese**
 * PostgreSQL
 
+**External API**
+* Google Maps Platform
 
+**Testing**
+* Minitest
+* Capybara
+* Selenium WebDriver
+* Jest
+
+**Code Quality**
+* RuboCop
+* Brakeman
+* Bundler Audit
+
+**Infrastructure**
+* Render
+* Puma
+  
 ## 機能一覧
 * ユーザー登録・ログイン機能(bcrypt)
 * 配送ルート作成機能
-* Google Mapsによる地点登録
-* ルート編集
-* ページネーション
+* 配送地点管理機能
+* 地図表示機能(Google Maps JavaScript API)
+* ルート検索機能(Google Directions API)
+* ページネーション機能(kaminari)
+* メール送信機能(Action Mailer)
+* システムテスト(Minitest / Capybara)
+* JavaScriptテスト(Jest)
 
 
 
