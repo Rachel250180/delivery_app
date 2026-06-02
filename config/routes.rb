@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
-  get  "/contact", to: "contacts#new"
-  post "/contact", to: "contacts#create"
+  get  "/contacts", to: "contacts#new"
+  post "/contacts", to: "contacts#create"
   get "password_resets/new"
   get "password_resets/edit"
   get "sessions/new"
