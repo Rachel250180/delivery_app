@@ -11,9 +11,8 @@
 
   <div class="towns-container-bottom">
     <%= link_to "新しいルートを登録する", new_town_route_path(@town), class: "btn-add" %>
-    <% if current_user&.admin? %>
-      <%= link_to "この町の情報を編集する", edit_town_path(@town), class: "btn-edit" %>
-    <% end %>
+   
+    <%= link_to "この町の情報を編集する", edit_town_path(@town), class: "btn-edit" %>
   </div>
 
 </div>

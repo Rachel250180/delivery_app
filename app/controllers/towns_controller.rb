@@ -17,7 +17,10 @@ class TownsController < ApplicationController
       )
     end
 
-    @towns = @towns.page(params[:page]).per(5)
+    # ★ここで必ず五十音順固定
+    @towns = @towns.order(:kana)
+
+    @towns = @towns.page(params[:page]).per(20)
   end
 
   def show
