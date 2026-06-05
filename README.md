@@ -51,6 +51,20 @@ https://delivery-app-6k82.onrender.com/
 * メール送信機能(Action Mailer)
 * システムテスト(Minitest / Capybara)
 * JavaScriptテスト(Jest)
-  
+* 
+## ゲストログイン
+
+初めての方でもすぐに機能を体験できるよう、ゲストログインを用意しています。
+
+### 利用方法
+ログイン画面で「ゲストログイン」ボタンを押すだけで利用できます。
+
+または以下の情報でもログイン可能です：
+
+- email: guest@example.com
+- password: password
+
+### 注意事項
+ゲストアカウントではデータの作成・編集に制限を設けています。
 
 * ...
