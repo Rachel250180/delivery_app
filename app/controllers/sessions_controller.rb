@@ -23,8 +23,8 @@ class SessionsController < ApplicationController
     end
   end
 
-  def guest
-    user = User.find_by(email: "guest@example.com")
+  def guest_login
+    user = User.guest
 
     if user
       log_in user
@@ -33,6 +33,7 @@ class SessionsController < ApplicationController
       redirect_to login_path, alert: "ゲストユーザーが存在しません"
     end
   end
+
   def destroy
     log_out if logged_in?
     redirect_to root_path, status: :see_other, notice: "ログアウトしました"
