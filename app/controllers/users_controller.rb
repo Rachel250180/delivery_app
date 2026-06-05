@@ -26,6 +26,12 @@ class UsersController < ApplicationController
   end
 
   def update
+    if @user.email == "guest@example.com"
+      redirect_to root_path,
+                  alert: "ゲストユーザーは編集できません"
+      return
+    end
+
     @user = User.find(params[:id])
     if @user.update(user_params)
       flash[:success] = "更新しました。"
@@ -61,6 +67,6 @@ class UsersController < ApplicationController
     end
 
     def admin_user
-      redirect_to(root_url, status: :see_other) unless current_user.admin?
+      redirect_to(root_url, status: :see_other, alert: "権限がありません") unless current_user.admin?
     end
 end

@@ -66,6 +66,11 @@ class User < ApplicationRecord
   def password_reset_expired?
     reset_sent_at < 2.hours.ago
   end
+
+  def guest?
+    email == "guest@example.com"
+  end
+
   private
 
     def downcase_email

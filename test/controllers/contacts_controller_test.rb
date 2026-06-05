@@ -7,12 +7,14 @@ class ContactsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should create contact" do
-    post contact_path, params: {
-      name: "テスト",
-      email: "test@example.com",
-      message: "お問い合わせです"
+    post contacts_path, params: {
+      contact: {
+        name: "テスト",
+        email: "test@example.com",
+        message: "お問い合わせです"
+      }
     }
 
-    assert_response :redirect
+    assert_redirected_to root_path
   end
 end

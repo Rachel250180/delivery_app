@@ -1,5 +1,8 @@
 class TownsController < ApplicationController
-  before_action :logged_in_user, only: [ :new, :create, :edit, :update, :destroy ]
+  before_action :logged_in_user,
+                only: [ :new, :create, :edit, :update, :destroy ]
+  before_action :admin_user,
+                only: [ :new, :create, :edit, :update, :destroy ]
   def index
     @towns = Town.all
 
@@ -63,5 +66,9 @@ class TownsController < ApplicationController
 
   def town_params
     params.require(:town).permit(:name, :kana, :description)
+  end
+
+  def admin_user
+    redirect_to(root_path, status: :see_other, alert: "権限がありません") unless current_user.admin?
   end
 end
