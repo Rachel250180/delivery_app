@@ -81,4 +81,15 @@ class User < ApplicationRecord
       self.activation_token = User.new_token
       self.activation_digest = User.digest(activation_token)
     end
+
+    def self.guest
+      find_or_create_by!(email: "guest@example.com") do |user|
+        user.name = "ゲストユーザー"
+        user.password = "password"
+        user.password_confirmation = "password"
+        user.admin = false
+        user.activated = true
+        user.activated_at = Time.zone.now
+      end
+    end
 end
