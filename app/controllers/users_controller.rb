@@ -26,6 +26,12 @@ class UsersController < ApplicationController
   end
 
   def update
+    if @user.email == "guest@example.com"
+      redirect_to root_path,
+                  alert: "ゲストユーザーは編集できません"
+      return
+    end
+
     @user = User.find(params[:id])
     if @user.update(user_params)
       flash[:success] = "更新しました。"

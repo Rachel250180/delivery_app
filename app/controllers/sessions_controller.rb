@@ -23,6 +23,16 @@ class SessionsController < ApplicationController
     end
   end
 
+  def guest
+    user = User.find_by(email: "guest@example.com")
+
+    if user
+      log_in user
+      redirect_to user, notice: "ゲストユーザーでログインしました。"
+    else
+      redirect_to login_path, alert: "ゲストユーザーが存在しません"
+    end
+  end
   def destroy
     log_out if logged_in?
     redirect_to root_path, status: :see_other, notice: "ログアウトしました"
