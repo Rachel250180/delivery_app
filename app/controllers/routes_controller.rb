@@ -1,7 +1,8 @@
 class RoutesController < ApplicationController
   before_action :logged_in_user, only: [ :new, :create, :edit, :update, :destroy ]
   before_action :set_town
-  before_action :set_route, only: [ :show, :edit, :update, :destroy ]
+  before_action :set_route, only: [ :show ]
+  before_action :set_user_route, only: [ :edit, :update, :destroy ]
 
   def index
     redirect_to town_path(@town)
@@ -101,5 +102,12 @@ class RoutesController < ApplicationController
 
   def set_route
     @route = @town.routes.find(params[:id])
+  end
+
+  def set_user_route
+    @route = current_user.routes.find(params[:id])
+
+    redirect_to root_path,
+              alert: "権限がありません" unless @route
   end
 end
