@@ -5,7 +5,7 @@ class ContactMailer < ApplicationMailer
     @message = message
 
     mail(
-      to: ENV["GMAIL_ADDRESS"],
+      to: ENV["GMAIL_ADDRESS"] || "test@example.com",
       reply_to: email,
       subject: "お問い合わせが届きました。"
     )
