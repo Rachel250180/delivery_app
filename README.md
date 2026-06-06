@@ -40,6 +40,43 @@ https://delivery-app-6k82.onrender.com/
 **Infrastructure**
 * Render
 * Puma
+
+## ER図
+
+```mermaid
+erDiagram
+
+    USERS ||--o{ ROUTES : creates
+    TOWNS ||--o{ ROUTES : contains
+    ROUTES ||--o{ ROUTE_POINTS : has
+
+    USERS {
+        bigint id PK
+        string name
+        string email
+    }
+
+    TOWNS {
+        bigint id PK
+        string name
+        string kana
+    }
+
+    ROUTES {
+        bigint id PK
+        bigint user_id FK
+        bigint town_id FK
+        string name
+        integer estimated_duration
+    }
+
+    ROUTE_POINTS {
+        bigint id PK
+        bigint route_id FK
+        string address
+        integer position
+    }
+```
   
 ## 機能一覧
 * ユーザー登録・ログイン機能(bcrypt)
