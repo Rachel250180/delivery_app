@@ -1,9 +1,8 @@
 class RoutesController < ApplicationController
   before_action :logged_in_user, only: [ :new, :create, :edit, :update, :destroy ]
   before_action :set_town
-  before_action :set_route, only: [ :show ]
-  before_action :set_user_route, only: [ :edit, :update, :destroy ]
-
+  before_action :set_route, only: [ :show, :edit, :update, :destroy ]
+  before_action :correct_user, only: [ :edit, :update, :destroy ]
   def index
     redirect_to town_path(@town)
   end
@@ -104,10 +103,9 @@ class RoutesController < ApplicationController
     @route = @town.routes.find(params[:id])
   end
 
-  def set_user_route
-    @route = current_user.routes.find(params[:id])
+  def correct_user
+    return if @route.user_id == current_user.id
 
-    redirect_to root_path,
-              alert: "権限がありません" unless @route
+    redirect_to root_path, alert: "権限がありません"
   end
 end
