@@ -8,7 +8,8 @@
 <img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/4577f452-5b76-4f73-81f4-e03839624d89" />
 
 ## URL
-https://delivery-app-6k82.onrender.com/
+https://delivery-catchup.com/
+サイドメニューまたはトグルで「ゲストログイン」ボタンを押すだけで利用できます。
 
 ## 使用技術
 **Backend**
@@ -38,8 +39,12 @@ https://delivery-app-6k82.onrender.com/
 * Bundler Audit
 
 **Infrastructure**
-* Render
+* Nginx
 * Puma
+* AWS
+  - VPC
+  - EC2
+  - Route53
 
 ## ER図
 
@@ -88,7 +93,7 @@ erDiagram
 * メール送信機能(Action Mailer)
 * システムテスト(Minitest / Capybara)
 * JavaScriptテスト(Jest)
-* 
+
 ## ゲストログイン
 
 初めての方でもすぐに機能を体験できるよう、ゲストログインを用意しています。
@@ -101,7 +106,3 @@ erDiagram
 - email: guest@example.com
 - password: password
 
-### 注意事項
-ゲストアカウントではデータの作成・編集に制限を設けています。
-
-* ...
