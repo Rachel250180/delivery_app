@@ -3,7 +3,7 @@
 </div>
 
 <div class="route-info-card-btn">
-  <button onclick="goToGoogleMap()", class="btn-simple">
+  <button onclick="goToGoogleMap()" class="btn-simple">
     GoogleMapで確認する
   </button>
   <%= link_to "編集する", edit_town_route_path(@town, @route), class:"btn-edit" %>
@@ -12,6 +12,7 @@
 <div class="route-info-card">
   <p>制作者：<%= @route.user&.name || "不明" %></p>
   <p>コメント：<%= @route.description %></p>
+  <p>＊実際のルート表示と異なる場合がございます。黄色いボタンよりGoogleMapでご確認ください。</p>
 </div>
 
 <%= link_to "戻る", town_path(@town), class: "btn-back" %>
