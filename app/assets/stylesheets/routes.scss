@@ -212,6 +212,10 @@
     .route-info-card {
       border-radius: 0;
     }
+    .routes-show .route-info-card-btn,
+    .route-info-card-btn {
+      justify-content: center;
+    }
 
     .delivery-item {
       &__address {
