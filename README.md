@@ -8,7 +8,7 @@
 <img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/4577f452-5b76-4f73-81f4-e03839624d89" />
 
 ## URL
-https://delivery-app-6k82.onrender.com/
+https://delivery-catchup.com/
 
 ## 使用技術
 **Backend**
@@ -38,8 +38,12 @@ https://delivery-app-6k82.onrender.com/
 * Bundler Audit
 
 **Infrastructure**
-* Render
+* Nginx
 * Puma
+* AWS
+  - VPC
+  - EC2
+  - Route53
 
 ## ER図
 
