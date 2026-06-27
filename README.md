@@ -47,7 +47,7 @@ https://delivery-catchup.com/
   - Route53
 
 ## AWS構成図
-
+<img width="1110" height="731" alt="Image" src="https://github.com/user-attachments/assets/8385ca02-9de4-4080-a0f4-1998deb672fa" />
 
 ## ER図
 
