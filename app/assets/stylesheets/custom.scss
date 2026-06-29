@@ -1,3 +1,5 @@
+// ヘッダーアイコン
+
 .header-left {
   padding: 12px;
   display: flex;
@@ -43,6 +45,7 @@
   }
 }
 
+// ログイン用ボタン
 
 .btn {
   &.btn-header {
@@ -62,7 +65,7 @@
   }
 }
 
-
+//　登録ボタン
 
 .btn-add {
   appearance: none;
@@ -98,6 +101,8 @@
   }
 }
 
+// 戻るボタン
+
 .btn-back {
   display: flex;
   align-items: center;
@@ -128,7 +133,7 @@
   }
 }
 
-
+//　フォーム
 
 .form-group {
   margin-bottom: 20px;
@@ -156,6 +161,8 @@
     box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.2);
   }
 }
+
+// 削除ボタン
 
 .btn-danger {
   display: inline-flex;
@@ -188,6 +195,8 @@
   }
 }
 
+//　編集ボタン
+
 .btn-edit {
   display: inline-flex;
   align-items: center;
@@ -219,6 +228,7 @@
     transform: translateY(-2px);
   }
 }
+
 
 
 .btn-simple {
@@ -282,6 +292,8 @@
   color: #555;
 }
 
+//　フラッシュメッセージ
+
 .alert {
   margin-top: 2px;
   margin-bottom: 2px !important;
@@ -296,12 +308,12 @@
 
   font-size: 18px;
   font-weight: 700;
-}
 
-.alert-notice {
-  color: #2e7d32;
-}
+  &-notice {
+    color: #2e7d32;
+  }
 
-.alert-alert {
-  color: #d32f2f;
+  &-alert {
+    color: #d32f2f;
+  }
 }

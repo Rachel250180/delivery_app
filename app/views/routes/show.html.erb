@@ -11,7 +11,7 @@
 
 <div class="route-info-card">
   <p>制作者：<%= @route.user&.name || "不明" %></p>
-  <p>コメント：<%= @route.description %></p>
+  <p>コメント：<%= linked_comment(@route.description) %></p>
   <p>＊実際のルート表示と異なる場合がございます。黄色いボタンよりGoogleMapでご確認ください。</p>
 </div>
 
