@@ -49,6 +49,11 @@ https://delivery-catchup.com/
 ## AWS構成図
 <img width="1110" height="731" alt="Image" src="https://github.com/user-attachments/assets/ee01dad4-a0e4-4770-8a6b-e05b5a6a5b66" />
 
+## 画面遷移図
+黒矢印：ログイン前にも移動可能　赤矢印：ログイン後に移動可能
+
+<img width="1081" height="761" alt="Image" src="https://github.com/user-attachments/assets/45c02d27-add0-4459-997d-c8ad50f53018" />
+
 ## ER図
 
 ```mermaid
