@@ -14,7 +14,7 @@ class RoutesCreateTest < ApplicationSystemTestCase
     assert_current_path(user_path(@user))
   end
 
-  test "ルート作成できる" do
+  test "making route" do
     visit new_town_route_path(@town)
 
     assert_selector "#route-form", wait: 5
