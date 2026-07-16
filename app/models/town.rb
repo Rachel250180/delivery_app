@@ -2,7 +2,7 @@ class Town < ApplicationRecord
   has_many          :routes, dependent: :destroy
 
   before_validation :normalize_kana
-  validates         :name,  
+  validates         :name,
                     presence: true,
                     uniqueness: true,
                     length: { minimum: 2, maximum: 20 }
