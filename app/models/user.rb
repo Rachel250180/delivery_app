@@ -83,6 +83,13 @@ class User < ApplicationRecord
     email == "guest@example.com"
   end
 
+  def resend_activation_email
+    self.activation_token = User.new_token
+    self.activation_digest = User.digest(activation_token)
+    save!(validate: false)
+    send_activation_email
+  end
+
   private
 
     def downcase_email

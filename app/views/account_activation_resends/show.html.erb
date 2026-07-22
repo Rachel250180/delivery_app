@@ -1,0 +1,16 @@
+<h1>認証メールを送信しました</h1>
+
+<p>
+  <strong><%= @email %></strong>
+  に認証メールを送信しました。
+</p>
+
+<p>
+  メールが届かない場合は、
+  迷惑メールフォルダもご確認ください。
+</p>
+
+<%= button_to "認証メールを再送する",
+              account_activation_resend_path,
+              method: :post,
+              class: "btn btn-primary" %>

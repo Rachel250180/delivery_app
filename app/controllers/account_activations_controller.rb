@@ -6,6 +6,7 @@ class AccountActivationsController < ApplicationController
       log_in user
       flash[:success] = "アカウントが承認されました！"
       redirect_to user
+      session.delete(:activation_email)
     else
       flash[:danger] = "無効なアクティベーションリンクです。"
       redirect_to root_url

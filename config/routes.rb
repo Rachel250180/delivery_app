@@ -14,6 +14,7 @@ Rails.application.routes.draw do
 
   resources :users
   resources :account_activations, only: [ :edit ]
+  resource  :account_activation_resend, only: [ :show, :create ]
   resources :password_resets,     only: [ :new,  :create, :edit, :update ]
   resources :towns do
     resources :routes
