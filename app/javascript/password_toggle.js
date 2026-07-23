@@ -1,8 +1,8 @@
 document.addEventListener("turbo:load", () => {
-  setupPassword("password", "toggle-password");
-  setupPassword("password-confirmation", "toggle-password-confirmation");
+  setupPassword("user_password", "toggle-password");
+  setupPassword("user_password-confirmation", "toggle-password-confirmation");
 
-  const password = document.getElementById("password");
+  const password = document.getElementById("user_password");
   const error = document.getElementById("password-error");
 
   if (password) {
