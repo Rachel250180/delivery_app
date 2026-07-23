@@ -11,7 +11,6 @@ class UsersSignupTest < ApplicationSystemTestCase
 
     click_button "登録する"
 
-    assert_current_path root_path
-    assert_text "メールをチェックして、承認してください。"
+    assert_current_path account_activation_resend_path
   end
 end

@@ -14,8 +14,9 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
     if @user.save
       @user.send_activation_email
-      flash[:info] = "メールをチェックして、承認してください。"
-      redirect_to root_url
+      session[:activation_email] = @user.email
+
+      redirect_to account_activation_resend_path
     else
       render :new, status: :unprocessable_entity
     end
