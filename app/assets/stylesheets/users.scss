@@ -61,6 +61,35 @@
   max-width: 1000px;
 }
 
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding-right: 45px;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #777;
+}
+
+.password-help {
+  color: #666;
+  font-size: 13px;
+}
+
+.password-error {
+  color: #dc3545;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
 
 // スマホ用
 
