@@ -43,20 +43,26 @@ class RoutesController < ApplicationController
 
   def update
     if @route.update(route_params)
-      @route.route_points.destroy_all
-      build_route_points(@route)
 
-      if over_route_points_limit?
-        @route.errors.add(:route_points, "は9個までしか登録できません")
-        @route_points = @route.route_points
-        render :edit, status: :unprocessable_entity
-        return
+      if params[:points_json].present?
+        points = JSON.parse(params[:points_json])
+
+        @route.route_points.destroy_all
+
+        points.each_with_index do |p, i|
+          @route.route_points.create!(
+            latitude: p["lat"],
+            longitude: p["lng"],
+            address: p["address"],
+            position: i
+          )
+        end
       end
 
-      @route.save!
       redirect_to town_route_path(@town, @route)
     else
       @route_points = @route.route_points.order(:position)
+
       render :edit, status: :unprocessable_entity
     end
   end
