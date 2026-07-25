@@ -1,7 +1,5 @@
 class PasswordResetsController < ApplicationController
-  before_action :get_user,   only: [ :edit, :update ]
-  before_action :valid_user, only: [ :edit, :update ]
-  before_action :check_expiration, only: [ :edit, :update ]
+  before_action :get_user, :valid_user, :check_expiration, only: %i[edit update]
   def new
   end
 
@@ -10,10 +8,10 @@ class PasswordResetsController < ApplicationController
     if @user
       @user.create_reset_digest
       @user.send_password_reset_email
-      flash[:info] = "Email sent with password reset instructions"
+      flash[:info] = "パスワードリセット手順を記載したメールが送信されました。"
       redirect_to root_url
     else
-      flash.now[:danger] = "Email address not found"
+      flash.now[:danger] = "メールアドレスが見つかりません。"
       render "new", status: :unprocessable_entity
     end
   end
@@ -22,15 +20,14 @@ class PasswordResetsController < ApplicationController
   end
 
   def update
-    if params[:user][:password].empty?
-      @user.errors.add(:password, "can't be empty")
-      render "edit", status: :unprocessable_entity
-    elsif @user.update(user_params)
+    return render_empty_password if params[:user][:password].blank?
+
+    if @user.update(user_params)
       @user.forget
       reset_session
       log_in @user
       @user.update_attribute(:reset_digest, nil)
-      flash[:success] = "Password has been reset."
+      flash[:success] = "パスワードがリセットされました。"
       redirect_to @user
     else
       render "edit", status: :unprocessable_entity
@@ -48,16 +45,21 @@ class PasswordResetsController < ApplicationController
     end
 
     def valid_user
-      unless (@user && @user.activated? && # rubocop:disable Style/ParenthesesAroundCondition
-              @user.authenticated?(:reset, params[:id]))
-       redirect_to root_url
-      end
+      return if @user&.activated? &&
+                @user.authenticated?(:reset, params[:id])
+
+      redirect_to root_url
     end
 
     def check_expiration
       if @user.password_reset_expired?
-        flash[:danger] = "Password reset has expired."
+        flash[:danger] = "パスワードリセットの期限が切れています。"
         redirect_to new_password_reset_url
       end
+    end
+
+    def render_empty_password
+      @user.errors.add(:password, "can't be empty")
+      render :edit, status: :unprocessable_entity
     end
 end
