@@ -20,24 +20,11 @@ class RoutesController < ApplicationController
     @route = @town.routes.new(route_params)
     @route.user = current_user
 
-    if params[:points_json].present?
-      points = JSON.parse(params[:points_json])
+    build_route_points(@route)
 
-      points.each_with_index do |p, i|
-        @route.route_points.new(
-          latitude: p["lat"],
-          longitude: p["lng"],
-          address: p["address"],
-          position: i
-        )
-      end
-    end
-
-    if @route.route_points.size > 9
+    if over_route_points_limit?
       @route.errors.add(:route_points, "は9個までしか登録できません")
-
       @route_points = @route.route_points
-
       render :new, status: :unprocessable_entity
       return
     end
@@ -56,26 +43,20 @@ class RoutesController < ApplicationController
 
   def update
     if @route.update(route_params)
+      @route.route_points.destroy_all
+      build_route_points(@route)
 
-      if params[:points_json].present?
-        points = JSON.parse(params[:points_json])
-
-        @route.route_points.destroy_all
-
-        points.each_with_index do |p, i|
-          @route.route_points.create!(
-            latitude: p["lat"],
-            longitude: p["lng"],
-            address: p["address"],
-            position: i
-          )
-        end
+      if over_route_points_limit?
+        @route.errors.add(:route_points, "は9個までしか登録できません")
+        @route_points = @route.route_points
+        render :edit, status: :unprocessable_entity
+        return
       end
 
+      @route.save!
       redirect_to town_route_path(@town, @route)
     else
       @route_points = @route.route_points.order(:position)
-
       render :edit, status: :unprocessable_entity
     end
   end
@@ -95,17 +76,39 @@ class RoutesController < ApplicationController
     )
   end
 
+
   def set_town
     @town = Town.find(params[:town_id])
   end
+
 
   def set_route
     @route = @town.routes.find(params[:id])
   end
 
+
   def correct_user
     return if @route.user_id == current_user.id
-
     redirect_to root_path, alert: "権限がありません"
+  end
+
+
+  def build_route_points(route)
+    return unless params[:points_json].present?
+
+    points = JSON.parse(params[:points_json])
+
+    points.each_with_index do |point, index|
+      route.route_points.build(
+        latitude:  point["lat"],
+        longitude: point["lng"],
+        address:   point["address"],
+        position:  index
+      )
+    end
+  end
+
+  def over_route_points_limit?
+    @route.route_points.size > Route::MAX_ROUTE_POINTS
   end
 end

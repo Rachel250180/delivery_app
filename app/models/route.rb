@@ -1,6 +1,7 @@
 class Route < ApplicationRecord
     has_many :route_points, -> { order(:position) }, dependent: :destroy
     accepts_nested_attributes_for :route_points, reject_if: :all_blank
+    MAX_ROUTE_POINTS = 9
 
     belongs_to :town
     belongs_to :user
