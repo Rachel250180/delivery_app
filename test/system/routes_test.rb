@@ -33,7 +33,7 @@ class RoutesCreateTest < ApplicationSystemTestCase
     assert_text "ルートを作成しました！"
   end
 
-  test "配送地点が10個以上なら作成できない" do
+  test "Cannot create if there are 10 or more delivery points" do
     visit new_town_route_path(@town)
 
     fill_in "ルート名", with: "テストルート"
