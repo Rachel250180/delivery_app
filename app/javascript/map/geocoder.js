@@ -4,13 +4,10 @@ import { state } from "map/state";
 import { countApi } from "map/utils";
 
 export function fetchAddress(lat, lng, callback) {
-
   countApi("Geocoder API");
 
   state.geocoder.geocode(
-    {
-      location: { lat, lng }
-    },
+    {location: { lat, lng }},
     (results, status) => {
 
       let address = "";
