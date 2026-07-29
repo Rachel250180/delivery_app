@@ -1,7 +1,7 @@
 // map.js
 
 import { state } from "map/state";
-import { START_POINT, DEFAULT_ZOOM } from "map/constants";
+import { START_POINT, DEFAULT_ZOOM, START_MARKER_ICON} from "map/constants";
 import { countApi } from "map/utils";
 
 export function createMap() {
@@ -32,13 +32,7 @@ export function createMap() {
   state.geocoder =
     new google.maps.Geocoder();
 
-  new google.maps.Marker({
-    position: START_POINT,
-    map: state.map,
-    label: "S",
-    icon:
-      "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
-  });
+  createStartMarker();
 
   google.maps.event.trigger(
     state.map,
@@ -65,4 +59,13 @@ export function resetMapState() {
   }
 
   state.map = null;
+}
+
+function createStartMarker(){
+  return new google.maps.Marker({
+    position: START_POINT,
+    map: state.map,
+    label: "S",
+    icon: START_MARKER_ICON,
+  });
 }
