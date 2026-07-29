@@ -19,18 +19,8 @@ export function createMap() {
     }
   );
 
-  state.directionsService =
-    new google.maps.DirectionsService();
-
-  state.directionsRenderer =
-    new google.maps.DirectionsRenderer({
-      suppressMarkers: true,
-    });
-
+  initializeServices();
   state.directionsRenderer.setMap(state.map);
-
-  state.geocoder =
-    new google.maps.Geocoder();
 
   createStartMarker();
 
@@ -68,4 +58,18 @@ function createStartMarker(){
     label: "S",
     icon: START_MARKER_ICON,
   });
+}
+
+function initializeServices() {
+  state.directionsService =
+    new google.maps.DirectionsService();
+
+  state.directionsRenderer =
+    new google.maps.DirectionsRenderer({
+      suppressMarkers: true,
+    });
+
+
+  state.geocoder =
+    new google.maps.Geocoder();
 }
