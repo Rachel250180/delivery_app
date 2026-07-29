@@ -32,24 +32,6 @@ export function createMap() {
   state.map.setCenter(START_POINT);
 }
 
-export function resetMapState() {
-
-  state.markers.forEach(marker => {
-    marker.setMap(null);
-  });
-
-  state.markers = [];
-  state.deliveryPoints = [];
-
-  if (state.directionsRenderer) {
-
-    state.directionsRenderer.setDirections({
-      routes: []
-    });
-  }
-
-  state.map = null;
-}
 
 function createStartMarker(){
   return new google.maps.Marker({
@@ -59,6 +41,7 @@ function createStartMarker(){
     icon: START_MARKER_ICON,
   });
 }
+
 
 function initializeServices() {
   state.directionsService =
@@ -72,4 +55,35 @@ function initializeServices() {
 
   state.geocoder =
     new google.maps.Geocoder();
+}
+
+
+export function resetMapState() {
+
+  clearMarkers();
+  clearDeliveryPoints();
+  clearDirections();
+
+  state.map = null;
+}
+
+
+function clearMarkers() {
+  state.markers.forEach(marker => {
+    marker.setMap(null);
+  });
+
+  state.markers = [];
+}
+
+function clearDeliveryPoints() {
+  state.deliveryPoints = [];
+}
+
+function clearDirections() {
+  if (!state.directionsRenderer) return;
+
+  state.directionsRenderer.setDirections({
+    routes: [],
+  });
 }
