@@ -56,43 +56,27 @@ export function removePoint(index) {
 
 
 // マーカー順序変更
-export function movePoint(
-  oldIndex,
-  newIndex
-) {
+export function movePoint(oldIndex,  newIndex) {
+  if (oldIndex < 0 ||  newIndex < 0) { return;}
 
-  if (
-    oldIndex < 0 ||
-    newIndex < 0
-  ) {
-    return;
-  }
-
-  const marker =
-    state.markers.splice(
-      oldIndex,
-      1
-    )[0];
-
-  state.markers.splice(
-    newIndex,
-    0,
-    marker
+  moveArrayItem(
+    state.markers,
+    oldIndex,
+    newIndex
   );
 
-  const point =
-    state.deliveryPoints.splice(
-      oldIndex,
-      1
-    )[0];
-
-  state.deliveryPoints.splice(
-    newIndex,
-    0,
-    point
+  moveArrayItem(
+    state.deliveryPoints,
+    oldIndex,
+    newIndex
   );
 
   refreshUI();
+}
+
+function moveArrayItem(array, from, to) {
+  const item = array.splice(from, 1)[0];
+  array.splice(to, 0, item);
 }
 
 
