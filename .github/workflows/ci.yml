@@ -92,6 +92,9 @@ jobs:
           ruby-version: 3.3.11
           bundler-cache: true
 
+      - name: Install libvips
+        run: sudo apt-get update && sudo apt-get install -y libvips-dev
+
       - name: Run tests
         env:
           RAILS_ENV: test
@@ -126,6 +129,9 @@ jobs:
         with:
           ruby-version: 3.3.11
           bundler-cache: true
+
+      - name: Install libvips
+        run: sudo apt-get update && sudo apt-get install -y libvips-dev
 
       - name: Install dependencies
         run: bundle install --jobs 4 --retry 3
