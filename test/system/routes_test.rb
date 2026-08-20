@@ -30,7 +30,7 @@ class RoutesCreateTest < ApplicationSystemTestCase
 
     click_button "登録する"
 
-    assert_text "ルートを作成しました！"
+    assert_text "ルートを作成しました。"
   end
 
   test "Cannot create if there are 10 or more delivery points" do
