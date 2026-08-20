@@ -10,15 +10,15 @@ end
 class ForgotPasswordFormTest < PasswordResets
   test "password reset path" do
     get new_password_reset_path
-    assert_select "h1", "Forgot password"
-        assert_select "input[name=?]", "password_reset[email]"
+    assert_select "h1", "パスワードを再設定"
+    assert_select "input[name=?]", "password_reset[email]"
   end
 
   test "reset path with invalid email" do
     post password_resets_path, params: { password_reset: { email: " " } }
     assert_response :unprocessable_entity
     assert_not flash.empty?
-    assert_select "h1", "Forgot password"
+    assert_select "h1", "パスワードを再設定"
   end
 end
 
