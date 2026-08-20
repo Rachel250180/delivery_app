@@ -34,4 +34,24 @@ class RoutesUpdateTest < ActionDispatch::IntegrationTest
     assert_equal(1, @route.route_points.count)
     assert_equal("大阪", @route.route_points.first.address)
   end
+
+  test "rejects an update with more than the configured maximum route points" do
+    points = (Route::MAX_ROUTE_POINTS + 1).times.map do |i|
+      { lat: i, lng: i, address: "地点#{i}" }
+    end
+
+    original_name = @route.name
+
+    patch town_route_path(@town, @route),
+      params: {
+        route: { name: "更新後ルート" },
+        points_json: points.to_json
+      }
+
+    assert_response :unprocessable_entity
+
+    @route.reload
+    assert_equal original_name, @route.name
+    assert_equal 1, @route.route_points.count
+  end
 end

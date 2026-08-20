@@ -2,11 +2,6 @@
 
 import { state } from "map/state";
 
-import {
-  MAX_POINTS
-} from "map/constants";
-
-
 // API回数チェック
 export const apiCounter = {};
 
@@ -45,17 +40,27 @@ export function formatLatLng(point) {
 // 経由地点上限チェック
 export function canAddPoint() {
 
+  const maxPoints = getMaxPoints();
+
   if (
     state.deliveryPoints.length
-      >= MAX_POINTS
+      >= maxPoints
   ) {
 
     alert(
-      `最大${MAX_POINTS}地点までです`
+      `最大${maxPoints}地点までです`
     );
 
     return false;
   }
 
   return true;
+}
+
+function getMaxPoints() {
+
+  const routeData =
+    document.getElementById("route-data");
+
+  return Number(routeData?.dataset.maxPoints);
 }

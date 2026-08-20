@@ -10,18 +10,10 @@ import {
 
 import { state } from "map/state";
 
-import {
-  MAX_POINTS
-} from "map/constants";
-
 jest.mock("map/state", () => ({
   state: {
     deliveryPoints: []
   }
-}));
-
-jest.mock("map/constants", () => ({
-  MAX_POINTS: 5
 }));
 
 describe("utils.js", () => {
@@ -109,7 +101,14 @@ describe("utils.js", () => {
 
   describe("canAddPoint", () => {
 
-    test("MAX_POINTS 未満なら true", () => {
+    beforeEach(() => {
+
+      document.body.innerHTML = `
+        <div id="route-data" data-max-points="5"></div>
+      `;
+    });
+
+    test("サーバーから受け取った上限未満なら true", () => {
 
       state.deliveryPoints = [
         {},
@@ -123,19 +122,19 @@ describe("utils.js", () => {
         .toBe(true);
     });
 
-    test("MAX_POINTS 以上なら false", () => {
+    test("サーバーから受け取った上限以上なら false", () => {
 
       window.alert = jest.fn();
 
       state.deliveryPoints =
-        Array(MAX_POINTS).fill({});
+        Array(5).fill({});
 
       const result =
         canAddPoint();
 
       expect(window.alert)
         .toHaveBeenCalledWith(
-          `最大${MAX_POINTS}地点までです`
+          "最大5地点までです"
         );
 
       expect(result)

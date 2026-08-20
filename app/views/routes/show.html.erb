@@ -25,6 +25,7 @@
 <!-- javascript関連 -->
 
 <div id="route-data"
+  data-max-points="<%= Route::MAX_ROUTE_POINTS %>"
   data-points='<%= raw(
     @route.route_points.map { |p|
       {

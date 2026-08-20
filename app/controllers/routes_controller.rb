@@ -22,17 +22,10 @@ class RoutesController < ApplicationController
 
     build_route_points(@route)
 
-    if over_route_points_limit?
-      @route.errors.add(:route_points, "は9個までしか登録できません")
-      @route_points = @route.route_points
-      render :new, status: :unprocessable_entity
-      return
-    end
-
     if @route.save
       redirect_to town_route_path(@town, @route), notice: "ルートを作成しました！"
     else
-      @route_points = []
+      @route_points = @route.route_points
       render :new, status: :unprocessable_entity
     end
   end
@@ -42,29 +35,27 @@ class RoutesController < ApplicationController
   end
 
   def update
-    if @route.update(route_params)
+    points = route_points_from_params
 
-      if params[:points_json].present?
-        points = JSON.parse(params[:points_json])
+    Route.transaction do
+      @route.assign_attributes(route_params)
 
+      if points
         @route.route_points.destroy_all
-
-        points.each_with_index do |p, i|
-          @route.route_points.create!(
-            latitude: p["lat"],
-            longitude: p["lng"],
-            address: p["address"],
-            position: i
-          )
-        end
+        build_route_points(@route, points)
       end
 
-      redirect_to town_route_path(@town, @route)
-    else
-      @route_points = @route.route_points.order(:position)
-
-      render :edit, status: :unprocessable_entity
+      @route.save!
     end
+
+    redirect_to town_route_path(@town, @route)
+  rescue JSON::ParserError
+    @route.errors.add(:route_points, "の形式が正しくありません")
+    @route_points = @route.route_points.order(:position)
+    render :edit, status: :unprocessable_entity
+  rescue ActiveRecord::RecordInvalid
+    @route_points = @route.route_points
+    render :edit, status: :unprocessable_entity
   end
 
   def destroy
@@ -99,10 +90,8 @@ class RoutesController < ApplicationController
   end
 
 
-  def build_route_points(route)
-    return unless params[:points_json].present?
-
-    points = JSON.parse(params[:points_json])
+  def build_route_points(route, points = route_points_from_params)
+    return unless points
 
     points.each_with_index do |point, index|
       route.route_points.build(
@@ -114,7 +103,9 @@ class RoutesController < ApplicationController
     end
   end
 
-  def over_route_points_limit?
-    @route.route_points.size > Route::MAX_ROUTE_POINTS
+  def route_points_from_params
+    return unless params[:points_json].present?
+
+    JSON.parse(params[:points_json])
   end
 end
