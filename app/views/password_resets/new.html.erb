@@ -1,5 +1,5 @@
-<% provide(:title, "Forgot password") %>
-<h1>Forgot password</h1>
+<% provide(:title, t(".title")) %>
+<h1><%= t(".title") %></h1>
 
 <div>
   <div>
@@ -7,7 +7,7 @@
       <%= f.label :email %>
       <%= f.email_field :email %>
 
-      <%= f. submit "Submit" %>
+      <%= f.submit t(".submit") %>
     <% end %>
   </div>
 </div>

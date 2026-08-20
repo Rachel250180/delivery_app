@@ -1,6 +1,8 @@
 <div class="users-container">
   <h1><i class="fa-solid fa-pencil"></i> マイページ</h1>
 
+  <%= render "shared/error_messages", model: @user %>
+
   <%= form_with model: @user do |f| %>
 
     <div class="form-group">

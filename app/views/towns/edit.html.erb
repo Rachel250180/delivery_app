@@ -2,6 +2,8 @@
   <h1><i class="fa-solid fa-pen"></i> 町の情報を編集</h1>
 
 
+  <%= render "shared/error_messages", model: @town %>
+
   <%= form_with model: @town do |f| %>
 
     <div class="form-group">

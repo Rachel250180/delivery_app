@@ -4,15 +4,7 @@
     お問い合わせ
   </h1>
 
-  <% if @contact.errors.any? %>
-    <div style="color: red;">
-      <ul>
-        <% @contact.errors.full_messages.each do |msg| %>
-          <li><%= msg %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+  <%= render "shared/error_messages", model: @contact %>
 
   <%= form_with model: @contact, url: contacts_path, class: "towns-form" do |f| %>
 

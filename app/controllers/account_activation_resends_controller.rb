@@ -3,7 +3,7 @@ class AccountActivationResendsController < ApplicationController
     @email = session[:activation_email]
 
     unless @email
-      redirect_to signup_path, alert: "最初からやり直してください。"
+      redirect_to signup_path, alert: t("flash.account_activations.restart")
     end
   end
 
@@ -13,7 +13,7 @@ class AccountActivationResendsController < ApplicationController
     if user && !user.activated?
       user.resend_activation_email
 
-      flash[:success] = "認証メールを再送しました。"
+      flash[:success] = t("flash.account_activations.resend")
     end
 
     redirect_to account_activation_resend_path

@@ -15,7 +15,7 @@ class ContactsController < ApplicationController
         @contact.message
       ).deliver_now
 
-      redirect_to root_path, notice: "送信しました"
+      redirect_to root_path, notice: t("flash.contacts.sent")
     else
       render :new, status: :unprocessable_entity
     end

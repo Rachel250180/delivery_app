@@ -12,13 +12,11 @@ class SessionsController < ApplicationController
         log_in user
         redirect_to forwarding_url || user
       else
-        message = "アカウントが承認されていません。"
-        message += "メールから承認リンクをチェックしてください"
-        flash[:warning] = message
+        flash[:warning] = t("flash.authentication.account_not_activated")
         redirect_to root_url
       end
     else
-      flash.now[:danger] = "メールアドレスまたはパスワードが違います"
+      flash.now[:danger] = t("flash.authentication.login_failed")
       render "new", status: :unprocessable_entity
     end
   end
@@ -28,14 +26,14 @@ class SessionsController < ApplicationController
 
     if user
       log_in user
-      redirect_to user, notice: "ゲストユーザーでログインしました。"
+      redirect_to user, notice: t("flash.authentication.guest_login")
     else
-      redirect_to login_path, alert: "ゲストユーザーが存在しません"
+      redirect_to login_path, alert: t("flash.authentication.guest_not_found")
     end
   end
 
   def destroy
     log_out if logged_in?
-    redirect_to root_path, status: :see_other, notice: "ログアウトしました"
+    redirect_to root_path, status: :see_other, notice: t("flash.authentication.logout")
   end
 end

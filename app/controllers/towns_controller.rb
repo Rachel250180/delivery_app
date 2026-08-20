@@ -36,7 +36,7 @@ class TownsController < ApplicationController
     @town = Town.new(town_params)
 
     if @town.save
-      redirect_to new_town_route_path(@town), notice: "町名を追加しました！"
+      redirect_to new_town_route_path(@town), notice: t("flash.towns.created")
     else
       render :new, status: :unprocessable_entity
     end
@@ -72,6 +72,6 @@ class TownsController < ApplicationController
   end
 
   def admin_user
-    redirect_to(root_path, status: :see_other, alert: "権限がありません") unless current_user.admin?
+    redirect_to(root_path, status: :see_other, alert: t("flash.authorization.denied")) unless current_user.admin?
   end
 end

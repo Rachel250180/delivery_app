@@ -1,8 +1,94 @@
 ja:
+  errors:
+    format: "%{attribute}%{message}"
+    messages:
+      blank: "を入力してください"
+      confirmation: "が一致しません"
+      invalid: "は不正な値です"
+      taken: "はすでに登録されています"
+      too_long: "は%{count}文字以内で入力してください"
+      too_short: "は%{count}文字以上で入力してください"
+
   activerecord:
     attributes:
+      route:
+        name: "ルート名"
+        description: "備考"
+        estimated_duration: "所要時間"
+        route_points: "経由地点"
+      town:
+        name: "町名"
+        kana: "ふりがな"
+        description: "備考"
       user:
         name: "ユーザー名"
         email: "メールアドレス"
         password: "パスワード"
         password_confirmation: "パスワード（確認）"
+
+  activemodel:
+    attributes:
+      contact:
+        name: "お名前"
+        email: "メールアドレス"
+        message: "お問い合わせ内容"
+
+  shared:
+    error_messages:
+      title: "入力内容を確認してください。"
+
+  password_resets:
+    new:
+      title: "パスワードを再設定"
+      submit: "再設定メールを送信"
+    edit:
+      title: "新しいパスワードを設定"
+      submit: "パスワードを更新"
+
+  user_mailer:
+    account_activation:
+      subject: "アカウント認証"
+      title: "アカウント認証"
+      greeting: "%{name}さん"
+      instruction: "以下のリンクをクリックして、アカウント認証を完了してください。"
+      action: "アカウントを認証する"
+    password_reset:
+      subject: "パスワード再設定"
+      title: "パスワード再設定"
+      instruction: "以下のリンクをクリックして、パスワードを再設定してください。"
+      action: "パスワードを再設定する"
+      expiration: "このリンクの有効期限は2時間です。"
+      ignore: "このメールに心当たりがない場合は、何もせず破棄してください。"
+
+  flash:
+    authentication:
+      login_required: "ログインしてください。"
+      login_failed: "メールアドレスまたはパスワードが違います。"
+      account_not_activated: "アカウントが認証されていません。メールに記載された認証リンクを確認してください。"
+      guest_login: "ゲストユーザーでログインしました。"
+      guest_not_found: "ゲストユーザーが存在しません。"
+      logout: "ログアウトしました。"
+    authorization:
+      denied: "権限がありません。"
+      guest_user_cannot_be_edited: "ゲストユーザーは編集できません。"
+    users:
+      updated: "登録情報を更新しました。"
+      deleted: "ユーザーを削除しました。"
+    routes:
+      created: "ルートを作成しました。"
+      deleted: "ルートを削除しました。"
+      invalid_points_json: "の形式が正しくありません。"
+    towns:
+      created: "町名を追加しました。"
+    contacts:
+      sent: "お問い合わせを送信しました。"
+    account_activations:
+      activated: "アカウントを認証しました。"
+      invalid_link: "無効な認証リンクです。"
+      resend: "認証メールを再送しました。"
+      restart: "最初からやり直してください。"
+    password_resets:
+      sent: "パスワード再設定手順を記載したメールを送信しました。"
+      email_not_found: "メールアドレスが見つかりません。"
+      completed: "パスワードを再設定しました。"
+      expired: "パスワード再設定の期限が切れています。"

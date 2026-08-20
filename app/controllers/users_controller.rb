@@ -29,13 +29,13 @@ class UsersController < ApplicationController
   def update
     if @user.email == "guest@example.com"
       redirect_to root_path,
-                  alert: "ゲストユーザーは編集できません"
+                  alert: t("flash.authorization.guest_user_cannot_be_edited")
       return
     end
 
     @user = User.find(params[:id])
     if @user.update(user_params)
-      flash[:success] = "更新しました。"
+      flash[:success] = t("flash.users.updated")
       redirect_to @user
     else
       render "edit", status: :unprocessable_entity
@@ -44,7 +44,7 @@ class UsersController < ApplicationController
 
   def destroy
     User.find(params[:id]).destroy
-    flash[:success] = "User deleted"
+    flash[:success] = t("flash.users.deleted")
     redirect_to users_url, status: :see_other
   end
 
@@ -57,7 +57,7 @@ class UsersController < ApplicationController
     def logged_in_user
       unless logged_in?
         store_location
-        flash[:danger] = "ログインしてください。"
+        flash[:danger] = t("flash.authentication.login_required")
         redirect_to login_url, status: :see_other
       end
     end
@@ -68,6 +68,6 @@ class UsersController < ApplicationController
     end
 
     def admin_user
-      redirect_to(root_url, status: :see_other, alert: "権限がありません") unless current_user.admin?
+      redirect_to(root_url, status: :see_other, alert: t("flash.authorization.denied")) unless current_user.admin?
     end
 end

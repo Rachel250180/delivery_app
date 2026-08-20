@@ -23,7 +23,7 @@ class RoutesController < ApplicationController
     build_route_points(@route)
 
     if @route.save
-      redirect_to town_route_path(@town, @route), notice: "ルートを作成しました！"
+      redirect_to town_route_path(@town, @route), notice: t("flash.routes.created")
     else
       @route_points = @route.route_points
       render :new, status: :unprocessable_entity
@@ -50,7 +50,7 @@ class RoutesController < ApplicationController
 
     redirect_to town_route_path(@town, @route)
   rescue JSON::ParserError
-    @route.errors.add(:route_points, "の形式が正しくありません")
+    @route.errors.add(:route_points, t("flash.routes.invalid_points_json"))
     @route_points = @route.route_points.order(:position)
     render :edit, status: :unprocessable_entity
   rescue ActiveRecord::RecordInvalid
@@ -60,7 +60,7 @@ class RoutesController < ApplicationController
 
   def destroy
     @route.destroy
-    redirect_to town_routes_path(@town), notice: "削除しました"
+    redirect_to town_routes_path(@town), notice: t("flash.routes.deleted")
   end
 
   private
@@ -86,7 +86,7 @@ class RoutesController < ApplicationController
 
   def correct_user
     return if @route.user_id == current_user.id
-    redirect_to root_path, alert: "権限がありません"
+    redirect_to root_path, alert: t("flash.authorization.denied")
   end
 
 
