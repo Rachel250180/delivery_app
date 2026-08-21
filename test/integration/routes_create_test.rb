@@ -69,4 +69,43 @@ class RoutesCreateTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_entity
   end
+
+  test "rejects malformed points json with a user-facing error" do
+    assert_no_difference [ "Route.count", "RoutePoint.count" ] do
+      post town_routes_path(@town),
+           params: {
+             route: { name: "配送ルートA" },
+             points_json: "{invalid"
+           }
+    end
+
+    assert_response :unprocessable_entity
+    assert_select "#error_explanation", text: /形式が正しくありません/
+  end
+
+  test "rejects points json that is not an array" do
+    assert_no_difference [ "Route.count", "RoutePoint.count" ] do
+      post town_routes_path(@town),
+           params: {
+             route: { name: "配送ルートA" },
+             points_json: { lat: 35.0, lng: 139.0 }.to_json
+           }
+    end
+
+    assert_response :unprocessable_entity
+  end
+
+  test "rejects coordinates outside their valid ranges" do
+    points = [ { lat: 91, lng: 181, address: "不正地点" } ]
+
+    assert_no_difference [ "Route.count", "RoutePoint.count" ] do
+      post town_routes_path(@town),
+           params: {
+             route: { name: "配送ルートA" },
+             points_json: points.to_json
+           }
+    end
+
+    assert_response :unprocessable_entity
+  end
 end

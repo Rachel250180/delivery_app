@@ -10,19 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_06_123814) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_21_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
   create_table "route_points", force: :cascade do |t|
     t.string "address"
     t.datetime "created_at", null: false
-    t.float "latitude"
-    t.float "longitude"
-    t.integer "position"
+    t.float "latitude", null: false
+    t.float "longitude", null: false
+    t.integer "position", null: false
     t.bigint "route_id", null: false
     t.datetime "updated_at", null: false
+    t.index ["route_id", "position"], name: "index_route_points_on_route_id_and_position", unique: true
     t.index ["route_id"], name: "index_route_points_on_route_id"
+    t.check_constraint "\"position\" >= 0", name: "route_points_position_non_negative"
+    t.check_constraint "latitude >= '-90'::integer::double precision AND latitude <= 90::double precision", name: "route_points_latitude_range"
+    t.check_constraint "longitude >= '-180'::integer::double precision AND longitude <= 180::double precision", name: "route_points_longitude_range"
   end
 
   create_table "routes", force: :cascade do |t|
