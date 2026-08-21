@@ -10,12 +10,16 @@ class RoutesControllerTest < ActionDispatch::IntegrationTest
   test "should get show" do
     get town_route_url(@town, @route)
     assert_response :success
+    assert_select "#route-data[data-map-mode='show']"
+    assert_select "script[data-google-maps-script]", count: 1
   end
 
   test "should get new" do
     log_in_as(@user)
     get new_town_route_url(@town)
     assert_response :success
+    assert_select "#route-data[data-map-mode='new']"
+    assert_select "script[data-google-maps-script]", count: 1
   end
 
   test "should redirect new when not logged in" do
@@ -27,6 +31,9 @@ class RoutesControllerTest < ActionDispatch::IntegrationTest
     log_in_as(@user)
     get edit_town_route_url(@town, @route)
     assert_response :success
+    assert_select "#route-data[data-map-mode='edit']"
+    assert_select "script[data-google-maps-script]", count: 1
+    assert_select "[data-turbo-confirm*='このルートを削除']", count: 1
   end
 
   test "should redirect edit when not logged in" do

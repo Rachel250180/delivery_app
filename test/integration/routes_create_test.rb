@@ -81,6 +81,8 @@ class RoutesCreateTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_entity
     assert_select "#error_explanation", text: /形式が正しくありません/
+    assert_select "#route-data[data-map-mode='new']"
+    assert_select "script[data-google-maps-script]", count: 1
   end
 
   test "rejects points json that is not an array" do

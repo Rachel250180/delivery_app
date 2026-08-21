@@ -36,5 +36,10 @@
     戻る
   </button>
 
-  <%= button_to "この町を削除する", @town, method: :delete, class:"btn-danger" %>
+  <%= button_to "この町を削除する", @town,
+        method: :delete,
+        data: {
+          turbo_confirm: "この町を削除してもよろしいですか？\n登録されているルートと地点もすべて削除されます。"
+        },
+        class: "btn-danger" %>
 </div>

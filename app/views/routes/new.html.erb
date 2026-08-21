@@ -1,3 +1,7 @@
+<% content_for :map_scripts do %>
+  <%= render "shared/google_maps_script" %>
+<% end %>
+
 <div class="route-title">
   <h5><%= @town.name %>のルート登録画面</h5>
 </div>
@@ -60,6 +64,7 @@
 <!-- javascript関連 -->
 
 <div id="route-data"
+  data-map-mode="new"
   data-max-points="<%= Route::MAX_ROUTE_POINTS %>"
   data-points='<%= raw(
     @route.route_points.map { |p|

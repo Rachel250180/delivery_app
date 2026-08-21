@@ -1,6 +1,5 @@
 // page_init.js
 
-import { state } from "map/state";
 import {
   initMapNew,
   initMapEdit,
@@ -8,31 +7,45 @@ import {
 } from "map/pages";
 
 export function initializeMapPage() {
-
-  if (state.mapBooted) return;
-
-  if (!window.google?.maps) return;
-
   const mapElement =
     document.getElementById("map");
 
-  if (!mapElement) return;
+  const routeData =
+    document.getElementById("route-data");
 
-  state.mapBooted = true;
+  if (!mapElement || !routeData) return;
+  if (mapElement.dataset.initialized === "true") return;
 
-  const path =
-    window.location.pathname;
-
-  if (/\/routes\/\d+\/edit$/.test(path)) {
-
-    initMapEdit();
-
-  } else if (/\/routes\/new$/.test(path)) {
-
-    initMapNew();
-
-  } else if (/\/routes\/\d+$/.test(path)) {
-
-    initMapShow();
+  if (!window.google?.maps) {
+    initializeWhenGoogleMapsLoads();
+    return;
   }
+
+  const initializer = {
+    new: initMapNew,
+    edit: initMapEdit,
+    show: initMapShow
+  }[routeData.dataset.mapMode];
+
+  if (!initializer) return;
+
+  mapElement.dataset.initialized = "true";
+
+  try {
+    initializer();
+  } catch (error) {
+    delete mapElement.dataset.initialized;
+    throw error;
+  }
+}
+
+function initializeWhenGoogleMapsLoads() {
+  const script = document.querySelector(
+    "script[data-google-maps-script]"
+  );
+
+  if (!script || script.dataset.listenerAdded === "true") return;
+
+  script.dataset.listenerAdded = "true";
+  script.addEventListener("load", initializeMapPage, { once: true });
 }

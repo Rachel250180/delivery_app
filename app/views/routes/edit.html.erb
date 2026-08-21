@@ -1,3 +1,7 @@
+<% content_for :map_scripts do %>
+  <%= render "shared/google_maps_script" %>
+<% end %>
+
 <%= render "shared/error_messages", model: @route %>
 <div class="route-title">
   <h5><%= @town.name %>のルート編集画面</h5>
@@ -16,8 +20,10 @@
 
     <%= button_to "削除する", [@town, @route],
           method: :delete,
-          data: { confirm: "このルートを削除しますか？" } ,
-          class: "btn-danger"%>
+          data: {
+            turbo_confirm: "このルートを削除してもよろしいですか？\n登録されている地点もすべて削除されます。"
+          },
+          class: "btn-danger" %>
   </div>
 </div>
 
@@ -64,6 +70,7 @@
 <!-- javascript関連 -->
 
 <div id="route-data"
+  data-map-mode="edit"
   data-max-points="<%= Route::MAX_ROUTE_POINTS %>"
   data-points='<%= raw(
     @route.route_points.map { |p|
