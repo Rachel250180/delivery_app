@@ -54,7 +54,7 @@ class RoutesCreateTest < ApplicationSystemTestCase
     JS
 
     assert_no_difference("Route.count") do
-      find(".btn-add").click
+      click_button "登録する"
     end
 
     assert_text "は9個までしか登録できません"
