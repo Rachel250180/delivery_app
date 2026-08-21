@@ -54,4 +54,18 @@ class RoutesUpdateTest < ActionDispatch::IntegrationTest
     assert_equal original_name, @route.name
     assert_equal 1, @route.route_points.count
   end
+
+  test "rejects malformed points json without changing the route" do
+    original_name = @route.name
+
+    patch town_route_path(@town, @route),
+          params: {
+            route: { name: "更新後ルート" },
+            points_json: "{invalid"
+          }
+
+    assert_response :unprocessable_entity
+    assert_select "#error_explanation", text: /形式が正しくありません/
+    assert_equal original_name, @route.reload.name
+  end
 end

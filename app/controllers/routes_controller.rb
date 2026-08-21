@@ -20,7 +20,8 @@ class RoutesController < ApplicationController
     @route = @town.routes.new(route_params)
     @route.user = current_user
 
-    build_route_points(@route)
+    points = route_points_from_params
+    build_route_points(@route, points)
 
     if @route.save
       redirect_to town_route_path(@town, @route), notice: t("flash.routes.created")
@@ -28,6 +29,10 @@ class RoutesController < ApplicationController
       @route_points = @route.route_points
       render :new, status: :unprocessable_entity
     end
+  rescue RoutePointsJsonParser::InvalidFormat
+    @route.errors.add(:route_points, t("flash.routes.invalid_points_json"))
+    @route_points = @route.route_points
+    render :new, status: :unprocessable_entity
   end
 
   def edit
@@ -49,7 +54,7 @@ class RoutesController < ApplicationController
     end
 
     redirect_to town_route_path(@town, @route)
-  rescue JSON::ParserError
+  rescue RoutePointsJsonParser::InvalidFormat
     @route.errors.add(:route_points, t("flash.routes.invalid_points_json"))
     @route_points = @route.route_points.order(:position)
     render :edit, status: :unprocessable_entity
@@ -104,8 +109,6 @@ class RoutesController < ApplicationController
   end
 
   def route_points_from_params
-    return unless params[:points_json].present?
-
-    JSON.parse(params[:points_json])
+    RoutePointsJsonParser.parse(params[:points_json])
   end
 end
