@@ -11,6 +11,7 @@ class TownsControllerTest < ActionDispatch::IntegrationTest
     get towns_url
     assert_response :success
     assert_select "li", text: @town.name
+    assert_select "script[data-google-maps-script]", count: 0
   end
 
   test "should show town and display town name" do
@@ -65,6 +66,7 @@ class TownsControllerTest < ActionDispatch::IntegrationTest
   test "should get edit" do
     get edit_town_url(@town)
     assert_response :success
+    assert_select "[data-turbo-confirm*='この町を削除']", count: 1
   end
 
   test "should update town" do

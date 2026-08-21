@@ -19,16 +19,7 @@
       rel="stylesheet"
     >
 
-    <!-- Google Maps -->
-    <% unless content_for?(:google_maps_loaded) %>
-      <% content_for :google_maps_loaded, true %>
-
-      <script
-        src="https://maps.googleapis.com/maps/api/js?key=<%= Rails.application.credentials.google_maps_api_key %>&loading=async"
-        async
-        defer>
-      </script>
-    <% end %>
+    <%= yield :map_scripts %>
 
     <!-- Sortable -->
     <script

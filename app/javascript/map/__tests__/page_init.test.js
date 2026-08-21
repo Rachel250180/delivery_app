@@ -1,7 +1,6 @@
 // app/javascript/map/__tests__/page_init.test.js
 
 import { initializeMapPage } from "../page_init";
-import { state } from "../state";
 import {
   initMapNew,
   initMapEdit,
@@ -21,9 +20,6 @@ describe("initializeMapPage", () => {
     // mock初期化
     jest.clearAllMocks();
 
-    // state初期化
-    state.mapBooted = false;
-
     // google maps mock
     window.google = {
       maps: {}
@@ -32,12 +28,13 @@ describe("initializeMapPage", () => {
     // map要素追加
     document.body.innerHTML = `
       <div id="map"></div>
+      <div id="route-data" data-map-mode="new"></div>
     `;
   });
 
-  test("mapBooted が true の場合は何もしない", () => {
+  test("初期化済みの map 要素では何もしない", () => {
 
-    state.mapBooted = true;
+    document.getElementById("map").dataset.initialized = "true";
 
     initializeMapPage();
 
@@ -66,20 +63,20 @@ describe("initializeMapPage", () => {
 
   test("new ページなら initMapNew を呼ぶ", () => {
 
-    window.history.pushState({}, "", "/routes/new");
-
     initializeMapPage();
 
     expect(initMapNew).toHaveBeenCalled();
     expect(initMapEdit).not.toHaveBeenCalled();
     expect(initMapShow).not.toHaveBeenCalled();
 
-    expect(state.mapBooted).toBe(true);
+    expect(
+      document.getElementById("map").dataset.initialized
+    ).toBe("true");
   });
 
   test("edit ページなら initMapEdit を呼ぶ", () => {
 
-    window.history.pushState({}, "", "/routes/1/edit");
+    document.getElementById("route-data").dataset.mapMode = "edit";
 
     initializeMapPage();
 
@@ -90,7 +87,7 @@ describe("initializeMapPage", () => {
 
   test("show ページなら initMapShow を呼ぶ", () => {
 
-    window.history.pushState({}, "", "/routes/1");
+    document.getElementById("route-data").dataset.mapMode = "show";
 
     initializeMapPage();
 
@@ -101,13 +98,39 @@ describe("initializeMapPage", () => {
 
   test("対象外ページでは何も呼ばない", () => {
 
-    window.history.pushState({}, "", "/");
+    document.getElementById("route-data").dataset.mapMode = "unknown";
 
     initializeMapPage();
 
     expect(initMapNew).not.toHaveBeenCalled();
     expect(initMapEdit).not.toHaveBeenCalled();
     expect(initMapShow).not.toHaveBeenCalled();
+  });
+
+  test("同じ map 要素を二重に初期化しない", () => {
+    initializeMapPage();
+    initializeMapPage();
+
+    expect(initMapNew).toHaveBeenCalledTimes(1);
+  });
+
+  test("Google Maps の読み込み完了後に一度だけ初期化する", () => {
+    window.google = undefined;
+
+    const script = document.createElement("script");
+    script.dataset.googleMapsScript = "";
+    document.head.appendChild(script);
+
+    initializeMapPage();
+    initializeMapPage();
+
+    window.google = { maps: {} };
+    script.dispatchEvent(new Event("load"));
+
+    expect(initMapNew).toHaveBeenCalledTimes(1);
+    expect(script.dataset.listenerAdded).toBe("true");
+
+    script.remove();
   });
 
 });

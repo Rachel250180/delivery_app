@@ -1,3 +1,7 @@
+<% content_for :map_scripts do %>
+  <%= render "shared/google_maps_script" %>
+<% end %>
+
 <div class="route-show-map">
   <div id="map"></div>
 </div>
@@ -25,6 +29,7 @@
 <!-- javascript関連 -->
 
 <div id="route-data"
+  data-map-mode="show"
   data-max-points="<%= Route::MAX_ROUTE_POINTS %>"
   data-points='<%= raw(
     @route.route_points.map { |p|

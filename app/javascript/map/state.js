@@ -9,5 +9,4 @@ export const state = {
   deliveryPoints: [],
   isInitializing: false,
   isNewPage: false,
-  mapBooted: false,
 };
