@@ -46,7 +46,12 @@ class RoutesControllerTest < ActionDispatch::IntegrationTest
     assert_difference("Route.count", 1) do
       post town_routes_url(@town), params: {
                                 route: { name: "新しいルート",
-                                         description: "説明" } }
+                                         description: "説明" },
+                                points_json: [ {
+                                  lat: 35.0,
+                                  lng: 139.0,
+                                  address: "東京都"
+                                } ].to_json }
     end
 
     assert_redirected_to town_route_url(@town, Route.last)

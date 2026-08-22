@@ -70,6 +70,19 @@ class RoutesCreateTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
   end
 
+  test "rejects a route without route points" do
+    assert_no_difference [ "Route.count", "RoutePoint.count" ] do
+      post town_routes_path(@town),
+           params: {
+             route: { name: "配送ルートA" },
+             points_json: [].to_json
+           }
+    end
+
+    assert_response :unprocessable_entity
+    assert_select "#error_explanation", text: /1個以上登録してください/
+  end
+
   test "rejects malformed points json with a user-facing error" do
     assert_no_difference [ "Route.count", "RoutePoint.count" ] do
       post town_routes_path(@town),

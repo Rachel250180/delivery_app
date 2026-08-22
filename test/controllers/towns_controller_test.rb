@@ -12,12 +12,15 @@ class TownsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "li", text: @town.name
     assert_select "script[data-google-maps-script]", count: 0
+    assert_select "a[href='#{new_town_path}']", count: 1
   end
 
   test "should show town and display town name" do
     get town_url(@town)
     assert_response :success
     assert_select "h1", /#{@town.name}/
+    assert_select "a[href='#{new_town_route_path(@town)}']", count: 1
+    assert_select "a[href='#{edit_town_path(@town)}']", count: 1
   end
 
   test "should get new" do
@@ -52,15 +55,28 @@ class TownsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should display routes of town" do
-    route = Route.create!(name: "テストルート",
-                          description: "説明",
-                          town: @town,
-                          user: @user)
+    route = Route.new(name: "テストルート",
+                      description: "説明",
+                      town: @town,
+                      user: @user)
+    route.route_points.build(latitude: 35.0, longitude: 139.0, position: 0)
+    route.save!
 
     get town_url(@town)
 
     assert_select "h1", "#{@town.name}のルート一覧"
     assert_select "a", route.name
+  end
+
+  test "non-admin does not see town management links" do
+    log_in_as(users(:archer))
+
+    get towns_url
+    assert_select "a[href='#{new_town_path}']", count: 0
+
+    get town_url(@town)
+    assert_select "a[href='#{edit_town_path(@town)}']", count: 0
+    assert_select "a[href='#{new_town_route_path(@town)}']", count: 1
   end
 
   test "should get edit" do

@@ -9,6 +9,11 @@ class RouteTest < ActiveSupport::TestCase
       user: @user,
       town: @town
     )
+    @route.route_points.build(
+      latitude: 35.0,
+      longitude: 139.0,
+      position: 0
+    )
   end
 
   test "should be valid" do
@@ -38,6 +43,14 @@ class RouteTest < ActiveSupport::TestCase
   test "should not be valid without town" do
     @route.town = nil
     assert_not @route.valid?
+  end
+
+  test "should not be valid without route points" do
+    @route.route_points.clear
+
+    assert_not @route.valid?
+    assert_includes @route.errors[:route_points],
+                    "を#{Route::MIN_ROUTE_POINTS}個以上登録してください"
   end
 
   test "routes should be destroyed with user" do
