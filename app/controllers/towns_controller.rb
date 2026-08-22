@@ -40,6 +40,8 @@ class TownsController < ApplicationController
     else
       render :new, status: :unprocessable_entity
     end
+  rescue ActiveRecord::RecordNotUnique
+    render_name_taken(:new)
   end
 
   def edit
@@ -54,6 +56,8 @@ class TownsController < ApplicationController
     else
       render :edit, status: :unprocessable_entity
     end
+  rescue ActiveRecord::RecordNotUnique
+    render_name_taken(:edit)
   end
 
   def destroy
@@ -73,5 +77,10 @@ class TownsController < ApplicationController
 
   def admin_user
     redirect_to(root_path, status: :see_other, alert: t("flash.authorization.denied")) unless current_user.admin?
+  end
+
+  def render_name_taken(template)
+    @town.errors.add(:name, :taken)
+    render template, status: :unprocessable_entity
   end
 end

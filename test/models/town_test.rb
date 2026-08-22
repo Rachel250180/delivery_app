@@ -21,4 +21,15 @@ class TownTest < ActiveSupport::TestCase
     town = Town.new(name: "Ota")
     assert_not town.valid?
   end
+
+  test "database enforces unique names" do
+    now = Time.current
+    attributes = { name: "DB unique town", created_at: now, updated_at: now }
+
+    Town.insert_all!([ attributes ])
+
+    assert_raises ActiveRecord::RecordNotUnique do
+      Town.insert_all!([ attributes ])
+    end
+  end
 end
