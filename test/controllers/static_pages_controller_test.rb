@@ -4,6 +4,17 @@ class StaticPagesControllerTest < ActionDispatch::IntegrationTest
   test "should get root" do
     get root_url
     assert_response :success
+    assert_select "a[href='#{new_town_path}']", count: 0
+  end
+
+  test "home shows town registration only to admins" do
+    log_in_as(users(:archer))
+    get root_url
+    assert_select "a[href='#{new_town_path}']", count: 0
+
+    log_in_as(users(:michael))
+    get root_url
+    assert_select "a[href='#{new_town_path}']", count: 1
   end
 
   test "should get contact" do

@@ -2,6 +2,7 @@ class Route < ApplicationRecord
     has_many :route_points, -> { order(:position) }, dependent: :destroy
     accepts_nested_attributes_for :route_points, reject_if: :all_blank
     # Google Maps の出発地点を除く、登録可能な経由地点数
+    MIN_ROUTE_POINTS = 1
     MAX_ROUTE_POINTS = 9
 
     belongs_to :town
@@ -17,6 +18,10 @@ class Route < ApplicationRecord
 
   # 採用しているAPIのGoogleマップの経由地点が、出発点含め10点までしか登録できないため
   def route_points_limit
+    if route_points.size < MIN_ROUTE_POINTS
+      errors.add(:route_points, "を#{MIN_ROUTE_POINTS}個以上登録してください")
+    end
+
     if route_points.size > MAX_ROUTE_POINTS
       errors.add(:route_points, "は#{MAX_ROUTE_POINTS}個までしか登録できません")
     end

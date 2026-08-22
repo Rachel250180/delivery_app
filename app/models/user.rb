@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  ACTIVATION_RESEND_INTERVAL = 5.minutes
+  PASSWORD_RESET_RESEND_INTERVAL = 5.minutes
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
   attr_accessor :remember_token, :activation_token, :reset_token
 
@@ -64,6 +66,7 @@ class User < ApplicationRecord
 
   def send_activation_email
     UserMailer.account_activation(self).deliver_now
+    update_column(:activation_sent_at, Time.current)
   end
 
   def create_reset_digest
@@ -75,6 +78,10 @@ class User < ApplicationRecord
     UserMailer.password_reset(self).deliver_now
   end
 
+  def password_reset_recently_sent?
+    reset_sent_at.present? && reset_sent_at > PASSWORD_RESET_RESEND_INTERVAL.ago
+  end
+
   def password_reset_expired?
     reset_sent_at < 2.hours.ago
   end
@@ -84,10 +91,17 @@ class User < ApplicationRecord
   end
 
   def resend_activation_email
+    return false if activation_email_recently_sent?
+
     self.activation_token = User.new_token
     self.activation_digest = User.digest(activation_token)
     save!(validate: false)
     send_activation_email
+    true
+  end
+
+  def activation_email_recently_sent?
+    activation_sent_at.present? && activation_sent_at > ACTIVATION_RESEND_INTERVAL.ago
   end
 
   private

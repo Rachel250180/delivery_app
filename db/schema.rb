@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_21_000000) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_23_000100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -36,8 +36,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_21_000000) do
     t.string "name"
     t.bigint "town_id", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id"
+    t.bigint "user_id", null: false
+    t.index ["town_id", "name"], name: "index_routes_on_town_id_and_name", unique: true
     t.index ["town_id"], name: "index_routes_on_town_id"
+  end
+
+  create_table "solid_cache_entries", force: :cascade do |t|
+    t.integer "byte_size", null: false
+    t.datetime "created_at", null: false
+    t.binary "key", null: false
+    t.bigint "key_hash", null: false
+    t.binary "value", null: false
+    t.index ["byte_size"], name: "index_solid_cache_entries_on_byte_size"
+    t.index ["key_hash", "byte_size"], name: "index_solid_cache_entries_on_key_hash_and_byte_size"
+    t.index ["key_hash"], name: "index_solid_cache_entries_on_key_hash", unique: true
   end
 
   create_table "towns", force: :cascade do |t|
@@ -46,12 +58,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_21_000000) do
     t.string "kana"
     t.string "name"
     t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_towns_on_name", unique: true
   end
 
   create_table "users", force: :cascade do |t|
     t.boolean "activated", default: false
     t.datetime "activated_at"
     t.string "activation_digest"
+    t.datetime "activation_sent_at"
     t.boolean "admin", default: false
     t.datetime "created_at", null: false
     t.string "email"
@@ -66,4 +80,5 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_21_000000) do
 
   add_foreign_key "route_points", "routes"
   add_foreign_key "routes", "towns"
+  add_foreign_key "routes", "users"
 end

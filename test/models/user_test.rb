@@ -82,4 +82,62 @@ class UserTest < ActiveSupport::TestCase
     @user.password_confirmation = "different"
     assert_not @user.valid?
   end
+
+  test "successful activation email records sent time" do
+    @user.save!
+
+    assert_changes -> { @user.reload.activation_sent_at }, from: nil do
+      @user.send_activation_email
+    end
+  end
+
+  test "failed activation email does not record sent time" do
+    @user.save!
+    delivery = Object.new
+    delivery.define_singleton_method(:deliver_now) { raise "SMTP failed" }
+    original_method = UserMailer.method(:account_activation)
+    UserMailer.define_singleton_method(:account_activation) { |_user| delivery }
+
+    begin
+      assert_raises(RuntimeError) { @user.send_activation_email }
+    ensure
+      UserMailer.define_singleton_method(:account_activation) do |*args|
+        original_method.call(*args)
+      end
+    end
+
+    assert_nil @user.reload.activation_sent_at
+  end
+
+  test "recent activation email prevents token and digest regeneration" do
+    @user.save!
+    @user.activation_token = "existing-token"
+    @user.update_columns(
+      activation_digest: User.digest(@user.activation_token),
+      activation_sent_at: 1.minute.ago
+    )
+    original_digest = @user.activation_digest
+
+    assert_not @user.resend_activation_email
+    assert_equal "existing-token", @user.activation_token
+    assert_equal original_digest, @user.reload.activation_digest
+  end
+
+  test "activation email can be resent after the interval" do
+    @user.save!
+    @user.update_column(:activation_sent_at, 6.minutes.ago)
+    original_digest = @user.activation_digest
+
+    assert @user.resend_activation_email
+    assert_not_equal original_digest, @user.reload.activation_digest
+    assert @user.activation_sent_at > 1.minute.ago
+  end
+
+  test "recent password reset is detected for five minutes" do
+    @user.reset_sent_at = 1.minute.ago
+    assert @user.password_reset_recently_sent?
+
+    @user.reset_sent_at = 6.minutes.ago
+    assert_not @user.password_reset_recently_sent?
+  end
 end

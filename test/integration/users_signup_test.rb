@@ -15,6 +15,7 @@ class UsersSignupTest < UsersSignup
                                          password_confirmation: "password" } }
     end
     assert_equal 1, ActionMailer::Base.deliveries.size
+    assert_not_nil assigns(:user).reload.activation_sent_at
   end
 
   test "invalid signup information" do

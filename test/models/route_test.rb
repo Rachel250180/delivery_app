@@ -9,6 +9,11 @@ class RouteTest < ActiveSupport::TestCase
       user: @user,
       town: @town
     )
+    @route.route_points.build(
+      latitude: 35.0,
+      longitude: 139.0,
+      position: 0
+    )
   end
 
   test "should be valid" do
@@ -38,6 +43,49 @@ class RouteTest < ActiveSupport::TestCase
   test "should not be valid without town" do
     @route.town = nil
     assert_not @route.valid?
+  end
+
+  test "should not be valid without route points" do
+    @route.route_points.clear
+
+    assert_not @route.valid?
+    assert_includes @route.errors[:route_points],
+                    "を#{Route::MIN_ROUTE_POINTS}個以上登録してください"
+  end
+
+  test "name should be unique within a town" do
+    @route.save!
+    duplicate = @route.dup
+    duplicate.route_points.build(latitude: 35.1, longitude: 139.1, position: 0)
+
+    assert_not duplicate.valid?
+    assert duplicate.errors[:name].any?
+  end
+
+  test "same name should be valid in a different town" do
+    @route.save!
+    other_route = @route.dup
+    other_route.town = towns(:two)
+    other_route.route_points.build(latitude: 35.1, longitude: 139.1, position: 0)
+
+    assert other_route.valid?
+  end
+
+  test "database enforces unique names within a town" do
+    now = Time.current
+    attributes = {
+      name: "DB unique route",
+      town_id: @town.id,
+      user_id: @user.id,
+      created_at: now,
+      updated_at: now
+    }
+
+    Route.insert_all!([ attributes ])
+
+    assert_raises ActiveRecord::RecordNotUnique do
+      Route.insert_all!([ attributes ])
+    end
   end
 
   test "routes should be destroyed with user" do

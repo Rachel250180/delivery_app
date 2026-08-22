@@ -32,6 +32,8 @@ ja:
         name: "お名前"
         email: "メールアドレス"
         message: "お問い合わせ内容"
+      password_reset_request:
+        email: "メールアドレス"
 
   shared:
     error_messages:
@@ -61,6 +63,8 @@ ja:
       ignore: "このメールに心当たりがない場合は、何もせず破棄してください。"
 
   flash:
+    rate_limit:
+      exceeded: "送信回数が上限に達しました。しばらく時間をおいてからお試しください。"
     authentication:
       login_required: "ログインしてください。"
       login_failed: "メールアドレスまたはパスワードが違います。"
@@ -85,9 +89,9 @@ ja:
       activated: "アカウントを認証しました。"
       invalid_link: "無効な認証リンクです。"
       resend: "認証メールを再送しました。"
+      wait: "認証メールは送信済みです。5分ほど待ってから再送してください。"
       restart: "最初からやり直してください。"
     password_resets:
-      sent: "パスワード再設定手順を記載したメールを送信しました。"
-      email_not_found: "メールアドレスが見つかりません。"
+      sent: "入力されたメールアドレスが登録されている場合、パスワード再設定メールを送信しました。"
       completed: "パスワードを再設定しました。"
       expired: "パスワード再設定の期限が切れています。"

@@ -24,12 +24,15 @@
 
 
 
-    <% if logged_in? %>
+    <% if current_user&.admin? %>
       <%= link_to new_town_path, class: "menu-card" do %>
         <i class="fa-solid fa-plus icon"></i>
         <h3>町登録</h3>
         <p>新しい町を追加、登録する</p>
       <% end %>
+    <% end %>
+
+    <% if logged_in? %>
       <%= link_to user_path(current_user), class: "menu-card" do %>
         <i class="fa-solid fa-user-gear icon"></i>
         <h3>マイページ</h3>

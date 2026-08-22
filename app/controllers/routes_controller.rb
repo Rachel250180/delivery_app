@@ -33,6 +33,8 @@ class RoutesController < ApplicationController
     @route.errors.add(:route_points, t("flash.routes.invalid_points_json"))
     @route_points = @route.route_points
     render :new, status: :unprocessable_entity
+  rescue ActiveRecord::RecordNotUnique
+    render_name_taken(:new)
   end
 
   def edit
@@ -58,6 +60,8 @@ class RoutesController < ApplicationController
     @route.errors.add(:route_points, t("flash.routes.invalid_points_json"))
     @route_points = @route.route_points.order(:position)
     render :edit, status: :unprocessable_entity
+  rescue ActiveRecord::RecordNotUnique
+    render_name_taken(:edit)
   rescue ActiveRecord::RecordInvalid
     @route_points = @route.route_points
     render :edit, status: :unprocessable_entity
@@ -110,5 +114,11 @@ class RoutesController < ApplicationController
 
   def route_points_from_params
     RoutePointsJsonParser.parse(params[:points_json])
+  end
+
+  def render_name_taken(template)
+    @route.errors.add(:name, :taken)
+    @route_points = @route.route_points
+    render template, status: :unprocessable_entity
   end
 end
