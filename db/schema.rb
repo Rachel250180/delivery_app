@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_21_000000) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_22_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -36,7 +36,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_21_000000) do
     t.string "name"
     t.bigint "town_id", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id"
+    t.bigint "user_id", null: false
+    t.index ["town_id", "name"], name: "index_routes_on_town_id_and_name", unique: true
     t.index ["town_id"], name: "index_routes_on_town_id"
   end
 
@@ -66,4 +67,5 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_21_000000) do
 
   add_foreign_key "route_points", "routes"
   add_foreign_key "routes", "towns"
+  add_foreign_key "routes", "users"
 end
