@@ -1,19 +1,33 @@
 class PasswordResetsController < ApplicationController
   before_action :get_user, :valid_user, :check_expiration, only: %i[edit update]
+  rate_limit to: 5, within: 15.minutes,
+             by: -> { request.remote_ip },
+             with: :render_rate_limited,
+             only: :create,
+             name: "password-reset-ip"
+  rate_limit to: 3, within: 1.hour,
+             by: -> { rate_limit_key(params.dig(:password_reset, :email)) },
+             with: :render_rate_limited,
+             only: :create,
+             name: "password-reset-email"
+
   def new
+    @password_reset = PasswordResetRequest.new
   end
 
   def create
-    @user = User.find_by(email: params[:password_reset][:email].downcase)
-    if @user
+    @password_reset = PasswordResetRequest.new(
+      email: params.dig(:password_reset, :email)
+    )
+    return render(:new, status: :unprocessable_entity) unless @password_reset.valid?
+
+    @user = User.find_by(email: @password_reset.normalized_email)
+    if @user && !@user.password_reset_recently_sent?
       @user.create_reset_digest
       @user.send_password_reset_email
-      flash[:info] = t("flash.password_resets.sent")
-      redirect_to root_url
-    else
-      flash.now[:danger] = t("flash.password_resets.email_not_found")
-      render "new", status: :unprocessable_entity
     end
+
+    redirect_to root_url, notice: t("flash.password_resets.sent")
   end
 
   def edit

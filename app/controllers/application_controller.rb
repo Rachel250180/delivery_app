@@ -9,4 +9,13 @@ class ApplicationController < ActionController::Base
         redirect_to login_url, status: :see_other
       end
     end
+
+    def rate_limit_key(email)
+      normalized_email = email.to_s.strip.downcase
+      Digest::SHA256.hexdigest(normalized_email)
+    end
+
+    def render_rate_limited
+      render plain: t("flash.rate_limit.exceeded"), status: :too_many_requests
+    end
 end

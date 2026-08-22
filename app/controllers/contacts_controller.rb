@@ -1,4 +1,15 @@
 class ContactsController < ApplicationController
+  rate_limit to: 5, within: 15.minutes,
+             by: -> { request.remote_ip },
+             with: :render_rate_limited,
+             only: :create,
+             name: "contact-ip"
+  rate_limit to: 3, within: 1.hour,
+             by: -> { rate_limit_key(params.dig(:contact, :email)) },
+             with: :render_rate_limited,
+             only: :create,
+             name: "contact-email"
+
   def new
     @contact = Contact.new
   end
@@ -23,7 +34,7 @@ class ContactsController < ApplicationController
 
   private
 
-  def contact_params
-    params.require(:contact).permit(:name, :email, :message)
-  end
+    def contact_params
+      params.require(:contact).permit(:name, :email, :message)
+    end
 end
