@@ -21,9 +21,9 @@
         ご質問や不具合報告はこちら
       </p>
 
-      <a href="/contacts" class="contact-btn">
-        メールを送る
-      </a>
+      <%= link_to "メールを送る",
+                  new_contact_path,
+                  class: "contact-btn" %>
     </div>
 
     <div class="contact-card">
@@ -59,4 +59,3 @@
   </div>
 
 </section>
-

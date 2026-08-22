@@ -1,2 +1,0 @@
-class RoutePointsController < ApplicationController
-end

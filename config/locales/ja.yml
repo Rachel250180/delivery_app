@@ -73,7 +73,6 @@ ja:
       guest_user_cannot_be_edited: "ゲストユーザーは編集できません。"
     users:
       updated: "登録情報を更新しました。"
-      deleted: "ユーザーを削除しました。"
     routes:
       created: "ルートを作成しました。"
       deleted: "ルートを削除しました。"
