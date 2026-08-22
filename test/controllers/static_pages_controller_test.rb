@@ -9,5 +9,6 @@ class StaticPagesControllerTest < ActionDispatch::IntegrationTest
   test "should get contact" do
     get contact_path
     assert_response :success
+    assert_select "a[href='#{new_contact_path}']", text: "メールを送る"
   end
 end
