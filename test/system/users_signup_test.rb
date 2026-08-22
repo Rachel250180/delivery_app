@@ -1,6 +1,6 @@
 require "application_system_test_case"
 
-class UsersSignupTest < ApplicationSystemTestCase
+class UsersSignupSystemTest < ApplicationSystemTestCase
   test "valid signup creates a user" do
     visit signup_path
 
