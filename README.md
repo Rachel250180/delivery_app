@@ -22,7 +22,7 @@ https://delivery-catchup.com/
 
 ## 使用技術
 **Backend**
-* Ruby 3.2.10
+* Ruby 3.3.11
 * Ruby on Rails 8.1.3
   
 **frontend**
