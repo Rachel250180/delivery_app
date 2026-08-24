@@ -27,6 +27,7 @@ describe("initializeMapPage", () => {
       }
     };
     window.googleMapsApiReadyPromise = Promise.resolve();
+    window.Sortable = jest.fn();
 
     // map要素追加
     document.body.innerHTML = `
@@ -145,6 +146,36 @@ describe("initializeMapPage", () => {
     await Promise.all([initialization, duplicateInitialization]);
 
     expect(initMapNew).toHaveBeenCalledTimes(1);
+  });
+
+  test("編集画面では Sortable.js の読み込み完了を待って初期化する", async () => {
+    document.getElementById("route-data").dataset.mapMode = "edit";
+    window.Sortable = undefined;
+
+    const script = document.createElement("script");
+    script.dataset.sortableScript = "";
+    document.head.appendChild(script);
+
+    const initialization = initializeMapPage();
+    await Promise.resolve();
+
+    expect(initMapEdit).not.toHaveBeenCalled();
+
+    window.Sortable = jest.fn();
+    script.dispatchEvent(new Event("load"));
+    await initialization;
+
+    expect(initMapEdit).toHaveBeenCalledTimes(1);
+    script.remove();
+  });
+
+  test("詳細画面では Sortable.js を待たない", async () => {
+    document.getElementById("route-data").dataset.mapMode = "show";
+    window.Sortable = undefined;
+
+    await initializeMapPage();
+
+    expect(initMapShow).toHaveBeenCalledTimes(1);
   });
 
   test("ライブラリ待機中に Turbo が画面を差し替えた場合は初期化しない", async () => {

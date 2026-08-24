@@ -79,6 +79,7 @@ ja:
       updated: "登録情報を更新しました。"
     routes:
       created: "ルートを作成しました。"
+      updated: "ルートを更新しました。"
       deleted: "ルートを削除しました。"
       invalid_points_json: "の形式が正しくありません。"
     towns:

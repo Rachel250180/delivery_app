@@ -28,7 +28,10 @@ export async function initializeMapPage() {
   mapElement.dataset.initializing = "true";
 
   try {
-    await loadGoogleMapsLibraries();
+    await Promise.all([
+      loadGoogleMapsLibraries(),
+      loadSortable(routeData.dataset.mapMode)
+    ]);
 
     // Turbo may have replaced the page while the libraries were loading.
     if (
@@ -71,4 +74,37 @@ function waitForGoogleMapsApi() {
   }
 
   return window.googleMapsApiReadyPromise;
+}
+
+function loadSortable(mapMode) {
+  if (mapMode === "show" || window.Sortable) {
+    return Promise.resolve();
+  }
+
+  const script = document.querySelector(
+    "script[data-sortable-script]"
+  );
+
+  if (!script) {
+    return Promise.reject(new Error("Sortable.js script was not found"));
+  }
+
+  return new Promise((resolve, reject) => {
+    script.addEventListener(
+      "load",
+      () => {
+        if (window.Sortable) {
+          resolve();
+        } else {
+          reject(new Error("Sortable.js failed to initialize"));
+        }
+      },
+      { once: true }
+    );
+    script.addEventListener(
+      "error",
+      () => reject(new Error("Sortable.js failed to load")),
+      { once: true }
+    );
+  });
 }
