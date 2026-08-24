@@ -5,6 +5,8 @@ class StaticPagesControllerTest < ActionDispatch::IntegrationTest
     get root_url
     assert_response :success
     assert_select "a[href='#{new_town_path}']", count: 0
+    assert_select "script[data-font-awesome-script][defer]", count: 1
+    assert_select "script[data-sortable-script]", count: 0
   end
 
   test "home shows town registration only to admins" do

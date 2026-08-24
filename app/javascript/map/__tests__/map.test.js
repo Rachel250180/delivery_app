@@ -18,6 +18,7 @@ describe("createMap", () => {
     // map用のDOMを用意
     document.body.innerHTML = `
       <div id="map"></div>
+      <script data-google-maps-script data-map-id="test-map-id"></script>
     `;
 
     // stateを初期化
@@ -41,7 +42,13 @@ describe("createMap", () => {
 
         Geocoder: jest.fn(),
 
-        Marker: jest.fn(),
+        marker: {
+          PinElement: jest.fn((options) => ({ ...options })),
+          AdvancedMarkerElement: jest.fn((options) => ({
+            ...options,
+            append: jest.fn()
+          }))
+        },
 
         event: {
           trigger: jest.fn(),
@@ -63,6 +70,7 @@ describe("createMap", () => {
       {
         zoom: DEFAULT_ZOOM,
         center: START_POINT,
+        mapId: "test-map-id",
         streetViewControl: false,
         mapTypeControl: false,
       }
@@ -85,10 +93,18 @@ describe("createMap", () => {
       google.maps.Geocoder
     ).toHaveBeenCalled();
 
-    // Marker が生成される
+    // AdvancedMarkerElement が生成される
     expect(
-      google.maps.Marker
+      google.maps.marker.AdvancedMarkerElement
     ).toHaveBeenCalled();
+    expect(
+      google.maps.marker.PinElement
+    ).toHaveBeenCalledWith({
+      background: "#34A853",
+      borderColor: "#137333",
+      glyphColor: "#FFFFFF",
+      glyphText: "S"
+    });
 
     // resize trigger
     expect(
@@ -120,17 +136,16 @@ describe("createMap", () => {
 
 describe("resetMapState", () => {
 
+  let markers;
+
   beforeEach(() => {
 
-    const marker1 = {
-      setMap: jest.fn(),
-    };
+    markers = [
+      { map: state.map },
+      { map: state.map }
+    ];
 
-    const marker2 = {
-      setMap: jest.fn(),
-    };
-
-    state.markers = [marker1, marker2];
+    state.markers = markers;
 
     state.deliveryPoints = [
       { lat: 1, lng: 2 },
@@ -148,9 +163,8 @@ describe("resetMapState", () => {
 
     resetMapState();
 
-    state.markers.forEach(marker => {
-      expect(marker.setMap)
-        .toHaveBeenCalledWith(null);
+    markers.forEach(marker => {
+      expect(marker.map).toBeNull();
     });
 
     expect(state.markers).toEqual([]);

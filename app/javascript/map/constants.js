@@ -7,5 +7,15 @@ export const START_POINT = {
 };
 
 export const DEFAULT_ZOOM = 14;
-export const START_MARKER_ICON =
-  "http://maps.google.com/mapfiles/ms/icons/green-dot.png";
+
+export const START_MARKER_COLORS = {
+  background: "#34A853",
+  borderColor: "#137333",
+  glyphColor: "#FFFFFF"
+};
+
+export const DELIVERY_MARKER_COLORS = {
+  background: "#EA4335",
+  borderColor: "#B31412",
+  glyphColor: "#FFFFFF"
+};

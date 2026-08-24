@@ -12,15 +12,17 @@
 
   <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
   <%= javascript_importmap_tags %>
-    <script src="https://kit.fontawesome.com/a8a441addb.js" crossorigin="anonymous"></script>
+
+    <%# 共通レイアウト内のアイコンに必要なため、Font Awesome は全画面で読み込む %>
+    <script
+      src="https://kit.fontawesome.com/a8a441addb.js"
+      crossorigin="anonymous"
+      defer
+      data-font-awesome-script>
+    </script>
 
     <%= yield :map_scripts %>
-
-    <!-- Sortable -->
-    <script
-      src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"
-      defer>
-    </script>
+    <%= yield :sortable_scripts %>
 
   </head>
 

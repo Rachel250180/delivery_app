@@ -55,7 +55,7 @@ class RoutesController < ApplicationController
       @route.save!
     end
 
-    redirect_to town_route_path(@town, @route)
+    redirect_to town_route_path(@town, @route), notice: t("flash.routes.updated")
   rescue RoutePointsJsonParser::InvalidFormat
     @route.errors.add(:route_points, t("flash.routes.invalid_points_json"))
     @route_points = @route.route_points.order(:position)

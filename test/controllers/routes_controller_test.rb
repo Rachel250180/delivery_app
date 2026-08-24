@@ -12,6 +12,9 @@ class RoutesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "#route-data[data-map-mode='show']"
     assert_select "script[data-google-maps-script]", count: 1
+    assert_select "script[data-google-maps-script][src*='callback=googleMapsApiReady']",
+                  count: 1
+    assert_select "script[data-sortable-script]", count: 0
   end
 
   test "should get new" do
@@ -20,6 +23,9 @@ class RoutesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "#route-data[data-map-mode='new']"
     assert_select "script[data-google-maps-script]", count: 1
+    assert_select "script[data-google-maps-script][src*='callback=googleMapsApiReady']",
+                  count: 1
+    assert_sortable_script_has_sri
   end
 
   test "should redirect new when not logged in" do
@@ -33,6 +39,9 @@ class RoutesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "#route-data[data-map-mode='edit']"
     assert_select "script[data-google-maps-script]", count: 1
+    assert_select "script[data-google-maps-script][src*='callback=googleMapsApiReady']",
+                  count: 1
+    assert_sortable_script_has_sri
     assert_select "[data-turbo-confirm*='このルートを削除']", count: 1
   end
 
@@ -91,5 +100,15 @@ class RoutesControllerTest < ActionDispatch::IntegrationTest
   test "should redirect destroy when not logged in" do
     delete town_route_path(@town, @route)
     assert_redirected_to login_url
+  end
+
+  private
+
+  def assert_sortable_script_has_sri
+    assert_select "script[data-sortable-script]", count: 1 do |scripts|
+      assert_equal "sha384-eeLEhtwdMwD3X9y+8P3Cn7Idl/M+w8H4uZqkgD/2eJVkWIN1yKzEj6XegJ9dL3q0",
+                   scripts.first["integrity"]
+      assert_equal "anonymous", scripts.first["crossorigin"]
+    end
   end
 end

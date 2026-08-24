@@ -36,11 +36,13 @@ describe("route flow integration", () => {
 
     global.google = {
       maps: {
-
-        Marker: jest.fn(() => ({
-          setLabel: jest.fn(),
-          setMap: jest.fn()
-        })),
+        marker: {
+          PinElement: jest.fn((options) => ({ ...options })),
+          AdvancedMarkerElement: jest.fn((options) => ({
+            ...options,
+            append: jest.fn()
+          }))
+        },
 
         TravelMode: {
           DRIVING: "DRIVING"

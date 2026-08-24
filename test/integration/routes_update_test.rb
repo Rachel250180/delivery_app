@@ -27,6 +27,7 @@ class RoutesUpdateTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to(
       town_route_path(@town, @route))
+    assert_equal I18n.t("flash.routes.updated"), flash[:notice]
 
     @route.reload
 
