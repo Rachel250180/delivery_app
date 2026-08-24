@@ -1,178 +1,135 @@
-// app/javascript/map/__tests__/route.test.js
-
-import { drawRoute } from "../route";
-
-import { state } from "../state";
-
-import { START_POINT } from "../constants";
-
 import {
-  countApi
-} from "../utils";
+  clearRoutePolylines,
+  drawRoute
+} from "../route";
+import { state } from "../state";
+import { START_POINT } from "../constants";
+import { countApi } from "../utils";
 
-jest.mock("../utils", () => ({
-  countApi: jest.fn()
-}));
+jest.mock("../utils", () => ({ countApi: jest.fn() }));
 
 describe("drawRoute", () => {
+  let polyline;
+  let route;
 
   beforeEach(() => {
-
     jest.clearAllMocks();
-
-    global.google = {
-      maps: {
-        TravelMode: {
-          DRIVING: "DRIVING"
-        }
-      }
+    polyline = { setMap: jest.fn() };
+    route = { createPolylines: jest.fn(() => [polyline]) };
+    state.map = {};
+    state.routeClass = {
+      computeRoutes: jest.fn().mockResolvedValue({ routes: [route] })
     };
-
-    state.directionsRenderer = {
-      setDirections: jest.fn()
-    };
-
-    state.directionsService = {
-      route: jest.fn()
-    };
-
+    state.routePolylines = [];
+    state.routeRequestId = 0;
     state.deliveryPoints = [];
   });
 
-  test("deliveryPoints が空なら routes を空にする", () => {
+  test("deliveryPoints が空なら既存Polylineだけを消す", async () => {
+    const oldPolyline = { setMap: jest.fn() };
+    state.routePolylines = [oldPolyline];
 
-    drawRoute();
+    await drawRoute();
 
-    expect(
-      state.directionsRenderer.setDirections
-    ).toHaveBeenCalledWith({
-      routes: []
-    });
-
-    expect(countApi)
-      .not.toHaveBeenCalled();
-
-    expect(
-      state.directionsService.route
-    ).not.toHaveBeenCalled();
+    expect(oldPolyline.setMap).toHaveBeenCalledWith(null);
+    expect(state.routePolylines).toEqual([]);
+    expect(state.routeClass.computeRoutes).not.toHaveBeenCalled();
+    expect(countApi).not.toHaveBeenCalled();
   });
 
-  test("Directions API を呼び出す", () => {
-
-    state.deliveryPoints = [
-      { lat: 35.1, lng: 139.1 },
-      { lat: 35.2, lng: 139.2 }
-    ];
-
-    drawRoute();
-
-    expect(countApi)
-      .toHaveBeenCalledWith(
-        "Directions API"
-      );
-  });
-
-  test("route を正しい引数で呼ぶ", () => {
-
+  test("Route.computeRoutes を最小フィールドと地点順で呼ぶ", async () => {
     state.deliveryPoints = [
       { lat: 35.1, lng: 139.1 },
       { lat: 35.2, lng: 139.2 },
       { lat: 35.3, lng: 139.3 }
     ];
 
-    drawRoute();
+    await drawRoute();
 
-    expect(
-      state.directionsService.route
-    ).toHaveBeenCalledWith(
-
-      {
-        origin: START_POINT,
-
-        destination: {
-          lat: 35.3,
-          lng: 139.3
-        },
-
-        waypoints: [
-          {
-            location: {
-              lat: 35.1,
-              lng: 139.1
-            },
-            stopover: true
-          },
-
-          {
-            location: {
-              lat: 35.2,
-              lng: 139.2
-            },
-            stopover: true
-          }
-        ],
-
-        travelMode: "DRIVING"
-      },
-
-      expect.any(Function)
-    );
+    expect(countApi).toHaveBeenCalledWith("Routes API");
+    expect(state.routeClass.computeRoutes).toHaveBeenCalledWith({
+      origin: { lat: START_POINT.lat, lng: START_POINT.lng },
+      destination: { lat: 35.3, lng: 139.3 },
+      intermediates: [
+        { location: { lat: 35.1, lng: 139.1 } },
+        { location: { lat: 35.2, lng: 139.2 } }
+      ],
+      travelMode: "DRIVING",
+      fields: ["path"]
+    });
   });
 
-  test("status が OK なら setDirections を呼ぶ", () => {
+  test("createPolylines で生成した経路線をMapへ表示する", async () => {
+    state.deliveryPoints = [{ lat: 35, lng: 139 }];
 
-    const mockResult = {
-      routes: ["test"]
+    await drawRoute();
+
+    expect(route.createPolylines).toHaveBeenCalledTimes(1);
+    expect(state.routePolylines).toEqual([polyline]);
+    expect(polyline.setMap).toHaveBeenCalledWith(state.map);
+  });
+
+  test("再描画前に古いPolylineをMapから外す", async () => {
+    const oldPolyline = { setMap: jest.fn() };
+    state.routePolylines = [oldPolyline];
+    state.deliveryPoints = [{ lat: 35, lng: 139 }];
+
+    await drawRoute();
+
+    expect(oldPolyline.setMap).toHaveBeenCalledWith(null);
+    expect(state.routePolylines).toEqual([polyline]);
+  });
+
+  test("古いレスポンスは最新のPolylineを上書きしない", async () => {
+    let finishFirstRequest;
+    const initialPolyline = { setMap: jest.fn() };
+    const stalePolyline = { setMap: jest.fn() };
+    const latestPolyline = { setMap: jest.fn() };
+    const staleRoute = {
+      createPolylines: jest.fn(() => [stalePolyline])
     };
+    const latestRoute = {
+      createPolylines: jest.fn(() => [latestPolyline])
+    };
+    state.routePolylines = [initialPolyline];
+    state.routeClass.computeRoutes
+      .mockImplementationOnce(() => new Promise((resolve) => {
+        finishFirstRequest = resolve;
+      }))
+      .mockResolvedValueOnce({ routes: [latestRoute] });
+    state.deliveryPoints = [{ lat: 35, lng: 139 }];
 
-    state.deliveryPoints = [
-      { lat: 35, lng: 139 }
-    ];
+    const firstRequest = drawRoute();
+    const secondRequest = drawRoute();
+    await secondRequest;
 
-    state.directionsService.route
-      .mockImplementation(
-        (options, callback) => {
+    expect(initialPolyline.setMap).toHaveBeenCalledTimes(1);
+    expect(initialPolyline.setMap).toHaveBeenCalledWith(null);
+    expect(state.routePolylines).toEqual([latestPolyline]);
+    expect(latestPolyline.setMap).toHaveBeenCalledWith(state.map);
 
-          callback(
-            mockResult,
-            "OK"
-          );
-        }
-      );
+    finishFirstRequest({ routes: [staleRoute] });
+    await firstRequest;
 
-    drawRoute();
-
-    expect(
-      state.directionsRenderer.setDirections
-    ).toHaveBeenCalledWith(
-      mockResult
-    );
+    expect(staleRoute.createPolylines).not.toHaveBeenCalled();
+    expect(latestPolyline.setMap).not.toHaveBeenCalledWith(null);
+    expect(state.routePolylines).toEqual([latestPolyline]);
   });
+});
 
-  test("status が OK 以外なら setDirections を呼ばない", () => {
-
-    state.deliveryPoints = [
-      { lat: 35, lng: 139 }
+describe("clearRoutePolylines", () => {
+  test("すべてのPolylineをMapから外す", () => {
+    const polylines = [
+      { setMap: jest.fn() },
+      { setMap: jest.fn() }
     ];
+    state.routePolylines = polylines;
 
-    state.directionsService.route
-      .mockImplementation(
-        (options, callback) => {
+    clearRoutePolylines();
 
-          callback(
-            null,
-            "ERROR"
-          );
-        }
-      );
-
-    drawRoute();
-
-    expect(
-      state.directionsRenderer.setDirections
-    ).not.toHaveBeenCalledWith(
-      expect.anything()
-    );
+    polylines.forEach(polyline => {
+      expect(polyline.setMap).toHaveBeenCalledWith(null);
+    });
+    expect(state.routePolylines).toEqual([]);
   });
-
 });

@@ -3,9 +3,9 @@
 export const state = {
   map: null,
   markers: [],
-  directionsService: null,
-  directionsRenderer: null,
   routeClass: null,
+  routePolylines: [],
+  routeRequestId: 0,
   geocoder: null,
   deliveryPoints: [],
   isInitializing: false,

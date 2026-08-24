@@ -52,31 +52,27 @@ describe("route flow integration", () => {
 
     state.map = {};
 
-    state.directionsRenderer = {
-      setDirections: jest.fn()
-    };
-
-    state.directionsService = {
-      route: jest.fn(
-        (request, callback) => {
-          callback(
-            { routes: ["dummy"] },
-            "OK"
-          );
-        }
-      )
+    state.routePolylines = [];
+    state.routeRequestId = 0;
+    state.routeClass = {
+      computeRoutes: jest.fn().mockResolvedValue({
+        routes: [{
+          createPolylines: () => [{ setMap: jest.fn() }]
+        }]
+      })
     };
   });
 
   test(
     "addPointするとUIとルートが更新される",
-    () => {
+    async () => {
 
       addPoint({
         lat: 35,
         lng: 139,
         address: "東京都"
       });
+      await Promise.resolve();
 
       // state更新
       expect(
@@ -122,18 +118,12 @@ describe("route flow integration", () => {
         ).textContent
       ).toBe("東京都");
 
-      // drawRoute実行確認
+      // Route.computeRoutes実行確認
       expect(
-        state.directionsService.route
+        state.routeClass.computeRoutes
       ).toHaveBeenCalledTimes(1);
 
-      // DirectionsRenderer更新確認
-      expect(
-        state.directionsRenderer
-          .setDirections
-      ).toHaveBeenCalledWith({
-        routes: ["dummy"]
-      });
+      expect(state.routePolylines).toHaveLength(1);
     }
   );
 });
