@@ -53,25 +53,20 @@ describe("remove point flow", () => {
 
     state.map = {};
 
-    state.directionsRenderer = {
-      setDirections: jest.fn()
-    };
-
-    state.directionsService = {
-      route: jest.fn(
-        (request, callback) => {
-          callback(
-            { routes: ["dummy"] },
-            "OK"
-          );
-        }
-      )
+    state.routePolylines = [];
+    state.routeRequestId = 0;
+    state.routeClass = {
+      computeRoutes: jest.fn().mockResolvedValue({
+        routes: [{
+          createPolylines: () => [{ setMap: jest.fn() }]
+        }]
+      })
     };
   });
 
   test(
     "removePointで状態とUIが更新される",
-    () => {
+    async () => {
 
       addPoint({
         lat: 35,
@@ -89,6 +84,7 @@ describe("remove point flow", () => {
         state.markers[0];
 
       removePoint(0);
+      await Promise.resolve();
 
       // marker削除
       expect(firstMarker.map).toBeNull();
@@ -135,7 +131,7 @@ describe("remove point flow", () => {
 
       // ルート再計算
       expect(
-        state.directionsService.route
+        state.routeClass.computeRoutes
       ).toHaveBeenCalled();
     }
   );

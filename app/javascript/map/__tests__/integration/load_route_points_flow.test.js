@@ -52,25 +52,20 @@ describe("load route points flow", () => {
 
     state.map = {};
 
-    state.directionsRenderer = {
-      setDirections: jest.fn()
-    };
-
-    state.directionsService = {
-      route: jest.fn(
-        (request, callback) => {
-          callback(
-            { routes: ["dummy"] },
-            "OK"
-          );
-        }
-      )
+    state.routePolylines = [];
+    state.routeRequestId = 0;
+    state.routeClass = {
+      computeRoutes: jest.fn().mockResolvedValue({
+        routes: [{
+          createPolylines: () => [{ setMap: jest.fn() }]
+        }]
+      })
     };
   });
 
   test(
     "loadRoutePointsで地点を復元できる",
-    () => {
+    async () => {
 
       loadRoutePoints([
         {
@@ -84,6 +79,7 @@ describe("load route points flow", () => {
           address: "大阪"
         }
       ]);
+      await Promise.resolve();
 
       // state復元
       expect(
@@ -121,17 +117,9 @@ describe("load route points flow", () => {
       ).toBe(2);
 
       // route描画
-      expect(
-        state.directionsService.route
-      ).toHaveBeenCalledTimes(1);
+      expect(state.routeClass.computeRoutes).toHaveBeenCalledTimes(1);
 
-      // renderer更新
-      expect(
-        state.directionsRenderer
-          .setDirections
-      ).toHaveBeenCalledWith({
-        routes: ["dummy"]
-      });
+      expect(state.routePolylines).toHaveLength(1);
     }
   );
 });

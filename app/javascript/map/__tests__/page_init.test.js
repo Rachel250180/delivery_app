@@ -6,6 +6,7 @@ import {
   initMapEdit,
   initMapShow
 } from "../pages";
+import { state } from "../state";
 
 jest.mock("../pages", () => ({
   initMapNew: jest.fn(),
@@ -15,6 +16,10 @@ jest.mock("../pages", () => ({
 
 describe("initializeMapPage", () => {
 
+  const Route = {
+    computeRoutes: jest.fn()
+  };
+
   beforeEach(() => {
 
     // mock初期化
@@ -23,11 +28,14 @@ describe("initializeMapPage", () => {
     // google maps mock
     window.google = {
       maps: {
-        importLibrary: jest.fn().mockResolvedValue({})
+        importLibrary: jest.fn((name) => Promise.resolve(
+          name === "routes" ? { Route } : {}
+        ))
       }
     };
     window.googleMapsApiReadyPromise = Promise.resolve();
     window.Sortable = jest.fn();
+    state.routeClass = null;
 
     // map要素追加
     document.body.innerHTML = `
@@ -73,6 +81,8 @@ describe("initializeMapPage", () => {
 
     expect(google.maps.importLibrary.mock.calls.map(([name]) => name))
       .toEqual(["maps", "marker", "geocoding", "routes"]);
+    expect(state.routeClass).toBe(Route);
+    expect(Route.computeRoutes).not.toHaveBeenCalled();
 
     expect(initMapNew).toHaveBeenCalled();
     expect(initMapEdit).not.toHaveBeenCalled();
@@ -138,7 +148,9 @@ describe("initializeMapPage", () => {
 
     window.google = {
       maps: {
-        importLibrary: jest.fn().mockResolvedValue({})
+        importLibrary: jest.fn((name) => Promise.resolve(
+          name === "routes" ? { Route } : {}
+        ))
       }
     };
     notifyGoogleMapsReady();
@@ -181,13 +193,17 @@ describe("initializeMapPage", () => {
   test("ライブラリ待機中に Turbo が画面を差し替えた場合は初期化しない", async () => {
     const finishLoading = [];
     google.maps.importLibrary.mockImplementation(
-      () => new Promise((resolve) => { finishLoading.push(resolve); })
+      (name) => new Promise((resolve) => {
+        finishLoading.push({ name, resolve });
+      })
     );
 
     const initialization = initializeMapPage();
     await Promise.resolve();
     document.body.innerHTML = "";
-    finishLoading.forEach((resolve) => resolve({}));
+    finishLoading.forEach(({ name, resolve }) => {
+      resolve(name === "routes" ? { Route } : {});
+    });
 
     await initialization;
 

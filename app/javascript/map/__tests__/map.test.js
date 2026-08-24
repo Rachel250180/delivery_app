@@ -23,8 +23,8 @@ describe("createMap", () => {
 
     // stateを初期化
     state.map = null;
-    state.directionsService = null;
-    state.directionsRenderer = null;
+    state.routePolylines = [];
+    state.routeRequestId = 0;
     state.geocoder = null;
 
     // Google Maps API をモック
@@ -32,12 +32,6 @@ describe("createMap", () => {
       maps: {
         Map: jest.fn(() => ({
           setCenter: jest.fn(),
-        })),
-
-        DirectionsService: jest.fn(),
-
-        DirectionsRenderer: jest.fn(() => ({
-          setMap: jest.fn(),
         })),
 
         Geocoder: jest.fn(),
@@ -75,18 +69,6 @@ describe("createMap", () => {
         mapTypeControl: false,
       }
     );
-
-    // DirectionsService が生成される
-    expect(
-      google.maps.DirectionsService
-    ).toHaveBeenCalled();
-
-    // DirectionsRenderer が生成される
-    expect(
-      google.maps.DirectionsRenderer
-    ).toHaveBeenCalledWith({
-      suppressMarkers: true,
-    });
 
     // Geocoder が生成される
     expect(
@@ -137,6 +119,7 @@ describe("createMap", () => {
 describe("resetMapState", () => {
 
   let markers;
+  let routePolyline;
 
   beforeEach(() => {
 
@@ -152,9 +135,9 @@ describe("resetMapState", () => {
       { lat: 3, lng: 4 },
     ];
 
-    state.directionsRenderer = {
-      setDirections: jest.fn(),
-    };
+    routePolyline = { setMap: jest.fn() };
+    state.routePolylines = [routePolyline];
+    state.routeRequestId = 5;
 
     state.map = {};
   });
@@ -172,11 +155,9 @@ describe("resetMapState", () => {
     expect(state.deliveryPoints)
       .toEqual([]);
 
-    expect(
-      state.directionsRenderer.setDirections
-    ).toHaveBeenCalledWith({
-      routes: []
-    });
+    expect(state.routePolylines).toEqual([]);
+    expect(routePolyline.setMap).toHaveBeenCalledWith(null);
+    expect(state.routeRequestId).toBe(6);
 
     expect(state.map).toBeNull();
   });

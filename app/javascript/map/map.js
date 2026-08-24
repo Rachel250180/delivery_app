@@ -3,6 +3,7 @@
 import { state } from "map/state";
 import { START_POINT, DEFAULT_ZOOM, START_MARKER_COLORS } from "map/constants";
 import { countApi } from "map/utils";
+import { clearRoutePolylines } from "map/route";
 
 export function createMap() {
   if (state.map) return;
@@ -20,8 +21,7 @@ export function createMap() {
     }
   );
 
-  initializeServices();
-  state.directionsRenderer.setMap(state.map);
+  initializeGeocoder();
 
   createStartMarker();
 
@@ -58,16 +58,7 @@ function getMapId() {
 }
 
 
-function initializeServices() {
-  state.directionsService =
-    new google.maps.DirectionsService();
-
-  state.directionsRenderer =
-    new google.maps.DirectionsRenderer({
-      suppressMarkers: true,
-    });
-
-
+function initializeGeocoder() {
   state.geocoder =
     new google.maps.Geocoder();
 }
@@ -77,7 +68,8 @@ export function resetMapState() {
 
   clearMarkers();
   clearDeliveryPoints();
-  clearDirections();
+  state.routeRequestId += 1;
+  clearRoutePolylines();
 
   state.map = null;
 }
@@ -93,12 +85,4 @@ function clearMarkers() {
 
 function clearDeliveryPoints() {
   state.deliveryPoints = [];
-}
-
-function clearDirections() {
-  if (!state.directionsRenderer) return;
-
-  state.directionsRenderer.setDirections({
-    routes: [],
-  });
 }

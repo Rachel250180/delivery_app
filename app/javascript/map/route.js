@@ -4,21 +4,18 @@ import { state } from "map/state";
 import { START_POINT } from "map/constants";
 import { countApi } from "map/utils";
 
-export function drawRoute() {
+export async function drawRoute() {
+
+  const requestId = ++state.routeRequestId;
 
   if (
     state.deliveryPoints.length === 0
   ) {
-
-    state.directionsRenderer
-      .setDirections({
-        routes: []
-      });
-
+    clearRoutePolylines();
     return;
   }
 
-  countApi("Directions API");
+  countApi("Routes API");
 
   const origin = START_POINT;
 
@@ -27,35 +24,57 @@ export function drawRoute() {
       state.deliveryPoints.length - 1
     ];
 
-  const waypoints =
+  const intermediates =
     state.deliveryPoints
       .slice(0, -1)
       .map(point => ({
-        location: point,
-        stopover: true
+        location: {
+          lat: point.lat,
+          lng: point.lng
+        }
       }));
 
-  state.directionsService.route(
-    {
-      origin,
-      destination,
-      waypoints,
-      travelMode:
-        google.maps.TravelMode.DRIVING
-    },
+  try {
+    const { routes } =
+      await state.routeClass.computeRoutes({
+        origin: {
+          lat: origin.lat,
+          lng: origin.lng
+        },
+        destination: {
+          lat: destination.lat,
+          lng: destination.lng
+        },
+        intermediates,
+        travelMode: "DRIVING",
+        fields: ["path"]
+      });
 
-    (result, status) => {
-
-      console.log(
-        "route status:",
-        status
-      );
-
-      if (status === "OK") {
-
-        state.directionsRenderer
-          .setDirections(result);
-      }
+    if (requestId !== state.routeRequestId) {
+      return;
     }
+
+    clearRoutePolylines();
+
+    if (!routes?.length) return;
+
+    state.routePolylines =
+      routes[0].createPolylines();
+
+    state.routePolylines.forEach(
+      polyline => polyline.setMap(state.map)
+    );
+  } catch (error) {
+    if (requestId === state.routeRequestId) {
+      console.error("Route computation failed:", error);
+    }
+  }
+}
+
+export function clearRoutePolylines() {
+  state.routePolylines.forEach(
+    polyline => polyline.setMap(null)
   );
+
+  state.routePolylines = [];
 }
