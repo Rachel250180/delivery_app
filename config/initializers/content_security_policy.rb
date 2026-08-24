@@ -24,6 +24,7 @@ Rails.application.configure do
                        "https://ka-f.fontawesome.com"
     policy.connect_src :self, :data,
                        "https://maps.googleapis.com",
+                       "https://routes.googleapis.com",
                        "https://www.gstatic.com",
                        "https://ka-f.fontawesome.com"
     policy.worker_src  :blob
