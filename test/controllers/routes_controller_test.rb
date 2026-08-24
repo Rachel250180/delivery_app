@@ -12,6 +12,7 @@ class RoutesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "#route-data[data-map-mode='show']"
     assert_select "script[data-google-maps-script]", count: 1
+    assert_select "script[data-sortable-script]", count: 0
   end
 
   test "should get new" do
@@ -20,6 +21,7 @@ class RoutesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "#route-data[data-map-mode='new']"
     assert_select "script[data-google-maps-script]", count: 1
+    assert_select "script[data-sortable-script]", count: 1
   end
 
   test "should redirect new when not logged in" do
@@ -33,6 +35,7 @@ class RoutesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "#route-data[data-map-mode='edit']"
     assert_select "script[data-google-maps-script]", count: 1
+    assert_select "script[data-sortable-script]", count: 1
     assert_select "[data-turbo-confirm*='このルートを削除']", count: 1
   end
 

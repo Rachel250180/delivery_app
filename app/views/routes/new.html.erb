@@ -2,6 +2,14 @@
   <%= render "shared/google_maps_script" %>
 <% end %>
 
+<% content_for :sortable_scripts do %>
+  <script
+    src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"
+    defer
+    data-sortable-script>
+  </script>
+<% end %>
+
 <div class="route-title">
   <h5><%= @town.name %>のルート登録画面</h5>
 </div>
