@@ -6,7 +6,7 @@ import {
   initMapShow
 } from "map/pages";
 
-export function initializeMapPage() {
+export async function initializeMapPage() {
   const mapElement =
     document.getElementById("map");
 
@@ -15,11 +15,7 @@ export function initializeMapPage() {
 
   if (!mapElement || !routeData) return;
   if (mapElement.dataset.initialized === "true") return;
-
-  if (!window.google?.maps) {
-    initializeWhenGoogleMapsLoads();
-    return;
-  }
+  if (mapElement.dataset.initializing === "true") return;
 
   const initializer = {
     new: initMapNew,
@@ -29,23 +25,50 @@ export function initializeMapPage() {
 
   if (!initializer) return;
 
-  mapElement.dataset.initialized = "true";
+  mapElement.dataset.initializing = "true";
 
   try {
+    await loadGoogleMapsLibraries();
+
+    // Turbo may have replaced the page while the libraries were loading.
+    if (
+      !mapElement.isConnected ||
+      document.getElementById("map") !== mapElement
+    ) {
+      return;
+    }
+
     initializer();
+    mapElement.dataset.initialized = "true";
   } catch (error) {
     delete mapElement.dataset.initialized;
     throw error;
+  } finally {
+    delete mapElement.dataset.initializing;
   }
 }
 
-function initializeWhenGoogleMapsLoads() {
-  const script = document.querySelector(
-    "script[data-google-maps-script]"
-  );
+async function loadGoogleMapsLibraries() {
+  await waitForGoogleMapsApi();
 
-  if (!script || script.dataset.listenerAdded === "true") return;
+  if (!window.google?.maps?.importLibrary) {
+    throw new Error("Google Maps API failed to initialize");
+  }
 
-  script.dataset.listenerAdded = "true";
-  script.addEventListener("load", initializeMapPage, { once: true });
+  await Promise.all([
+    google.maps.importLibrary("maps"),
+    google.maps.importLibrary("marker"),
+    google.maps.importLibrary("geocoding"),
+    google.maps.importLibrary("routes")
+  ]);
+}
+
+function waitForGoogleMapsApi() {
+  if (!window.googleMapsApiReadyPromise) {
+    return Promise.reject(
+      new Error("Google Maps API readiness callback was not configured")
+    );
+  }
+
+  return window.googleMapsApiReadyPromise;
 }

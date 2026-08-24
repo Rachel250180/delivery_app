@@ -66,12 +66,6 @@ describe("pages.js", () => {
       addListener: jest.fn()
     };
 
-    jest.useFakeTimers();
-  });
-
-  afterEach(() => {
-
-    jest.useRealTimers();
   });
 
   describe("initMapShow", () => {
@@ -138,8 +132,6 @@ describe("pages.js", () => {
 
       initMapNew();
 
-      jest.runAllTimers();
-
       expect(state.isNewPage).toBe(true);
 
       expect(resetMapState)
@@ -166,8 +158,6 @@ describe("pages.js", () => {
       getRoutePoints.mockReturnValue([]);
 
       initMapNew();
-
-      jest.runAllTimers();
 
       expect(loadRoutePoints)
         .toHaveBeenCalledWith(savedPoints);

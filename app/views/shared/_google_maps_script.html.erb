@@ -1,6 +1,16 @@
+<script>
+  window.googleMapsApiReadyPromise ||= new Promise((resolve) => {
+    window.googleMapsApiReady = resolve;
+
+    if (window.google?.maps?.importLibrary) {
+      resolve();
+    }
+  });
+</script>
+
 <script
   data-google-maps-script
-  src="https://maps.googleapis.com/maps/api/js?key=<%= Rails.application.credentials.google_maps_api_key %>&loading=async"
+  src="https://maps.googleapis.com/maps/api/js?key=<%= Rails.application.credentials.google_maps_api_key %>&loading=async&callback=googleMapsApiReady"
   async
   defer>
 </script>

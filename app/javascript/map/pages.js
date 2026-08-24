@@ -121,14 +121,10 @@ export function initMapNew() {
 
   state.isNewPage = true;
 
-  setTimeout(() => {
-
-    setupMapPage({
-      editable: true,
-      useSession: true
-    });
-
-  }, 100);
+  setupMapPage({
+    editable: true,
+    useSession: true
+  });
 
   setupForm();
 }
