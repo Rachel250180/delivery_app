@@ -5,6 +5,7 @@ export const state = {
   markers: [],
   directionsService: null,
   directionsRenderer: null,
+  routeClass: null,
   geocoder: null,
   deliveryPoints: [],
   isInitializing: false,

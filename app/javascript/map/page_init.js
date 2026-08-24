@@ -5,6 +5,7 @@ import {
   initMapEdit,
   initMapShow
 } from "map/pages";
+import { state } from "map/state";
 
 export async function initializeMapPage() {
   const mapElement =
@@ -58,12 +59,20 @@ async function loadGoogleMapsLibraries() {
     throw new Error("Google Maps API failed to initialize");
   }
 
-  await Promise.all([
+  const libraries = await Promise.all([
     google.maps.importLibrary("maps"),
     google.maps.importLibrary("marker"),
     google.maps.importLibrary("geocoding"),
     google.maps.importLibrary("routes")
   ]);
+
+  const { Route } = libraries[3];
+
+  if (!Route) {
+    throw new Error("Google Maps Route class failed to initialize");
+  }
+
+  state.routeClass = Route;
 }
 
 function waitForGoogleMapsApi() {
