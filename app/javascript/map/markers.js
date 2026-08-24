@@ -2,6 +2,7 @@
 
 import { state } from "map/state";
 import { refreshUI } from "map/ui";
+import { DELIVERY_MARKER_COLORS } from "map/constants";
 
 
 // ポイント追加
@@ -20,12 +21,19 @@ export function addPoint(point) {
   const index =
     state.markers.length;
 
-  const marker =
-    new google.maps.Marker({
-      position: { lat, lng },
-      map: state.map,
-      label: String(index + 1),
-    });
+  const pin = new google.maps.marker.PinElement({
+    ...DELIVERY_MARKER_COLORS,
+    glyphText: String(index + 1)
+  });
+
+  const marker = new google.maps.marker.AdvancedMarkerElement({
+    position: { lat, lng },
+    map: state.map,
+    title: point.address || ""
+  });
+
+  marker.append(pin);
+  marker.deliveryPin = pin;
 
   state.markers.push(marker);
 
@@ -45,7 +53,7 @@ export function addPoint(point) {
 // マーカー削除
 export function removePoint(index) {
 
-  state.markers[index].setMap(null);
+  state.markers[index].map = null;
 
   state.markers.splice(index, 1);
 
@@ -86,9 +94,8 @@ export function renumberMarkers() {
   state.markers.forEach(
     (marker, i) => {
 
-      marker.setLabel(
-        String(i + 1)
-      );
+      marker.deliveryPin.glyphText =
+        String(i + 1);
     }
   );
 }

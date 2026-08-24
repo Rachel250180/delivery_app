@@ -1,7 +1,7 @@
 // map.js
 
 import { state } from "map/state";
-import { START_POINT, DEFAULT_ZOOM, START_MARKER_ICON} from "map/constants";
+import { START_POINT, DEFAULT_ZOOM, START_MARKER_COLORS } from "map/constants";
 import { countApi } from "map/utils";
 
 export function createMap() {
@@ -14,6 +14,7 @@ export function createMap() {
     {
       zoom: DEFAULT_ZOOM,
       center: START_POINT,
+      mapId: getMapId(),
       streetViewControl: false,
       mapTypeControl: false,
     }
@@ -33,13 +34,27 @@ export function createMap() {
 }
 
 
-function createStartMarker(){
-  return new google.maps.Marker({
+function createStartMarker() {
+  const pin = new google.maps.marker.PinElement({
+    ...START_MARKER_COLORS,
+    glyphText: "S"
+  });
+
+  const marker = new google.maps.marker.AdvancedMarkerElement({
     position: START_POINT,
     map: state.map,
-    label: "S",
-    icon: START_MARKER_ICON,
+    title: START_POINT.address
   });
+
+  marker.append(pin);
+
+  return marker;
+}
+
+function getMapId() {
+  return document.querySelector(
+    "script[data-google-maps-script]"
+  )?.dataset.mapId || "DEMO_MAP_ID";
 }
 
 
@@ -70,7 +85,7 @@ export function resetMapState() {
 
 function clearMarkers() {
   state.markers.forEach(marker => {
-    marker.setMap(null);
+    marker.map = null;
   });
 
   state.markers = [];

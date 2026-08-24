@@ -1,3 +1,6 @@
+<% google_maps_map_id = Rails.application.credentials.google_maps_map_id ||
+                        ENV.fetch("GOOGLE_MAPS_MAP_ID", "DEMO_MAP_ID") %>
+
 <script>
   window.googleMapsApiReadyPromise ||= new Promise((resolve) => {
     window.googleMapsApiReady = resolve;
@@ -10,6 +13,7 @@
 
 <script
   data-google-maps-script
+  data-map-id="<%= google_maps_map_id %>"
   src="https://maps.googleapis.com/maps/api/js?key=<%= Rails.application.credentials.google_maps_api_key %>&loading=async&callback=googleMapsApiReady"
   async
   defer>

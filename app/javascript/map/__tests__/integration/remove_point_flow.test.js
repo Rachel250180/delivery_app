@@ -37,11 +37,13 @@ describe("remove point flow", () => {
 
     global.google = {
       maps: {
-
-        Marker: jest.fn(() => ({
-          setLabel: jest.fn(),
-          setMap: jest.fn()
-        })),
+        marker: {
+          PinElement: jest.fn((options) => ({ ...options })),
+          AdvancedMarkerElement: jest.fn((options) => ({
+            ...options,
+            append: jest.fn()
+          }))
+        },
 
         TravelMode: {
           DRIVING: "DRIVING"
@@ -89,9 +91,8 @@ describe("remove point flow", () => {
       removePoint(0);
 
       // marker削除
-      expect(
-        firstMarker.setMap
-      ).toHaveBeenCalledWith(null);
+      expect(firstMarker.map).toBeNull();
+      expect(state.markers[0].deliveryPin.glyphText).toBe("1");
 
       // state更新
       expect(
