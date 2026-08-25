@@ -138,6 +138,7 @@ describe("resetMapState", () => {
     routePolyline = { setMap: jest.fn() };
     state.routePolylines = [routePolyline];
     state.routeRequestId = 5;
+    state.mapGeneration = 7;
 
     state.map = {};
   });
@@ -158,6 +159,7 @@ describe("resetMapState", () => {
     expect(state.routePolylines).toEqual([]);
     expect(routePolyline.setMap).toHaveBeenCalledWith(null);
     expect(state.routeRequestId).toBe(6);
+    expect(state.mapGeneration).toBe(8);
 
     expect(state.map).toBeNull();
   });

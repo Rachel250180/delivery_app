@@ -9,7 +9,8 @@ import {
 
 import {
   loadRoutePoints,
-  addPoint
+  addPoint,
+  updatePointAddress
 } from "map/markers";
 
 import {
@@ -98,18 +99,35 @@ function setupMapClick() {
       const lng =
         e.latLng.lng();
 
+      const generation =
+        state.mapGeneration;
+
+      const deliveryPoint =
+        addPoint({
+          lat,
+          lng,
+          address: ""
+        });
+
       fetchAddress(
         lat,
         lng,
 
         (address) => {
 
-          addPoint({
-            lat,
-            lng,
+          if (
+            generation !==
+              state.mapGeneration
+          ) {
+            return;
+          }
+
+          updatePointAddress(
+            deliveryPoint,
             address
-          });
-        }
+          );
+        },
+        generation
       );
     }
   );
