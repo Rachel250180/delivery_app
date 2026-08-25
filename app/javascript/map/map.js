@@ -66,6 +66,7 @@ function initializeGeocoder() {
 
 export function resetMapState() {
 
+  state.mapGeneration += 1;
   clearMarkers();
   clearDeliveryPoints();
   state.routeRequestId += 1;

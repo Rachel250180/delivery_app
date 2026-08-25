@@ -6,6 +6,7 @@ export const state = {
   routeClass: null,
   routePolylines: [],
   routeRequestId: 0,
+  mapGeneration: 0,
   geocoder: null,
   deliveryPoints: [],
   isInitializing: false,

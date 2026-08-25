@@ -37,16 +37,40 @@ export function addPoint(point) {
 
   state.markers.push(marker);
 
-  state.deliveryPoints.push({
+  const deliveryPoint = {
     lat,
     lng,
     address: point.address || ""
-  });
+  };
+
+  state.deliveryPoints.push(deliveryPoint);
 
   // 初期読み込み中は更新しない
   if (!state.isInitializing) {
     refreshUI();
   }
+
+  return deliveryPoint;
+}
+
+
+// Geocoder完了後の住所更新
+export function updatePointAddress(
+  deliveryPoint,
+  address
+) {
+
+  const index =
+    state.deliveryPoints.indexOf(
+      deliveryPoint
+    );
+
+  if (index < 0) return;
+
+  deliveryPoint.address = address;
+  state.markers[index].title = address;
+
+  refreshUI();
 }
 
 
