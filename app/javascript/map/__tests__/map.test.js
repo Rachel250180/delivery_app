@@ -51,7 +51,7 @@ describe("createMap", () => {
     };
   });
 
-  test("地図を初期化できる", () => {
+  test("initializes the map", () => {
 
     createMap();
 
@@ -102,7 +102,7 @@ describe("createMap", () => {
     ).toHaveBeenCalledWith(START_POINT);
   });
 
-  test("すでに map が存在する場合は何もしない", () => {
+  test("does nothing when a map already exists", () => {
 
     state.map = {};
 
@@ -143,7 +143,7 @@ describe("resetMapState", () => {
     state.map = {};
   });
 
-  test("地図状態をリセットできる", () => {
+  test("resets the map state", () => {
 
     resetMapState();
 

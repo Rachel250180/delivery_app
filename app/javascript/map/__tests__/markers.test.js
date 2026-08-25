@@ -11,7 +11,7 @@ describe("updatePointAddress", () => {
     jest.clearAllMocks();
   });
 
-  test("指定した地点と対応するMarkerだけの住所を更新する", () => {
+  test("updates only the selected point and its marker address", () => {
     const first = { lat: 1, lng: 2, address: "" };
     const second = { lat: 3, lng: 4, address: "" };
     const firstMarker = { title: "" };
@@ -29,7 +29,7 @@ describe("updatePointAddress", () => {
     expect(refreshUI).toHaveBeenCalledTimes(1);
   });
 
-  test("既に削除された地点は更新しない", () => {
+  test("does not update a point that has already been removed", () => {
     const removedPoint = { lat: 1, lng: 2, address: "" };
     state.deliveryPoints = [];
     state.markers = [];

@@ -77,7 +77,7 @@ describe("ui.js", () => {
 
   describe("renderList", () => {
 
-    test("deliveryPoints をリスト表示する", () => {
+    test("renders deliveryPoints in the list", () => {
 
       state.deliveryPoints = [
         {
@@ -116,7 +116,7 @@ describe("ui.js", () => {
       ).toBe("東京");
     });
 
-    test("削除ボタン押下で removePoint を呼ぶ", () => {
+    test("calls removePoint when the delete button is clicked", () => {
 
       state.deliveryPoints = [
         {
@@ -141,7 +141,7 @@ describe("ui.js", () => {
         .toHaveBeenCalledWith(0);
     });
 
-    test("points-list が無ければ何もしない", () => {
+    test("does nothing when points-list is missing", () => {
 
       document.body.innerHTML = "";
 
@@ -153,7 +153,7 @@ describe("ui.js", () => {
 
   describe("refreshUI", () => {
 
-    test("UI更新処理を実行する", () => {
+    test("updates the UI", () => {
 
       state.deliveryPoints = [
         {
@@ -174,7 +174,7 @@ describe("ui.js", () => {
         .toHaveBeenCalled();
     });
 
-    test("isInitializing 中は drawRoute しない", () => {
+    test("does not draw the route while initializing", () => {
 
       state.isInitializing = true;
 
@@ -187,7 +187,7 @@ describe("ui.js", () => {
 
   describe("updateHiddenField", () => {
 
-    test("hidden field を更新する", () => {
+    test("updates the hidden field", () => {
 
       state.deliveryPoints = [
         {
@@ -211,7 +211,7 @@ describe("ui.js", () => {
         );
     });
 
-    test("isNewPage の時 sessionStorage に保存する", () => {
+    test("saves to sessionStorage on a new page", () => {
 
       state.isNewPage = true;
 
@@ -242,7 +242,7 @@ describe("ui.js", () => {
 
   describe("initSortable", () => {
 
-    test("Sortable を初期化する", () => {
+    test("initializes Sortable", () => {
 
       global.Sortable = jest.fn();
 
@@ -252,7 +252,7 @@ describe("ui.js", () => {
         .toHaveBeenCalled();
     });
 
-    test("並び替え時に movePoint を呼ぶ", () => {
+    test("calls movePoint after sorting", () => {
 
       let sortableOptions;
 
@@ -273,7 +273,7 @@ describe("ui.js", () => {
         .toHaveBeenCalledWith(0, 1);
     });
 
-    test("points-list が無ければ何もしない", () => {
+    test("does nothing when points-list is missing", () => {
 
       document.body.innerHTML = "";
 
@@ -288,7 +288,7 @@ describe("ui.js", () => {
 
   describe("getRoutePoints", () => {
 
-    test("route-data から points を取得する", () => {
+    test("gets points from route-data", () => {
 
       const result =
         getRoutePoints();
@@ -302,7 +302,7 @@ describe("ui.js", () => {
         ]);
     });
 
-    test("route-data が無ければ空配列", () => {
+    test("returns an empty array when route-data is missing", () => {
 
       document.body.innerHTML = "";
 

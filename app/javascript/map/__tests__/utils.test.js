@@ -30,7 +30,7 @@ describe("utils.js", () => {
 
   describe("countApi", () => {
 
-    test("API回数をカウントする", () => {
+    test("counts API calls", () => {
 
       console.log = jest.fn();
 
@@ -50,7 +50,7 @@ describe("utils.js", () => {
 
   describe("getPointLabel", () => {
 
-    test("address があれば address を返す", () => {
+    test("returns the address when present", () => {
 
       const point = {
         address: "東京都"
@@ -63,7 +63,7 @@ describe("utils.js", () => {
         .toBe("東京都");
     });
 
-    test("address が無ければ formatLatLng の形式を返す", () => {
+    test("returns formatted coordinates when the address is missing", () => {
 
       const point = {
         lat: 35.123456,
@@ -82,7 +82,7 @@ describe("utils.js", () => {
 
   describe("formatLatLng", () => {
 
-    test("緯度経度を小数点5桁で返す", () => {
+    test("formats coordinates to five decimal places", () => {
 
       const point = {
         lat: 35.1234567,
@@ -108,7 +108,7 @@ describe("utils.js", () => {
       `;
     });
 
-    test("サーバーから受け取った上限未満なら true", () => {
+    test("returns true when below the server-provided limit", () => {
 
       state.deliveryPoints = [
         {},
@@ -122,7 +122,7 @@ describe("utils.js", () => {
         .toBe(true);
     });
 
-    test("サーバーから受け取った上限以上なら false", () => {
+    test("returns false when at or above the server-provided limit", () => {
 
       window.alert = jest.fn();
 

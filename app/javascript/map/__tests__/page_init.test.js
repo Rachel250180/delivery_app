@@ -44,7 +44,7 @@ describe("initializeMapPage", () => {
     `;
   });
 
-  test("初期化済みの map 要素では何もしない", async () => {
+  test("does nothing for an already initialized map element", async () => {
 
     document.getElementById("map").dataset.initialized = "true";
 
@@ -55,7 +55,7 @@ describe("initializeMapPage", () => {
     expect(initMapShow).not.toHaveBeenCalled();
   });
 
-  test("readiness callback が未設定ならエラーにする", async () => {
+  test("throws when the readiness callback is not configured", async () => {
 
     window.googleMapsApiReadyPromise = undefined;
 
@@ -66,7 +66,7 @@ describe("initializeMapPage", () => {
     expect(initMapNew).not.toHaveBeenCalled();
   });
 
-  test("map 要素が無い場合は何もしない", async () => {
+  test("does nothing when the map element is missing", async () => {
 
     document.body.innerHTML = "";
 
@@ -75,7 +75,7 @@ describe("initializeMapPage", () => {
     expect(initMapNew).not.toHaveBeenCalled();
   });
 
-  test("new ページならライブラリを待って initMapNew を呼ぶ", async () => {
+  test("waits for libraries and calls initMapNew on a new page", async () => {
 
     await initializeMapPage();
 
@@ -93,7 +93,7 @@ describe("initializeMapPage", () => {
     ).toBe("true");
   });
 
-  test("edit ページなら initMapEdit を呼ぶ", async () => {
+  test("calls initMapEdit on an edit page", async () => {
 
     document.getElementById("route-data").dataset.mapMode = "edit";
 
@@ -104,7 +104,7 @@ describe("initializeMapPage", () => {
     expect(initMapShow).not.toHaveBeenCalled();
   });
 
-  test("show ページなら initMapShow を呼ぶ", async () => {
+  test("calls initMapShow on a show page", async () => {
 
     document.getElementById("route-data").dataset.mapMode = "show";
 
@@ -115,7 +115,7 @@ describe("initializeMapPage", () => {
     expect(initMapEdit).not.toHaveBeenCalled();
   });
 
-  test("対象外ページでは何も呼ばない", async () => {
+  test("does not initialize an unsupported page", async () => {
 
     document.getElementById("route-data").dataset.mapMode = "unknown";
 
@@ -126,7 +126,7 @@ describe("initializeMapPage", () => {
     expect(initMapShow).not.toHaveBeenCalled();
   });
 
-  test("同じ map 要素を二重に初期化しない", async () => {
+  test("does not initialize the same map element twice", async () => {
     await Promise.all([
       initializeMapPage(),
       initializeMapPage()
@@ -135,7 +135,7 @@ describe("initializeMapPage", () => {
     expect(initMapNew).toHaveBeenCalledTimes(1);
   });
 
-  test("Google Maps callback の通知後に一度だけ初期化する", async () => {
+  test("initializes once after the Google Maps callback", async () => {
     window.google = undefined;
 
     let notifyGoogleMapsReady;
@@ -160,7 +160,7 @@ describe("initializeMapPage", () => {
     expect(initMapNew).toHaveBeenCalledTimes(1);
   });
 
-  test("編集画面では Sortable.js の読み込み完了を待って初期化する", async () => {
+  test("waits for Sortable.js before initializing an edit page", async () => {
     document.getElementById("route-data").dataset.mapMode = "edit";
     window.Sortable = undefined;
 
@@ -181,7 +181,7 @@ describe("initializeMapPage", () => {
     script.remove();
   });
 
-  test("詳細画面では Sortable.js を待たない", async () => {
+  test("does not wait for Sortable.js on a show page", async () => {
     document.getElementById("route-data").dataset.mapMode = "show";
     window.Sortable = undefined;
 
@@ -190,7 +190,7 @@ describe("initializeMapPage", () => {
     expect(initMapShow).toHaveBeenCalledTimes(1);
   });
 
-  test("ライブラリ待機中に Turbo が画面を差し替えた場合は初期化しない", async () => {
+  test("does not initialize when Turbo replaces the page while waiting", async () => {
     const finishLoading = [];
     google.maps.importLibrary.mockImplementation(
       (name) => new Promise((resolve) => {

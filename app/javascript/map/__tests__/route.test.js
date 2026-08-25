@@ -25,7 +25,7 @@ describe("drawRoute", () => {
     state.deliveryPoints = [];
   });
 
-  test("deliveryPoints が空なら既存Polylineだけを消す", async () => {
+  test("clears existing polylines when deliveryPoints is empty", async () => {
     const oldPolyline = { setMap: jest.fn() };
     state.routePolylines = [oldPolyline];
 
@@ -37,7 +37,7 @@ describe("drawRoute", () => {
     expect(countApi).not.toHaveBeenCalled();
   });
 
-  test("Route.computeRoutes を最小フィールドと地点順で呼ぶ", async () => {
+  test("calls Route.computeRoutes with minimal fields and point order", async () => {
     state.deliveryPoints = [
       { lat: 35.1, lng: 139.1 },
       { lat: 35.2, lng: 139.2 },
@@ -59,7 +59,7 @@ describe("drawRoute", () => {
     });
   });
 
-  test("createPolylines で生成した経路線をMapへ表示する", async () => {
+  test("displays polylines created by createPolylines on the map", async () => {
     state.deliveryPoints = [{ lat: 35, lng: 139 }];
 
     await drawRoute();
@@ -69,7 +69,7 @@ describe("drawRoute", () => {
     expect(polyline.setMap).toHaveBeenCalledWith(state.map);
   });
 
-  test("再描画前に古いPolylineをMapから外す", async () => {
+  test("removes old polylines from the map before redrawing", async () => {
     const oldPolyline = { setMap: jest.fn() };
     state.routePolylines = [oldPolyline];
     state.deliveryPoints = [{ lat: 35, lng: 139 }];
@@ -80,7 +80,7 @@ describe("drawRoute", () => {
     expect(state.routePolylines).toEqual([polyline]);
   });
 
-  test("古いレスポンスは最新のPolylineを上書きしない", async () => {
+  test("does not let stale responses overwrite the latest polylines", async () => {
     let finishFirstRequest;
     const initialPolyline = { setMap: jest.fn() };
     const stalePolyline = { setMap: jest.fn() };
@@ -118,7 +118,7 @@ describe("drawRoute", () => {
 });
 
 describe("clearRoutePolylines", () => {
-  test("すべてのPolylineをMapから外す", () => {
+  test("removes all polylines from the map", () => {
     const polylines = [
       { setMap: jest.fn() },
       { setMap: jest.fn() }
