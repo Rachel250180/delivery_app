@@ -68,6 +68,7 @@ class RoutesCreateTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_entity
+    assert_select "#error_explanation", text: /形式が正しくありません/
   end
 
   test "rejects a route without route points" do
