@@ -12,8 +12,17 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     if @user.save
-      @user.send_activation_email
       session[:activation_email] = @user.email
+
+      begin
+        @user.send_activation_email
+      rescue *ApplicationMailer::DELIVERY_ERRORS => error
+        Rails.logger.error(
+          "Activation email delivery failed for user_id=#{@user.id}: " \
+          "#{error.class}: #{error.message}"
+        )
+        flash[:alert] = t("flash.account_activations.initial_delivery_failed")
+      end
 
       redirect_to account_activation_resend_path
     else

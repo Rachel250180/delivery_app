@@ -29,6 +29,65 @@ class UsersSignupTest < UsersSignup
     assert_response :unprocessable_entity
     assert_select "div.field_with_errors"
   end
+
+  test "user can resend activation email after initial delivery failure" do
+    params = { user: { name: "Example User",
+                       email: "delivery-failure@example.com",
+                       password: "password",
+                       password_confirmation: "password" } }
+
+    delivery = Object.new
+    delivery.define_singleton_method(:deliver_now) do
+      raise Net::SMTPFatalError, "SMTP failed"
+    end
+    original_method = UserMailer.method(:account_activation)
+    UserMailer.define_singleton_method(:account_activation) { |_user| delivery }
+
+    begin
+      assert_difference "User.count", 1 do
+        post users_path, params: params
+      end
+    ensure
+      UserMailer.define_singleton_method(:account_activation) do |*args|
+        original_method.call(*args)
+      end
+    end
+
+    user = User.find_by!(email: "delivery-failure@example.com")
+    assert_redirected_to account_activation_resend_path
+    assert_equal user.email, session[:activation_email]
+    assert_nil user.activation_sent_at
+
+    follow_redirect!
+    assert_response :success
+    assert_select ".alert", text: /アカウントの作成には成功しましたが/
+
+    assert_difference "ActionMailer::Base.deliveries.size", 1 do
+      post account_activation_resend_path
+    end
+    assert_redirected_to account_activation_resend_path
+    assert_not_nil user.reload.activation_sent_at
+  end
+
+  test "unexpected activation email error is not rescued" do
+    original_method = UserMailer.method(:account_activation)
+    UserMailer.define_singleton_method(:account_activation) do |_user|
+      raise ArgumentError, "programming error"
+    end
+
+    begin
+      assert_raises(ArgumentError) do
+        post users_path, params: { user: { name: "Example User",
+                                           email: "unexpected-error@example.com",
+                                           password: "password",
+                                           password_confirmation: "password" } }
+      end
+    ensure
+      UserMailer.define_singleton_method(:account_activation) do |*args|
+        original_method.call(*args)
+      end
+    end
+  end
 end
 
 class AccountActivationTest < UsersSignup

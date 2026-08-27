@@ -86,12 +86,15 @@ ja:
       created: "町名を追加しました。"
     contacts:
       sent: "お問い合わせを送信しました。"
+      delivery_failed: "お問い合わせの送信に失敗しました。時間をおいて再度お試しください。"
     account_activations:
       activated: "アカウントを認証しました。"
       invalid_link: "無効な認証リンクです。"
       resend: "認証メールを再送しました。"
       wait: "認証メールは送信済みです。5分ほど待ってから再送してください。"
       restart: "最初からやり直してください。"
+      initial_delivery_failed: "アカウントの作成には成功しましたが、認証メールの送信に失敗しました。下のボタンから再送してください。"
+      delivery_failed: "認証メールの送信に失敗しました。時間をおいて再度お試しください。"
     password_resets:
       sent: "入力されたメールアドレスが登録されている場合、パスワード再設定メールを送信しました。"
       completed: "パスワードを再設定しました。"
