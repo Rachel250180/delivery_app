@@ -56,7 +56,10 @@ export async function drawRoute() {
 
     clearRoutePolylines();
 
-    if (!routes?.length) return;
+    if (!routes?.length) {
+      alert("経路を取得できませんでした");
+      return;
+    }
 
     state.routePolylines =
       routes[0].createPolylines();
@@ -66,6 +69,8 @@ export async function drawRoute() {
     );
   } catch (error) {
     if (requestId === state.routeRequestId) {
+      clearRoutePolylines();
+      alert("経路を取得できませんでした");
       console.error("Route computation failed:", error);
     }
   }
