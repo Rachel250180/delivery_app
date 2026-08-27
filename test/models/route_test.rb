@@ -20,6 +20,65 @@ class RouteTest < ActiveSupport::TestCase
     assert @route.valid?
   end
 
+  test "estimated duration must not be negative" do
+    @route.estimated_duration = -1
+
+    assert_not @route.valid?
+  end
+
+  test "estimated duration allows zero" do
+    @route.estimated_duration = 0
+
+    assert @route.valid?
+  end
+
+  test "estimated duration allows nil" do
+    @route.estimated_duration = nil
+
+    assert @route.valid?
+  end
+
+  test "estimated duration allows a positive integer" do
+    @route.estimated_duration = 31
+
+    assert @route.valid?
+  end
+
+  test "estimated duration rejects a decimal value" do
+    @route.estimated_duration = 1.5
+
+    assert_not @route.valid?
+  end
+
+  test "database rejects a negative estimated duration" do
+    now = Time.current
+
+    assert_raises ActiveRecord::StatementInvalid do
+      Route.insert_all!([ {
+        name: "Negative duration route",
+        estimated_duration: -1,
+        town_id: @town.id,
+        user_id: @user.id,
+        created_at: now,
+        updated_at: now
+      } ])
+    end
+  end
+
+  test "database rejects a null route name" do
+    assert_raises ActiveRecord::NotNullViolation do
+      routes(:one).update_column(:name, nil)
+    end
+  end
+
+  test "routes have an index on user id" do
+    assert ActiveRecord::Base.connection.index_exists?(
+      :routes,
+      :user_id,
+      name: "index_routes_on_user_id"
+    )
+  end
+
   test "name shoule not be blank" do
     @route.name = " "
     assert_not @route.valid?
