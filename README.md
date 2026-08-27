@@ -105,7 +105,7 @@ erDiagram
 * 配送ルート作成機能
 * 配送地点管理機能
 * 地図表示機能(Google Maps JavaScript API)
-* ルート検索機能(Google Directions API)
+* ルート検索機能(Google Maps JavaScript API Routes Library)
 * ページネーション機能(kaminari)
 * メール送信機能(Action Mailer)
 * システムテスト(Minitest / Capybara)
