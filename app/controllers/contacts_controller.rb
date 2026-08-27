@@ -20,11 +20,20 @@ class ContactsController < ApplicationController
     @contact = Contact.new(contact_params)
 
     if @contact.valid?
-      ContactMailer.contact_email(
-        @contact.name,
-        @contact.email,
-        @contact.message
-      ).deliver_now
+      begin
+        ContactMailer.contact_email(
+          @contact.name,
+          @contact.email,
+          @contact.message
+        ).deliver_now
+      rescue *ApplicationMailer::DELIVERY_ERRORS => error
+        Rails.logger.error(
+          "Contact email delivery failed: #{error.class}: #{error.message}"
+        )
+        @contact.errors.add(:base, t("flash.contacts.delivery_failed"))
+        render :new, status: :service_unavailable
+        return
+      end
 
       redirect_to root_path, notice: t("flash.contacts.sent")
     else

@@ -9,7 +9,7 @@ describe("fetchAddress", () => {
     };
   });
 
-  test("開始時と同じ世代なら住所を返す", () => {
+  test("returns the address when the generation is unchanged", () => {
     const callback = jest.fn();
 
     fetchAddress(35, 139, callback, 1);
@@ -24,7 +24,7 @@ describe("fetchAddress", () => {
     expect(callback).toHaveBeenCalledWith("東京都");
   });
 
-  test("開始後に世代が変わった場合はcallbackを実行しない", () => {
+  test("does not invoke the callback when the generation changes", () => {
     const callback = jest.fn();
 
     fetchAddress(35, 139, callback, 1);

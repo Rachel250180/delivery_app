@@ -12,6 +12,9 @@ class Route < ApplicationRecord
                             uniqueness: { scope: :town_id },
                             presence: true
     validates :description, length: { maximum: 255 }
+    validates :estimated_duration,
+              numericality: { only_integer: true, greater_than_or_equal_to: 0 },
+              allow_nil: true
     validate  :route_points_limit
 
   private

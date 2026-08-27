@@ -12,6 +12,18 @@ class UserTest < ActiveSupport::TestCase
     assert @user.valid?
   end
 
+  test "database rejects null values for required user columns" do
+    user = users(:michael)
+
+    %i[name email password_digest admin activated].each do |column|
+      assert_raises ActiveRecord::NotNullViolation do
+        User.transaction(requires_new: true) do
+          user.update_column(column, nil)
+        end
+      end
+    end
+  end
+
   test "name should be present" do
     @user.name = "   "
     assert_not @user.valid?

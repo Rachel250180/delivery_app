@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_23_000100) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_27_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -33,12 +33,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_23_000100) do
     t.datetime "created_at", null: false
     t.text "description"
     t.integer "estimated_duration"
-    t.string "name"
+    t.string "name", null: false
     t.bigint "town_id", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["town_id", "name"], name: "index_routes_on_town_id_and_name", unique: true
     t.index ["town_id"], name: "index_routes_on_town_id"
+    t.index ["user_id"], name: "index_routes_on_user_id"
+    t.check_constraint "estimated_duration >= 0", name: "routes_estimated_duration_non_negative"
   end
 
   create_table "solid_cache_entries", force: :cascade do |t|
@@ -56,21 +58,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_23_000100) do
     t.datetime "created_at", null: false
     t.text "description"
     t.string "kana"
-    t.string "name"
+    t.string "name", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_towns_on_name", unique: true
   end
 
   create_table "users", force: :cascade do |t|
-    t.boolean "activated", default: false
+    t.boolean "activated", default: false, null: false
     t.datetime "activated_at"
     t.string "activation_digest"
     t.datetime "activation_sent_at"
-    t.boolean "admin", default: false
+    t.boolean "admin", default: false, null: false
     t.datetime "created_at", null: false
-    t.string "email"
-    t.string "name"
-    t.string "password_digest"
+    t.string "email", null: false
+    t.string "name", null: false
+    t.string "password_digest", null: false
     t.string "remember_digest"
     t.string "reset_digest"
     t.datetime "reset_sent_at"

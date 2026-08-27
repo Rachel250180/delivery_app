@@ -21,12 +21,20 @@ class AccountActivationResendsController < ApplicationController
   def create
     user = User.find_by(email: session[:activation_email])
 
-    if user && !user.activated?
-      if user.resend_activation_email
-        flash[:success] = t("flash.account_activations.resend")
-      else
-        flash[:info] = t("flash.account_activations.wait")
+    begin
+      if user && !user.activated?
+        if user.resend_activation_email
+          flash[:success] = t("flash.account_activations.resend")
+        else
+          flash[:info] = t("flash.account_activations.wait")
+        end
       end
+    rescue *ApplicationMailer::DELIVERY_ERRORS => error
+      Rails.logger.error(
+        "Activation email redelivery failed for user_id=#{user.id}: " \
+        "#{error.class}: #{error.message}"
+      )
+      flash[:alert] = t("flash.account_activations.delivery_failed")
     end
 
     redirect_to account_activation_resend_path

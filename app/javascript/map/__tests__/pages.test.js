@@ -94,7 +94,7 @@ describe("pages.js", () => {
 
   describe("initMapShow", () => {
 
-    test("mapを初期化する", () => {
+    test("initializes the map", () => {
 
       getRoutePoints.mockReturnValue([]);
 
@@ -112,7 +112,7 @@ describe("pages.js", () => {
         .not.toHaveBeenCalled();
     });
 
-    test("routePoints が存在すれば読み込む", () => {
+    test("loads existing route points", () => {
 
       const points = [
         { lat: 1, lng: 2 }
@@ -129,7 +129,7 @@ describe("pages.js", () => {
 
   describe("initMapEdit", () => {
 
-    test("editable モードで初期化する", () => {
+    test("initializes in editable mode", () => {
 
       getRoutePoints.mockReturnValue([]);
 
@@ -150,7 +150,7 @@ describe("pages.js", () => {
 
   describe("initMapNew", () => {
 
-    test("newページとして初期化する", () => {
+    test("initializes as a new page", () => {
 
       getRoutePoints.mockReturnValue([]);
 
@@ -168,7 +168,7 @@ describe("pages.js", () => {
         .toHaveBeenCalled();
     });
 
-    test("sessionStorage の route_points を読み込む", () => {
+    test("loads route_points from sessionStorage", () => {
 
       const savedPoints = [
         { lat: 10, lng: 20 }
@@ -190,7 +190,7 @@ describe("pages.js", () => {
 
   describe("map click", () => {
 
-    test("クリック時に地点を追加し、callbackで住所を更新する", () => {
+    test("adds a point on click and updates its address in the callback", () => {
 
       getRoutePoints.mockReturnValue([]);
 
@@ -236,7 +236,7 @@ describe("pages.js", () => {
         );
     });
 
-    test("canAddPoint が false の場合は追加しない", () => {
+    test("does not add a point when canAddPoint returns false", () => {
 
       getRoutePoints.mockReturnValue([]);
 
@@ -261,7 +261,7 @@ describe("pages.js", () => {
         .not.toHaveBeenCalled();
     });
 
-    test("Geocoderの応答順に関係なくクリック順を維持する", () => {
+    test("preserves click order regardless of Geocoder response order", () => {
 
       getRoutePoints.mockReturnValue([]);
       canAddPoint.mockReturnValue(true);
@@ -298,7 +298,7 @@ describe("pages.js", () => {
       ]);
     });
 
-    test("再初期化前のcallbackは現在のstateを変更しない", () => {
+    test("ignores callbacks from before map reinitialization", () => {
 
       getRoutePoints.mockReturnValue([]);
       canAddPoint.mockReturnValue(true);
@@ -329,7 +329,7 @@ describe("pages.js", () => {
         .not.toHaveBeenCalled();
     });
 
-    test("上限直前の連続クリックでも9地点を超えない", () => {
+    test("does not exceed nine points after rapid clicks near the limit", () => {
 
       getRoutePoints.mockReturnValue([]);
       state.deliveryPoints = Array.from(

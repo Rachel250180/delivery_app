@@ -1,6 +1,12 @@
 require "test_helper"
 
 class TownTest < ActiveSupport::TestCase
+  test "database rejects a null name" do
+    assert_raises ActiveRecord::NotNullViolation do
+      towns(:one).update_column(:name, nil)
+    end
+  end
+
   test "name should not be blank" do
     town = Town.new(name: " ")
     assert_not town.valid?
