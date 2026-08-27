@@ -115,6 +115,62 @@ describe("drawRoute", () => {
     expect(latestPolyline.setMap).not.toHaveBeenCalledWith(null);
     expect(state.routePolylines).toEqual([latestPolyline]);
   });
+
+  test("clears existing polylines when the latest request fails", async () => {
+    const oldPolyline = { setMap: jest.fn() };
+    const error = new Error("Routes API error");
+    state.routePolylines = [oldPolyline];
+    state.routeClass.computeRoutes.mockRejectedValue(error);
+    state.deliveryPoints = [{ lat: 35, lng: 139 }];
+    jest.spyOn(console, "error").mockImplementation(() => {});
+    jest.spyOn(window, "alert").mockImplementation(() => {});
+
+    await drawRoute();
+
+    expect(oldPolyline.setMap).toHaveBeenCalledWith(null);
+    expect(state.routePolylines).toEqual([]);
+    expect(window.alert).toHaveBeenCalledWith("経路を取得できませんでした");
+  });
+
+  test("does not let a stale failure affect the latest polylines", async () => {
+    let failFirstRequest;
+    const latestPolyline = { setMap: jest.fn() };
+    const latestRoute = {
+      createPolylines: jest.fn(() => [latestPolyline])
+    };
+    state.routeClass.computeRoutes
+      .mockImplementationOnce(() => new Promise((resolve, reject) => {
+        failFirstRequest = reject;
+      }))
+      .mockResolvedValueOnce({ routes: [latestRoute] });
+    state.deliveryPoints = [{ lat: 35, lng: 139 }];
+    jest.spyOn(console, "error").mockImplementation(() => {});
+    jest.spyOn(window, "alert").mockImplementation(() => {});
+
+    const firstRequest = drawRoute();
+    await drawRoute();
+    failFirstRequest(new Error("stale Routes API error"));
+    await firstRequest;
+
+    expect(latestPolyline.setMap).not.toHaveBeenCalledWith(null);
+    expect(state.routePolylines).toEqual([latestPolyline]);
+    expect(window.alert).not.toHaveBeenCalled();
+    expect(console.error).not.toHaveBeenCalled();
+  });
+
+  test("clears existing polylines when the latest response has no routes", async () => {
+    const oldPolyline = { setMap: jest.fn() };
+    state.routePolylines = [oldPolyline];
+    state.routeClass.computeRoutes.mockResolvedValue({ routes: [] });
+    state.deliveryPoints = [{ lat: 35, lng: 139 }];
+    jest.spyOn(window, "alert").mockImplementation(() => {});
+
+    await drawRoute();
+
+    expect(oldPolyline.setMap).toHaveBeenCalledWith(null);
+    expect(state.routePolylines).toEqual([]);
+    expect(window.alert).toHaveBeenCalledWith("経路を取得できませんでした");
+  });
 });
 
 describe("clearRoutePolylines", () => {

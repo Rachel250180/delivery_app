@@ -57,6 +57,6 @@ class RoutesCreateTest < ApplicationSystemTestCase
       click_button "登録する"
     end
 
-    assert_text "は9個までしか登録できません"
+    assert_text "形式が正しくありません"
   end
 end

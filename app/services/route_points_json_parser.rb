@@ -5,6 +5,8 @@ class RoutePointsJsonParser
     return if value.blank?
 
     points = JSON.parse(value)
+    raise InvalidFormat unless points.is_a?(Array)
+    raise InvalidFormat if points.size > Route::MAX_ROUTE_POINTS
     raise InvalidFormat unless valid_points?(points)
 
     points
@@ -13,12 +15,24 @@ class RoutePointsJsonParser
   end
 
   def self.valid_points?(points)
-    points.is_a?(Array) && points.all? do |point|
+    points.all? do |point|
       point.is_a?(Hash) &&
-        point["lat"].is_a?(Numeric) &&
-        point["lng"].is_a?(Numeric)
+        valid_coordinate?(point["lat"], -90..90) &&
+        valid_coordinate?(point["lng"], -180..180) &&
+        valid_address?(point["address"])
     end
   end
 
-  private_class_method :valid_points?
+  def self.valid_coordinate?(coordinate, range)
+    coordinate.is_a?(Numeric) &&
+      coordinate.finite? &&
+      range.cover?(coordinate)
+  end
+
+  def self.valid_address?(address)
+    address.nil? ||
+      (address.is_a?(String) && address.length <= RoutePoint::MAX_ADDRESS_LENGTH)
+  end
+
+  private_class_method :valid_points?, :valid_coordinate?, :valid_address?
 end
