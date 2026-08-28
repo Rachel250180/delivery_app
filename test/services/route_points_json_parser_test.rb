@@ -18,6 +18,18 @@ class RoutePointsJsonParserTest < ActiveSupport::TestCase
     end
   end
 
+  test "rejects an array passed directly" do
+    assert_raises RoutePointsJsonParser::InvalidFormat do
+      RoutePointsJsonParser.parse([ { lat: 35.0, lng: 139.0 } ])
+    end
+  end
+
+  test "rejects a hash passed directly" do
+    assert_raises RoutePointsJsonParser::InvalidFormat do
+      RoutePointsJsonParser.parse({ lat: 35.0, lng: 139.0 })
+    end
+  end
+
   test "rejects json that is not an array" do
     assert_raises RoutePointsJsonParser::InvalidFormat do
       RoutePointsJsonParser.parse({ lat: 35.0, lng: 139.0 }.to_json)

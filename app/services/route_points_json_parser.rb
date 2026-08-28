@@ -3,6 +3,7 @@ class RoutePointsJsonParser
 
   def self.parse(value)
     return if value.blank?
+    raise InvalidFormat unless value.is_a?(String)
 
     points = JSON.parse(value)
     raise InvalidFormat unless points.is_a?(Array)
