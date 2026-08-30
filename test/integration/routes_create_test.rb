@@ -57,7 +57,7 @@ class RoutesCreateTest < ActionDispatch::IntegrationTest
       }
     end
 
-    assert_no_difference "Route.count" do
+    assert_no_difference [ "Route.count", "RoutePoint.count" ] do
       post town_routes_path(@town),
           params: {
             route: {
@@ -68,7 +68,9 @@ class RoutesCreateTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_entity
-    assert_select "#error_explanation", text: /形式が正しくありません/
+    assert_select "#error_explanation li",
+                  text: "経由地点の形式が正しくありません。",
+                  count: 1
   end
 
   test "rejects a route without route points" do

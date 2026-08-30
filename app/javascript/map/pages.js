@@ -72,10 +72,25 @@ function loadInitialPoints(
       "route_points"
     );
 
-  if (saved) {
+  if (saved !== null) {
+
+    let savedPoints;
+
+    try {
+
+      savedPoints = JSON.parse(saved);
+
+    } catch (_error) {
+
+      sessionStorage.removeItem(
+        "route_points"
+      );
+
+      savedPoints = [];
+    }
 
     loadRoutePoints(
-      JSON.parse(saved)
+      savedPoints
     );
   }
 }

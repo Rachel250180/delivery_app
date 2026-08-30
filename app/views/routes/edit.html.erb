@@ -82,7 +82,7 @@
 <div id="route-data"
   data-map-mode="edit"
   data-max-points="<%= Route::MAX_ROUTE_POINTS %>"
-  data-points='<%= raw(
+  data-points="<%=
     @route.route_points.map { |p|
       {
         lat: p.latitude,
@@ -90,5 +90,5 @@
         address: p.address
       }
     }.to_json
-  ) %>'>
+  %>">
 </div>
