@@ -12,9 +12,11 @@ class LogoutTest < ApplicationSystemTestCase
     fill_in "session_password", with: "password"
 
     click_button "ログイン"
+    assert_selector "body.users-show"
 
     click_link "ログアウト"
 
+    assert_selector ".alert", text: I18n.t("flash.authentication.logout")
     assert_current_path(root_path)
 
     assert_text "ログイン"

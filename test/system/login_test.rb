@@ -6,18 +6,13 @@ class LoginTest < ApplicationSystemTestCase
 
     visit login_path
 
-    puts current_path
-    puts page.text
-
     fill_in "session_email", with: user.email
     fill_in "session_password", with: "password"
 
     click_button "ログイン"
 
-    puts page.text
-
+    assert_selector "body.users-show"
     assert_current_path(user_path(user))
-
     assert_text user.name
     assert_link "ログアウト"
   end

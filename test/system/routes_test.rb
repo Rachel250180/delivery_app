@@ -11,6 +11,7 @@ class RoutesCreateTest < ApplicationSystemTestCase
     fill_in "session_password", with: "password"
 
     click_button "ログイン"
+    assert_selector "body.users-show"
     assert_current_path(user_path(@user))
   end
 
@@ -53,10 +54,10 @@ class RoutesCreateTest < ApplicationSystemTestCase
         JSON.stringify(points);
     JS
 
-    assert_no_difference("Route.count") do
-      click_button "登録する"
-    end
+    click_button "登録する"
 
-    assert_text "形式が正しくありません"
+    within "#error_explanation" do
+      assert_selector "li", exact_text: "経由地点の形式が正しくありません。"
+    end
   end
 end
