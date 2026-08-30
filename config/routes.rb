@@ -12,7 +12,11 @@ Rails.application.routes.draw do
   resource  :account_activation_resend, only: [ :show, :create ]
   resources :password_resets,     only: [ :new,  :create, :edit, :update ]
   resources :towns do
-    resources :routes
+    resources :routes do
+      resource :representative,
+               only: [ :create, :destroy ],
+               controller: "route_representatives"
+    end
   end
   resources :contacts, only: [ :new, :create ]
 end

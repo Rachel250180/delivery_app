@@ -82,6 +82,10 @@ ja:
       updated: "ルートを更新しました。"
       deleted: "ルートを削除しました。"
       invalid_points_json: "の形式が正しくありません。"
+    route_representatives:
+      created: "代表ルートに設定しました。"
+      destroyed: "代表ルートを解除しました。"
+      update_failed: "代表ルートを変更できませんでした。"
     towns:
       created: "町名を追加しました。"
     contacts:

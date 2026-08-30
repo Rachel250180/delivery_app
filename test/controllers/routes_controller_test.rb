@@ -17,6 +17,38 @@ class RoutesControllerTest < ActionDispatch::IntegrationTest
     assert_select "script[data-sortable-script]", count: 0
   end
 
+  test "non-admin does not see representative route controls" do
+    log_in_as(users(:archer))
+
+    get town_route_url(@town, @route)
+
+    assert_select "button", text: "代表ルートに設定", count: 0
+    assert_select "button", text: "代表ルートを解除", count: 0
+  end
+
+  test "admin sees the set representative route control" do
+    log_in_as(@user)
+
+    get town_route_url(@town, @route)
+
+    assert_select "form[action='#{town_route_representative_path(@town, @route)}']" do
+      assert_select "button", text: "代表ルートに設定", count: 1
+    end
+  end
+
+  test "admin sees the representative label and unset control" do
+    @route.update!(representative: true)
+    log_in_as(@user)
+
+    get town_route_url(@town, @route)
+
+    assert_select ".route-representative-label", text: "代表ルート", count: 1
+    assert_select "form[action='#{town_route_representative_path(@town, @route)}']" do
+      assert_select "input[name='_method'][value='delete']", count: 1
+      assert_select "button", text: "代表ルートを解除", count: 1
+    end
+  end
+
   test "should get new" do
     log_in_as(@user)
     get new_town_route_url(@town)
@@ -80,6 +112,18 @@ class RoutesControllerTest < ActionDispatch::IntegrationTest
     }
 
     assert_redirected_to town_route_url(@town, @route)
+  end
+
+  test "regular route update cannot change representative" do
+    route = routes(:two)
+    log_in_as(route.user)
+
+    patch town_route_url(route.town, route), params: {
+      route: { representative: true }
+    }
+
+    assert_redirected_to town_route_url(route.town, route)
+    assert_not route.reload.representative?
   end
 
   test "should redirect update when not logged in" do

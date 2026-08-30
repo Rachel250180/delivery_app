@@ -10,6 +10,14 @@ class ApplicationController < ActionController::Base
       end
     end
 
+    def admin_user
+      unless current_user.admin?
+        redirect_to root_path,
+                    status: :see_other,
+                    alert: t("flash.authorization.denied")
+      end
+    end
+
     def rate_limit_key(email)
       normalized_email = email.to_s.strip.downcase
       Digest::SHA256.hexdigest(normalized_email)
