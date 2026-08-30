@@ -72,7 +72,7 @@ function loadInitialPoints(
       "route_points"
     );
 
-  if (saved) {
+  if (saved !== null) {
 
     let savedPoints;
 
