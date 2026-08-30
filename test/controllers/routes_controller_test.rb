@@ -102,7 +102,50 @@ class RoutesControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to login_url
   end
 
+  test "data-points safely embeds addresses on new edit and show" do
+    addresses = [
+      "O'Brien",
+      '<script>alert("XSS")</script>',
+      '<img src=x onerror="alert(\'XSS\')">'
+    ]
+    points = addresses.each_with_index.map do |address, index|
+      { lat: 35.0 + index, lng: 139.0 + index, address: address }
+    end
+
+    post town_routes_path(@town), params: {
+      route: { name: "" },
+      points_json: points.to_json
+    }
+    assert_response :unprocessable_entity
+    assert_safe_data_points(addresses)
+
+    @route.route_points.destroy_all
+    points.each_with_index do |point, index|
+      @route.route_points.create!(
+        latitude: point[:lat], longitude: point[:lng],
+        address: point[:address], position: index
+      )
+    end
+
+    get edit_town_route_url(@town, @route)
+    assert_response :success
+    assert_safe_data_points(addresses)
+
+    get town_route_url(@town, @route)
+    assert_response :success
+    assert_safe_data_points(addresses)
+  end
+
   private
+
+  def assert_safe_data_points(addresses)
+    assert_select "#route-data[data-points]", count: 1 do |elements|
+      points = JSON.parse(elements.first["data-points"])
+      assert_equal addresses, points.map { |point| point["address"] }
+    end
+    assert_no_match %r{<script>alert\("XSS"\)</script>}, response.body
+    assert_no_match %r{<img src=x onerror=}, response.body
+  end
 
   def assert_sortable_script_has_sri
     assert_select "script[data-sortable-script]", count: 1 do |scripts|
