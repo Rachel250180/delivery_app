@@ -74,8 +74,23 @@ function loadInitialPoints(
 
   if (saved) {
 
+    let savedPoints;
+
+    try {
+
+      savedPoints = JSON.parse(saved);
+
+    } catch (_error) {
+
+      sessionStorage.removeItem(
+        "route_points"
+      );
+
+      savedPoints = [];
+    }
+
     loadRoutePoints(
-      JSON.parse(saved)
+      savedPoints
     );
   }
 }

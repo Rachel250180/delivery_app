@@ -186,6 +186,34 @@ describe("pages.js", () => {
       expect(loadRoutePoints)
         .toHaveBeenCalledWith(savedPoints);
     });
+
+    test("removes invalid route_points and continues with empty data", () => {
+
+      sessionStorage.setItem(
+        "route_points",
+        "invalid json"
+      );
+
+      getRoutePoints.mockReturnValue([]);
+
+      expect(() => initMapNew())
+        .not.toThrow();
+
+      expect(sessionStorage.getItem("route_points"))
+        .toBeNull();
+
+      expect(loadRoutePoints)
+        .toHaveBeenCalledWith([]);
+
+      expect(initSortable)
+        .toHaveBeenCalled();
+
+      expect(state.map.addListener)
+        .toHaveBeenCalledWith(
+          "click",
+          expect.any(Function)
+        );
+    });
   });
 
   describe("map click", () => {
