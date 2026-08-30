@@ -103,6 +103,7 @@ class RoutesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "data-points safely embeds addresses on new edit and show" do
+    log_in_as(@route.user)
     addresses = [
       "O'Brien",
       '<script>alert("XSS")</script>',
