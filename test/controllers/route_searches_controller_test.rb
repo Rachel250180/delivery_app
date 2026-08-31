@@ -19,11 +19,11 @@ class RouteSearchesControllerTest < ActionDispatch::IntegrationTest
     get_with_successful_geocoding(address: "由良町1423")
 
     assert_response :success
-    assert_select "dd", text: "由良町1423"
-    assert_select "dd", text: @town.name
-    assert_select "dd", text: @route.name
-    assert_select "dd", text: "36.2912"
-    assert_select "dd", text: "139.3754"
+    assert_select ".route-info-item strong", text: "由良町1423"
+    assert_select "#route-duration", text: "計算中..."
+    assert_select "#route-distance", text: "計算中..."
+    assert_select ".route-info-card p", text: /コメント：/
+    assert_select "dd", count: 0
     assert_select ".route-info-card h4", text: "配達経由地点（経由順）"
     assert_select ".route-info-card h4", text: "ルート詳細", count: 0
     assert_select "#points-list" do
@@ -36,7 +36,7 @@ class RouteSearchesControllerTest < ActionDispatch::IntegrationTest
     get_with_successful_geocoding(address: "群馬県由良町1423番地")
 
     assert_response :success
-    assert_select "dd", text: @town.name
+    assert_select ".route-info-item strong", text: "群馬県由良町1423番地"
   end
 
   test "redirects with an error when no town matches" do
@@ -117,14 +117,25 @@ class RouteSearchesControllerTest < ActionDispatch::IntegrationTest
     get_with_successful_geocoding(address: "由良町1423")
 
     assert_response :success
-    assert_select "dd", text: @route.name
+    assert_select ".route-representative-label", text: "代表ルート"
+    assert_select "a[href='#{edit_town_route_path(@town, @route)}']", count: 0
   end
 
   test "a logged-out user can search" do
     get_with_successful_geocoding(address: "由良町1423")
 
     assert_response :success
-    assert_select "dd", text: @route.name
+    assert_select ".route-representative-label", text: "代表ルート"
+    assert_select "a[href='#{edit_town_route_path(@town, @route)}']", count: 0
+  end
+
+  test "the route owner sees the edit link" do
+    log_in_as(@route.user)
+
+    get_with_successful_geocoding(address: "由良町1423")
+
+    assert_response :success
+    assert_select "a[href='#{edit_town_route_path(@town, @route)}']", text: "編集する"
   end
 
   test "redirects with an error when geocoding returns zero results" do
