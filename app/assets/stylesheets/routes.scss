@@ -2,7 +2,8 @@
 .routes-edit,
 .routes-create,
 .routes-update,
-.routes-new {
+.routes-new,
+.route_searches-show {
 
 
   // レイアウト
@@ -184,7 +185,8 @@
     }
   }
 
-  .delivery-left {
+  .delivery-left,
+  .delivery-item__left {
     display: flex;
     align-items: flex-start;
     gap: 12px;

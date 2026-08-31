@@ -26,6 +26,14 @@ class RouteSearchesController < ApplicationController
       lng: @longitude,
       address: @address
     }
+    @route_points = @search_route_points.map.with_index do |point, index|
+      RoutePoint.new(
+        latitude: point[:lat],
+        longitude: point[:lng],
+        address: point[:address],
+        position: index
+      )
+    end
   end
 
   private

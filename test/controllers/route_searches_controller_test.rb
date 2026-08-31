@@ -24,6 +24,12 @@ class RouteSearchesControllerTest < ActionDispatch::IntegrationTest
     assert_select "dd", text: @route.name
     assert_select "dd", text: "36.2912"
     assert_select "dd", text: "139.3754"
+    assert_select ".route-info-card h4", text: "配達経由地点（経由順）"
+    assert_select ".route-info-card h4", text: "ルート詳細", count: 0
+    assert_select "#points-list" do
+      assert_select ".delivery-item__address", text: "地点A"
+      assert_select ".delivery-item__address", text: "由良町1423"
+    end
   end
 
   test "matches when a street number follows the town name" do

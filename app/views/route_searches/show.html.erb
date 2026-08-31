@@ -38,6 +38,12 @@
   <%= link_to "戻る", root_path, class: "btn-back" %>
 </div>
 
+<% content_for :sidebar do %>
+  <%= render "routes/route_info",
+             editable: false,
+             show_route_details: false %>
+<% end %>
+
 <div id="route-data"
   data-map-mode="show"
   data-max-points="<%= Route::MAX_ROUTE_POINTS %>"
