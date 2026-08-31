@@ -75,7 +75,7 @@ class RouteSearchesControllerTest < ActionDispatch::IntegrationTest
   test "redirects with an error when the representative route has no points" do
     @route.route_points.delete_all
 
-    assert_not_called(AddressGeocoder, :call) do
+    AddressGeocoder.stub(:call, ->(*) { flunk "Geocoding should not be called" }) do
       get route_search_path, params: { address: "由良町1423" }
     end
 
