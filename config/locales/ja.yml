@@ -90,6 +90,8 @@ ja:
       address_blank: "住所を入力してください。"
       town_not_found: "入力された住所に一致する町が見つかりませんでした。"
       representative_route_not_found: "対象地域の代表ルートが設定されていません。"
+      geocoding_zero_results: "入力された住所の位置情報が見つかりませんでした。"
+      geocoding_api_error: "住所の位置情報を取得できませんでした。時間をおいて再度お試しください。"
     towns:
       created: "町名を追加しました。"
     contacts:

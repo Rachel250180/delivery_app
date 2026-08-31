@@ -13,16 +13,18 @@ class RouteSearchesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "finds a town contained in an address and shows its representative route" do
-    get route_search_path, params: { address: "由良町1423" }
+    get_with_successful_geocoding(address: "由良町1423")
 
     assert_response :success
     assert_select "dd", text: "由良町1423"
     assert_select "dd", text: @town.name
     assert_select "dd", text: @route.name
+    assert_select "dd", text: "36.2912"
+    assert_select "dd", text: "139.3754"
   end
 
   test "matches when a street number follows the town name" do
-    get route_search_path, params: { address: "群馬県由良町1423番地" }
+    get_with_successful_geocoding(address: "群馬県由良町1423番地")
 
     assert_response :success
     assert_select "dd", text: @town.name
@@ -54,16 +56,52 @@ class RouteSearchesControllerTest < ActionDispatch::IntegrationTest
   test "a regular user can search" do
     log_in_as(users(:archer))
 
-    get route_search_path, params: { address: "由良町1423" }
+    get_with_successful_geocoding(address: "由良町1423")
 
     assert_response :success
     assert_select "dd", text: @route.name
   end
 
   test "a logged-out user can search" do
-    get route_search_path, params: { address: "由良町1423" }
+    get_with_successful_geocoding(address: "由良町1423")
 
     assert_response :success
     assert_select "dd", text: @route.name
+  end
+
+  test "redirects with an error when geocoding returns zero results" do
+    result = AddressGeocoder::Result.new(status: :zero_results)
+
+    AddressGeocoder.stub(:call, result) do
+      get route_search_path, params: { address: "由良町1423" }
+    end
+
+    assert_redirected_to root_path
+    assert_equal I18n.t("flash.route_searches.geocoding_zero_results"), flash[:alert]
+  end
+
+  test "redirects with an error when the geocoding API fails" do
+    result = AddressGeocoder::Result.new(status: :api_error)
+
+    AddressGeocoder.stub(:call, result) do
+      get route_search_path, params: { address: "由良町1423" }
+    end
+
+    assert_redirected_to root_path
+    assert_equal I18n.t("flash.route_searches.geocoding_api_error"), flash[:alert]
+  end
+
+  private
+
+  def get_with_successful_geocoding(address:)
+    result = AddressGeocoder::Result.new(
+      status: :success,
+      latitude: 36.2912,
+      longitude: 139.3754
+    )
+
+    AddressGeocoder.stub(:call, result) do
+      get route_search_path, params: { address: address }
+    end
   end
 end

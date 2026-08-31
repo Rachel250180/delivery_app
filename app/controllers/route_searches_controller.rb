@@ -8,7 +8,14 @@ class RouteSearchesController < ApplicationController
     return redirect_to_root("town_not_found") unless @town
 
     @route = @town.routes.find_by(representative: true)
-    redirect_to_root("representative_route_not_found") unless @route
+    return redirect_to_root("representative_route_not_found") unless @route
+
+    geocoding = AddressGeocoder.call(@address)
+    return redirect_to_root("geocoding_zero_results") if geocoding.status == :zero_results
+    return redirect_to_root("geocoding_api_error") unless geocoding.success?
+
+    @latitude = geocoding.latitude
+    @longitude = geocoding.longitude
   end
 
   private
