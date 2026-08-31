@@ -4,6 +4,9 @@ import { state } from "map/state";
 import { START_POINT } from "map/constants";
 import { countApi } from "map/utils";
 
+const UNAVAILABLE_TEXT = "取得できませんでした";
+const CALCULATING_TEXT = "計算中...";
+
 export async function drawRoute() {
 
   const requestId = ++state.routeRequestId;
@@ -16,6 +19,7 @@ export async function drawRoute() {
   }
 
   countApi("Routes API");
+  updateRouteSummaryText(CALCULATING_TEXT, CALCULATING_TEXT);
 
   const origin = START_POINT;
 
@@ -47,7 +51,7 @@ export async function drawRoute() {
         },
         intermediates,
         travelMode: "DRIVING",
-        fields: ["path"]
+        fields: ["path", "durationMillis", "distanceMeters"]
       });
 
     if (requestId !== state.routeRequestId) {
@@ -57,23 +61,68 @@ export async function drawRoute() {
     clearRoutePolylines();
 
     if (!routes?.length) {
+      markRouteSummaryUnavailable();
       alert("経路を取得できませんでした");
       return;
     }
 
+    const route = routes[0];
+
     state.routePolylines =
-      routes[0].createPolylines();
+      route.createPolylines();
 
     state.routePolylines.forEach(
       polyline => polyline.setMap(state.map)
     );
+
+    updateRouteSummary(route);
   } catch (error) {
     if (requestId === state.routeRequestId) {
       clearRoutePolylines();
+      markRouteSummaryUnavailable();
       alert("経路を取得できませんでした");
       console.error("Route computation failed:", error);
     }
   }
+}
+
+export function formatDuration(durationMillis) {
+  if (!Number.isFinite(durationMillis) || durationMillis < 0) return null;
+
+  const minutes = Math.round(durationMillis / 1000 / 60);
+  if (minutes < 60) return `約${minutes}分`;
+
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+
+  return remainingMinutes === 0
+    ? `約${hours}時間`
+    : `約${hours}時間${remainingMinutes}分`;
+}
+
+export function formatDistance(distanceMeters) {
+  if (!Number.isFinite(distanceMeters) || distanceMeters < 0) return null;
+
+  return `約${(distanceMeters / 1000).toFixed(1)}km`;
+}
+
+function updateRouteSummary(route) {
+  updateRouteSummaryText(
+    formatDuration(route.durationMillis) || UNAVAILABLE_TEXT,
+    formatDistance(route.distanceMeters) || UNAVAILABLE_TEXT
+  );
+}
+
+function markRouteSummaryUnavailable() {
+  updateRouteSummaryText(UNAVAILABLE_TEXT, UNAVAILABLE_TEXT);
+}
+
+function updateRouteSummaryText(duration, distance) {
+  const durationElement = document.getElementById("route-duration");
+  const distanceElement = document.getElementById("route-distance");
+
+  if (durationElement) durationElement.textContent = duration;
+  if (distanceElement) distanceElement.textContent = distance;
 }
 
 export function clearRoutePolylines() {

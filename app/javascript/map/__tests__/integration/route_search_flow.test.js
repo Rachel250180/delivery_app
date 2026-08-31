@@ -12,6 +12,8 @@ describe("route search map flow", () => {
   beforeEach(() => {
     document.body.innerHTML = `
       <div id="map"></div>
+      <div id="route-duration">計算中...</div>
+      <div id="route-distance">計算中...</div>
       <div id="route-data" data-map-mode="show"
         data-points='[{"lat":36,"lng":139,"address":"地点A"},{"lat":36.2912,"lng":139.3754,"address":"由良町1423"}]'>
       </div>
@@ -42,6 +44,8 @@ describe("route search map flow", () => {
     state.routeClass = {
       computeRoutes: jest.fn().mockResolvedValue({
         routes: [{
+          durationMillis: 1920000,
+          distanceMeters: 14900,
           createPolylines: () => [{ setMap: jest.fn() }]
         }]
       })
@@ -63,7 +67,12 @@ describe("route search map flow", () => {
       destination: { lat: searchedPoint.lat, lng: searchedPoint.lng },
       intermediates: [{ location: { lat: 36, lng: 139 } }],
       travelMode: "DRIVING",
-      fields: ["path"]
+      fields: ["path", "durationMillis", "distanceMeters"]
     });
+    expect(state.routeClass.computeRoutes).toHaveBeenCalledTimes(1);
+    expect(document.getElementById("route-duration").textContent)
+      .toBe("約32分");
+    expect(document.getElementById("route-distance").textContent)
+      .toBe("約14.9km");
   });
 });
