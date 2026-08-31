@@ -1,4 +1,11 @@
 <% content_for :title, "住所検索結果" %>
+<% content_for :map_scripts do %>
+  <%= render "shared/google_maps_script" %>
+<% end %>
+
+<div class="route-show-map">
+  <div id="map"></div>
+</div>
 
 <div>
   <section class="towns-container">
@@ -23,4 +30,10 @@
   </section>
 
   <%= link_to "戻る", root_path, class: "btn-back" %>
+</div>
+
+<div id="route-data"
+  data-map-mode="show"
+  data-max-points="<%= Route::MAX_ROUTE_POINTS %>"
+  data-points="<%= @search_route_points.to_json %>">
 </div>
