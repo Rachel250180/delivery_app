@@ -75,10 +75,6 @@ class TownsController < ApplicationController
     params.require(:town).permit(:name, :kana, :description)
   end
 
-  def admin_user
-    redirect_to(root_path, status: :see_other, alert: t("flash.authorization.denied")) unless current_user.admin?
-  end
-
   def render_name_taken(template)
     @town.errors.add(:name, :taken)
     render template, status: :unprocessable_entity

@@ -37,6 +37,8 @@ class RoutesCreateTest < ApplicationSystemTestCase
   test "Cannot create if there are 10 or more delivery points" do
     visit new_town_route_path(@town)
 
+    assert_selector "#map[data-initialized='true']", wait: 10
+
     fill_in "ルート名", with: "テストルート"
 
     page.execute_script(<<~JS)

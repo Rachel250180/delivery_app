@@ -15,6 +15,7 @@ class Route < ApplicationRecord
     validates :estimated_duration,
               numericality: { only_integer: true, greater_than_or_equal_to: 0 },
               allow_nil: true
+    validates :representative, uniqueness: { scope: :town_id }, if: :representative?
     validate  :route_points_limit
 
   private

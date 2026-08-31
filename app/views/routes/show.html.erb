@@ -11,9 +11,26 @@
     GoogleMapで確認する
   </button>
   <%= link_to "編集する", edit_town_route_path(@town, @route), class:"btn-edit" %>
+
+  <% if current_user&.admin? %>
+    <% if @route.representative? %>
+      <%= button_to "代表ルートを解除",
+                    town_route_representative_path(@town, @route),
+                    method: :delete,
+                    class: "btn-danger" %>
+    <% else %>
+      <%= button_to "代表ルートに設定",
+                    town_route_representative_path(@town, @route),
+                    method: :post,
+                    class: "btn-add" %>
+    <% end %>
+  <% end %>
 </div>
 
 <div class="route-info-card">
+  <% if @route.representative? %>
+    <p class="route-representative-label">代表ルート</p>
+  <% end %>
   <p>制作者：<%= @route.user&.name || "不明" %></p>
   <p>コメント：<%= linked_comment(@route.description) %></p>
   <p>＊実際のルート表示と異なる場合がございます。黄色いボタンよりGoogleMapでご確認ください。</p>

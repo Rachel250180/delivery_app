@@ -1,4 +1,4 @@
-<% if @route.persisted? %>
+<% if @route.persisted? && local_assigns.fetch(:show_route_details, true) %>
   <div class="route-info-card">
     <h4>ルート詳細</h4>
 

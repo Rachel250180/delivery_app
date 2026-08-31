@@ -58,14 +58,20 @@ class TownsControllerTest < ActionDispatch::IntegrationTest
     route = Route.new(name: "テストルート",
                       description: "説明",
                       town: @town,
-                      user: @user)
+                      user: @user,
+                      representative: true)
     route.route_points.build(latitude: 35.0, longitude: 139.0, position: 0)
     route.save!
 
     get town_url(@town)
 
     assert_select "h1", "#{@town.name}のルート一覧"
-    assert_select "a", route.name
+    assert_select "a[href='#{town_route_path(@town, route)}']" do
+      assert_select ".route-representative-star", count: 1
+    end
+    assert_select "a[href='#{town_route_path(@town, routes(:one))}']" do
+      assert_select ".route-representative-star", count: 0
+    end
   end
 
   test "non-admin does not see town management links" do

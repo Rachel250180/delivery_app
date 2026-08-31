@@ -147,6 +147,54 @@ class RouteTest < ActiveSupport::TestCase
     end
   end
 
+  test "allows multiple non-representative routes in the same town" do
+    @route.save!
+    another_route = build_route(name: "Another Route")
+
+    assert another_route.save
+  end
+
+  test "allows one representative route in a town" do
+    @route.representative = true
+
+    assert @route.save
+  end
+
+  test "does not allow a second representative route in the same town" do
+    @route.update!(representative: true)
+    another_route = build_route(name: "Another Route", representative: true)
+
+    assert_not another_route.valid?
+    assert another_route.errors[:representative].any?
+  end
+
+  test "allows one representative route in each town" do
+    @route.update!(representative: true)
+    other_route = build_route(
+      name: "Other Town Route",
+      town: towns(:two),
+      representative: true
+    )
+
+    assert other_route.save
+  end
+
+  test "database enforces one representative route per town" do
+    @route.update!(representative: true)
+    now = Time.current
+
+    assert_raises ActiveRecord::RecordNotUnique do
+      Route.insert_all!([ {
+        name: "Second Representative Route",
+        representative: true,
+        town_id: @town.id,
+        user_id: @user.id,
+        created_at: now,
+        updated_at: now
+      } ])
+    end
+  end
+
   test "routes should be destroyed with user" do
     @route.save
 
@@ -161,5 +209,22 @@ class RouteTest < ActiveSupport::TestCase
     assert_difference "Route.count", -2 do
       @town.destroy
     end
+  end
+
+  private
+
+  def build_route(name:, town: @town, representative: false)
+    route = Route.new(
+      name: name,
+      user: @user,
+      town: town,
+      representative: representative
+    )
+    route.route_points.build(
+      latitude: 35.0,
+      longitude: 139.0,
+      position: 0
+    )
+    route
   end
 end
