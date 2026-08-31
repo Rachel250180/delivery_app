@@ -143,13 +143,31 @@ class RouteSearchesControllerTest < ActionDispatch::IntegrationTest
     assert_equal I18n.t("flash.route_searches.geocoding_api_error"), flash[:alert]
   end
 
+  test "redirects with a warning for a rooftop partial match" do
+    assert_inaccurate_geocoding(location_type: "ROOFTOP", partial_match: true)
+  end
+
+  test "redirects with a warning for a range interpolated result" do
+    assert_inaccurate_geocoding(location_type: "RANGE_INTERPOLATED")
+  end
+
+  test "redirects with a warning for a geometric center result" do
+    assert_inaccurate_geocoding(location_type: "GEOMETRIC_CENTER")
+  end
+
+  test "redirects with a warning for an approximate result" do
+    assert_inaccurate_geocoding(location_type: "APPROXIMATE")
+  end
+
   private
 
   def get_with_successful_geocoding(address:)
     result = AddressGeocoder::Result.new(
       status: :success,
       latitude: 36.2912,
-      longitude: 139.3754
+      longitude: 139.3754,
+      location_type: "ROOFTOP",
+      partial_match: false
     )
 
     AddressGeocoder.stub(:call, result) do
@@ -160,5 +178,25 @@ class RouteSearchesControllerTest < ActionDispatch::IntegrationTest
   def response_route_points
     element = css_select("#route-data[data-points]").first
     JSON.parse(element["data-points"])
+  end
+
+  def assert_inaccurate_geocoding(location_type:, partial_match: false)
+    original_points = @route.route_points.map(&:attributes)
+    result = AddressGeocoder::Result.new(
+      status: :success,
+      latitude: 36.2912,
+      longitude: 139.3754,
+      location_type: location_type,
+      partial_match: partial_match
+    )
+
+    AddressGeocoder.stub(:call, result) do
+      get route_search_path, params: { address: "由良町1423" }
+    end
+
+    assert_redirected_to root_path
+    assert_equal I18n.t("flash.route_searches.geocoding_inaccurate"), flash[:alert]
+    assert_select "#route-data", count: 0
+    assert_equal original_points, @route.reload.route_points.map(&:attributes)
   end
 end

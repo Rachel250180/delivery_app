@@ -14,6 +14,7 @@ class RouteSearchesController < ApplicationController
     geocoding = AddressGeocoder.call(@address)
     return redirect_to_root("geocoding_zero_results") if geocoding.status == :zero_results
     return redirect_to_root("geocoding_api_error") unless geocoding.success?
+    return redirect_to_root("geocoding_inaccurate") unless geocoding.accurate?
 
     @latitude = geocoding.latitude
     @longitude = geocoding.longitude

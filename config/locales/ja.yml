@@ -93,6 +93,7 @@ ja:
       route_points_not_found: "代表ルートに配送地点が登録されていません。"
       geocoding_zero_results: "入力された住所の位置情報が見つかりませんでした。"
       geocoding_api_error: "住所の位置情報を取得できませんでした。時間をおいて再度お試しください。"
+      geocoding_inaccurate: "入力された住所を正確に特定できませんでした。番地や建物名を確認してください。"
     towns:
       created: "町名を追加しました。"
     contacts:
