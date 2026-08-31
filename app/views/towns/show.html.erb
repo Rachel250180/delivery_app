@@ -5,6 +5,10 @@
     <% @routes.each do |route| %>
       <%= link_to town_route_path(@town, route), class: "btn-main" do %>
         <%= route.name %>
+        <% if route.representative? %>
+          <i class="fa-solid fa-star route-representative-star"
+             aria-label="代表ルート"></i>
+        <% end %>
       <% end %>
     <% end %>
   </ul>
