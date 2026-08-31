@@ -86,6 +86,10 @@ ja:
       created: "代表ルートに設定しました。"
       destroyed: "代表ルートを解除しました。"
       update_failed: "代表ルートを変更できませんでした。"
+    route_searches:
+      address_blank: "住所を入力してください。"
+      town_not_found: "入力された住所に一致する町が見つかりませんでした。"
+      representative_route_not_found: "対象地域の代表ルートが設定されていません。"
     towns:
       created: "町名を追加しました。"
     contacts:

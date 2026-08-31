@@ -1,0 +1,20 @@
+<% content_for :title, "住所検索結果" %>
+
+<div>
+  <section class="towns-container">
+    <h1><i class="fa-solid fa-location-dot"></i> 住所検索結果</h1>
+
+    <dl>
+      <dt>検索住所：</dt>
+      <dd><%= @address %></dd>
+
+      <dt>対象地域：</dt>
+      <dd><%= @town.name %></dd>
+
+      <dt>使用する代表ルート：</dt>
+      <dd><%= @route.name %></dd>
+    </dl>
+  </section>
+
+  <%= link_to "戻る", root_path, class: "btn-back" %>
+</div>
