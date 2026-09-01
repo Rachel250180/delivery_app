@@ -2,6 +2,8 @@ require "test_helper"
 
 class RouteSearchesControllerTest < ActionDispatch::IntegrationTest
   setup do
+    Rails.cache.clear
+
     @town = Town.create!(name: "由良町")
     @route = Route.create!(
       name: "テストルート",
@@ -29,6 +31,119 @@ class RouteSearchesControllerTest < ActionDispatch::IntegrationTest
     assert_select "#points-list" do
       assert_select ".delivery-item__address", text: "地点A"
       assert_select ".delivery-item__address", text: "由良町1423"
+    end
+  end
+
+  test "calls geocoding once and caches the successful result for the same address" do
+    calls = 0
+    geocoding = ->(*) do
+      calls += 1
+      successful_geocoding_result
+    end
+
+    AddressGeocoder.stub(:call, geocoding) do
+      get route_search_path,
+          params: { address: " 由良町 1423 " },
+          headers: { "REMOTE_ADDR" => "192.0.2.30" }
+      assert_response :success
+      assert_equal 1, calls
+
+      get route_search_path,
+          params: { address: "由良町　1423" },
+          headers: { "REMOTE_ADDR" => "192.0.2.30" }
+      assert_response :success
+    end
+
+    assert_equal 1, calls
+  end
+
+  test "calls geocoding for each different address" do
+    calls = 0
+    geocoding = ->(*) do
+      calls += 1
+      successful_geocoding_result
+    end
+
+    AddressGeocoder.stub(:call, geocoding) do
+      get route_search_path,
+          params: { address: "由良町1423" },
+          headers: { "REMOTE_ADDR" => "192.0.2.31" }
+      assert_response :success
+
+      get route_search_path,
+          params: { address: "由良町1424" },
+          headers: { "REMOTE_ADDR" => "192.0.2.31" }
+      assert_response :success
+    end
+
+    assert_equal 2, calls
+  end
+
+  test "does not cache failed geocoding results" do
+    calls = 0
+    geocoding = ->(*) do
+      calls += 1
+      AddressGeocoder::Result.new(status: :api_error)
+    end
+
+    AddressGeocoder.stub(:call, geocoding) do
+      2.times do
+        get route_search_path,
+            params: { address: "由良町1423" },
+            headers: { "REMOTE_ADDR" => "192.0.2.32" }
+
+        assert_redirected_to root_path
+        assert_equal I18n.t("flash.route_searches.geocoding_api_error"), flash[:alert]
+      end
+    end
+
+    assert_equal 2, calls
+  end
+
+  test "allows up to 20 route searches from the same IP within one minute" do
+    successful_geocoding = AddressGeocoder::Result.new(
+      status: :success,
+      latitude: 36.2912,
+      longitude: 139.3754,
+      location_type: "ROOFTOP",
+      partial_match: false
+    )
+
+    AddressGeocoder.stub(:call, successful_geocoding) do
+      20.times do
+        get route_search_path,
+            params: { address: "由良町1423" },
+            headers: { "REMOTE_ADDR" => "192.0.2.20" }
+
+        assert_response :success
+      end
+    end
+  end
+
+  test "returns too many requests after 20 route searches from the same IP" do
+    successful_geocoding = AddressGeocoder::Result.new(
+      status: :success,
+      latitude: 36.2912,
+      longitude: 139.3754,
+      location_type: "ROOFTOP",
+      partial_match: false
+    )
+
+    AddressGeocoder.stub(:call, successful_geocoding) do
+      20.times do
+        get route_search_path,
+            params: { address: "由良町1423" },
+            headers: { "REMOTE_ADDR" => "192.0.2.21" }
+
+        assert_response :success
+      end
+
+      get route_search_path,
+          params: { address: "由良町1423" },
+          headers: { "REMOTE_ADDR" => "192.0.2.21" }
+
+      assert_response :too_many_requests
+      assert_equal I18n.t("flash.rate_limit.exceeded"), response.body
     end
   end
 
@@ -178,16 +293,18 @@ class RouteSearchesControllerTest < ActionDispatch::IntegrationTest
 
   private
 
-  def get_with_successful_geocoding(address:)
-    result = AddressGeocoder::Result.new(
+  def successful_geocoding_result
+    AddressGeocoder::Result.new(
       status: :success,
       latitude: 36.2912,
       longitude: 139.3754,
       location_type: "ROOFTOP",
       partial_match: false
     )
+  end
 
-    AddressGeocoder.stub(:call, result) do
+  def get_with_successful_geocoding(address:)
+    AddressGeocoder.stub(:call, successful_geocoding_result) do
       get route_search_path, params: { address: address }
     end
   end
