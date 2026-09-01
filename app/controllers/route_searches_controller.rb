@@ -1,4 +1,10 @@
 class RouteSearchesController < ApplicationController
+  rate_limit to: 20, within: 1.minute,
+             by: -> { request.remote_ip },
+             with: :render_rate_limited,
+             only: :show,
+             name: "route-search-ip"
+
   def show
     @address = params[:address].to_s.strip
     return redirect_to_root("address_blank") if @address.blank?

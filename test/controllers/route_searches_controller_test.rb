@@ -32,6 +32,53 @@ class RouteSearchesControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "allows up to 20 route searches from the same IP within one minute" do
+    successful_geocoding = AddressGeocoder::Result.new(
+      status: :success,
+      latitude: 36.2912,
+      longitude: 139.3754,
+      location_type: "ROOFTOP",
+      partial_match: false
+    )
+
+    AddressGeocoder.stub(:call, successful_geocoding) do
+      20.times do
+        get route_search_path,
+            params: { address: "由良町1423" },
+            headers: { "REMOTE_ADDR" => "192.0.2.20" }
+
+        assert_response :success
+      end
+    end
+  end
+
+  test "returns too many requests after 20 route searches from the same IP" do
+    successful_geocoding = AddressGeocoder::Result.new(
+      status: :success,
+      latitude: 36.2912,
+      longitude: 139.3754,
+      location_type: "ROOFTOP",
+      partial_match: false
+    )
+
+    AddressGeocoder.stub(:call, successful_geocoding) do
+      20.times do
+        get route_search_path,
+            params: { address: "由良町1423" },
+            headers: { "REMOTE_ADDR" => "192.0.2.21" }
+
+        assert_response :success
+      end
+
+      get route_search_path,
+          params: { address: "由良町1423" },
+          headers: { "REMOTE_ADDR" => "192.0.2.21" }
+
+      assert_response :too_many_requests
+      assert_equal I18n.t("flash.rate_limit.exceeded"), response.body
+    end
+  end
+
   test "matches when a street number follows the town name" do
     get_with_successful_geocoding(address: "群馬県由良町1423番地")
 
