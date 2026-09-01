@@ -1,4 +1,6 @@
 class RouteSearchesController < ApplicationController
+  GEOCODING_CACHE_EXPIRATION = 7.days
+
   rate_limit to: 20, within: 1.minute,
              by: -> { request.remote_ip },
              with: :render_rate_limited,
@@ -17,7 +19,7 @@ class RouteSearchesController < ApplicationController
     return redirect_to_root("representative_route_not_found") unless @route
     return redirect_to_root("route_points_not_found") if @route.route_points.empty?
 
-    geocoding = AddressGeocoder.call(@address)
+    geocoding = cached_geocoding(@address)
     return redirect_to_root("geocoding_zero_results") if geocoding.status == :zero_results
     return redirect_to_root("geocoding_api_error") unless geocoding.success?
     return redirect_to_root("geocoding_inaccurate") unless geocoding.accurate?
@@ -43,6 +45,27 @@ class RouteSearchesController < ApplicationController
   end
 
   private
+
+  def cached_geocoding(address)
+    geocoding = nil
+
+    cached = Rails.cache.fetch(
+      geocoding_cache_key(address),
+      expires_in: GEOCODING_CACHE_EXPIRATION,
+      skip_nil: true
+    ) do
+      geocoding = AddressGeocoder.call(address)
+      geocoding if geocoding.success?
+    end
+
+    cached || geocoding
+  end
+
+  def geocoding_cache_key(address)
+    normalized_address = address.gsub(/[[:space:]]+/, "")
+    digest = Digest::SHA256.hexdigest(normalized_address)
+    "route-searches/geocoding/v1/#{digest}"
+  end
 
   def redirect_to_root(message)
     redirect_to root_path, alert: t("flash.route_searches.#{message}")
