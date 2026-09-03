@@ -72,6 +72,11 @@ describe("ui.js", () => {
       </div>
     `;
 
+    state.deliveryPoints = [];
+    state.isInitializing = false;
+    state.isNewPage = false;
+    state.mapGeneration = 0;
+
     jest.clearAllMocks();
   });
 
@@ -153,6 +158,15 @@ describe("ui.js", () => {
 
   describe("refreshUI", () => {
 
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.clearAllTimers();
+      jest.useRealTimers();
+    });
+
     test("updates the UI", () => {
 
       state.deliveryPoints = [
@@ -167,6 +181,11 @@ describe("ui.js", () => {
 
       refreshUI();
 
+      expect(drawRoute)
+        .not.toHaveBeenCalled();
+
+      jest.advanceTimersByTime(150);
+
       expect(renumberMarkers)
         .toHaveBeenCalled();
 
@@ -179,6 +198,34 @@ describe("ui.js", () => {
       state.isInitializing = true;
 
       refreshUI();
+
+      expect(drawRoute)
+        .not.toHaveBeenCalled();
+    });
+
+    test("debounces consecutive route recalculations", () => {
+
+      refreshUI();
+      refreshUI();
+      refreshUI();
+
+      expect(drawRoute)
+        .not.toHaveBeenCalled();
+
+      jest.advanceTimersByTime(150);
+
+      expect(drawRoute)
+        .toHaveBeenCalledTimes(1);
+    });
+
+    test("can update the UI without recalculating the route", () => {
+
+      refreshUI({ recalculateRoute: false });
+
+      jest.advanceTimersByTime(150);
+
+      expect(renumberMarkers)
+        .toHaveBeenCalled();
 
       expect(drawRoute)
         .not.toHaveBeenCalled();

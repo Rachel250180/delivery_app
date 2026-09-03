@@ -14,6 +14,9 @@ import {
   getPointLabel
 } from "map/utils";
 
+const ROUTE_DRAW_DEBOUNCE_MS = 150;
+let routeDrawTimer = null;
+
 
 // リスト表示
 export function renderList() {
@@ -43,7 +46,7 @@ export function renderList() {
 
 
 // 画面更新
-export function refreshUI() {
+export function refreshUI({ recalculateRoute = true } = {}) {
 
   updateHiddenField();
 
@@ -51,9 +54,23 @@ export function refreshUI() {
 
   renderList();
 
-  if (!state.isInitializing) {
-    drawRoute();
+  if (!state.isInitializing && recalculateRoute) {
+    scheduleRouteDraw();
   }
+}
+
+function scheduleRouteDraw() {
+  clearTimeout(routeDrawTimer);
+
+  const generation = state.mapGeneration;
+
+  routeDrawTimer = setTimeout(() => {
+    routeDrawTimer = null;
+
+    if (generation === state.mapGeneration) {
+      drawRoute();
+    }
+  }, ROUTE_DRAW_DEBOUNCE_MS);
 }
 
 

@@ -1,11 +1,13 @@
 // app/javascript/map/__tests__/integration/route_flow.test.js
 
-import { addPoint } from "../../markers";
+import { addPoint, updatePointAddress } from "../../markers";
 import { state } from "../../state";
 
 describe("route flow integration", () => {
 
   beforeEach(() => {
+
+    jest.useFakeTimers();
 
     document.body.innerHTML = `
       <input id="points_json">
@@ -63,6 +65,11 @@ describe("route flow integration", () => {
     };
   });
 
+  afterEach(() => {
+    jest.clearAllTimers();
+    jest.useRealTimers();
+  });
+
   test(
     "addPointするとUIとルートが更新される",
     async () => {
@@ -72,6 +79,7 @@ describe("route flow integration", () => {
         lng: 139,
         address: "東京都"
       });
+      jest.advanceTimersByTime(150);
       await Promise.resolve();
 
       // state更新
@@ -124,6 +132,33 @@ describe("route flow integration", () => {
       ).toHaveBeenCalledTimes(1);
 
       expect(state.routePolylines).toHaveLength(1);
+    }
+  );
+
+  test(
+    "地点追加後の住所更新ではRoutes APIを再度呼ばない",
+    async () => {
+
+      const point = addPoint({
+        lat: 35,
+        lng: 139,
+        address: ""
+      });
+
+      updatePointAddress(point, "東京都");
+
+      jest.advanceTimersByTime(150);
+      await Promise.resolve();
+
+      expect(
+        state.routeClass.computeRoutes
+      ).toHaveBeenCalledTimes(1);
+
+      expect(
+        document.querySelector(
+          ".delivery-item__address"
+        ).textContent
+      ).toBe("東京都");
     }
   );
 });
