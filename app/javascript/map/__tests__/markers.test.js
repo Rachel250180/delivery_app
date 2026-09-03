@@ -26,7 +26,7 @@ describe("updatePointAddress", () => {
     expect(firstMarker.title).toBe("");
     expect(second.address).toBe("東京都");
     expect(secondMarker.title).toBe("東京都");
-    expect(refreshUI).toHaveBeenCalledTimes(1);
+    expect(refreshUI).toHaveBeenCalledWith({ recalculateRoute: false });
   });
 
   test("does not update a point that has already been removed", () => {

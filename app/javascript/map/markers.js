@@ -70,7 +70,7 @@ export function updatePointAddress(
   deliveryPoint.address = address;
   state.markers[index].title = address;
 
-  refreshUI();
+  refreshUI({ recalculateRoute: false });
 }
 
 

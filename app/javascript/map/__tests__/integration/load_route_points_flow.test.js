@@ -8,6 +8,8 @@ describe("load route points flow", () => {
 
   beforeEach(() => {
 
+    jest.useFakeTimers();
+
     document.body.innerHTML = `
       <input id="points_json">
 
@@ -54,6 +56,7 @@ describe("load route points flow", () => {
 
     state.routePolylines = [];
     state.routeRequestId = 0;
+    state.mapGeneration = 0;
     state.routeClass = {
       computeRoutes: jest.fn().mockResolvedValue({
         routes: [{
@@ -61,6 +64,11 @@ describe("load route points flow", () => {
         }]
       })
     };
+  });
+
+  afterEach(() => {
+    jest.clearAllTimers();
+    jest.useRealTimers();
   });
 
   test(
@@ -79,6 +87,7 @@ describe("load route points flow", () => {
           address: "大阪"
         }
       ]);
+      jest.advanceTimersByTime(150);
       await Promise.resolve();
 
       // state復元

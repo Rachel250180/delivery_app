@@ -9,6 +9,8 @@ describe("remove point flow", () => {
 
   beforeEach(() => {
 
+    jest.useFakeTimers();
+
     document.body.innerHTML = `
       <input id="points_json">
 
@@ -55,6 +57,7 @@ describe("remove point flow", () => {
 
     state.routePolylines = [];
     state.routeRequestId = 0;
+    state.mapGeneration = 0;
     state.routeClass = {
       computeRoutes: jest.fn().mockResolvedValue({
         routes: [{
@@ -62,6 +65,11 @@ describe("remove point flow", () => {
         }]
       })
     };
+  });
+
+  afterEach(() => {
+    jest.clearAllTimers();
+    jest.useRealTimers();
   });
 
   test(
@@ -84,6 +92,7 @@ describe("remove point flow", () => {
         state.markers[0];
 
       removePoint(0);
+      jest.advanceTimersByTime(150);
       await Promise.resolve();
 
       // marker削除

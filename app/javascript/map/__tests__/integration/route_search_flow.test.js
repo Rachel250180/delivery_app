@@ -10,6 +10,8 @@ describe("route search map flow", () => {
   };
 
   beforeEach(() => {
+    jest.useFakeTimers();
+
     document.body.innerHTML = `
       <div id="map"></div>
       <div id="route-duration">計算中...</div>
@@ -52,8 +54,14 @@ describe("route search map flow", () => {
     };
   });
 
+  afterEach(() => {
+    jest.clearAllTimers();
+    jest.useRealTimers();
+  });
+
   test("loads searched points and computes a route to the searched address", async () => {
     initMapShow();
+    jest.advanceTimersByTime(150);
     await Promise.resolve();
 
     expect(state.deliveryPoints).toEqual([
