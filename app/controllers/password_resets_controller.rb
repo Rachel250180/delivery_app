@@ -24,7 +24,15 @@ class PasswordResetsController < ApplicationController
     @user = User.find_by(email: @password_reset.normalized_email)
     if @user && !@user.password_reset_recently_sent?
       @user.create_reset_digest
-      @user.send_password_reset_email
+      begin
+        @user.send_password_reset_email
+      rescue *ApplicationMailer::DELIVERY_ERRORS => error
+        @user.clear_password_reset
+        Rails.logger.error(
+          "Password reset email delivery failed for user_id=#{@user.id}: " \
+          "#{error.class}"
+        )
+      end
     end
 
     redirect_to root_url, notice: t("flash.password_resets.sent")

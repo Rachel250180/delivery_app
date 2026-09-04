@@ -78,6 +78,10 @@ class User < ApplicationRecord
     UserMailer.password_reset(self).deliver_now
   end
 
+  def clear_password_reset
+    update_columns(reset_digest: nil, reset_sent_at: nil)
+  end
+
   def password_reset_recently_sent?
     reset_sent_at.present? && reset_sent_at > PASSWORD_RESET_RESEND_INTERVAL.ago
   end

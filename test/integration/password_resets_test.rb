@@ -85,6 +85,53 @@ class PasswordFormTest < PasswordResetForm
 end
 
 class PasswordResetResendTest < PasswordResets
+  test "delivery failure clears reset state and keeps the response indistinguishable" do
+    delivery = Object.new
+    delivery.define_singleton_method(:deliver_now) do
+      raise Net::SMTPFatalError, "SMTP failed"
+    end
+    original_method = UserMailer.method(:password_reset)
+    UserMailer.define_singleton_method(:password_reset) { |_user| delivery }
+    log_message = nil
+
+    begin
+      Rails.logger.stub(:error, ->(message) { log_message = message }) do
+        post password_resets_path,
+             params: { password_reset: { email: @user.email } }
+      end
+    ensure
+      UserMailer.define_singleton_method(:password_reset) do |*args|
+        original_method.call(*args)
+      end
+    end
+
+    registered_status = response.status
+    registered_location = response.location
+    registered_message = flash[:notice]
+    assert_redirected_to root_url
+    assert_nil @user.reload.reset_digest
+    assert_nil @user.reset_sent_at
+    assert_equal(
+      "Password reset email delivery failed for user_id=#{@user.id}: " \
+      "Net::SMTPFatalError",
+      log_message
+    )
+
+    post password_resets_path,
+         params: { password_reset: { email: "missing-after-failure@example.com" } }
+
+    assert_equal registered_status, response.status
+    assert_equal registered_location, response.location
+    assert_equal registered_message, flash[:notice]
+
+    assert_difference "ActionMailer::Base.deliveries.size", 1 do
+      post password_resets_path,
+           params: { password_reset: { email: @user.email } }
+    end
+    assert_not_nil @user.reload.reset_digest
+    assert_not_nil @user.reset_sent_at
+  end
+
   test "recent request keeps digest and does not resend" do
     post password_resets_path,
          params: { password_reset: { email: @user.email } }
