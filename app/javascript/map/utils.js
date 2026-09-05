@@ -57,7 +57,7 @@ export function canAddPoint() {
   return true;
 }
 
-function getMaxPoints() {
+export function getMaxPoints() {
 
   const routeData =
     document.getElementById("route-data");

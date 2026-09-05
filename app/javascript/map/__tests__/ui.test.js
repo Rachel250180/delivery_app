@@ -68,6 +68,7 @@ describe("ui.js", () => {
 
       <div
         id="route-data"
+        data-town-id="1"
         data-points='[{"lat":35,"lng":139}]'>
       </div>
     `;
@@ -258,6 +259,35 @@ describe("ui.js", () => {
         );
     });
 
+    test("saves drafts separately for each town", () => {
+      sessionStorage.clear();
+      state.isNewPage = true;
+      state.deliveryPoints = [{ lat: 35, lng: 139, address: "町A" }];
+      updateHiddenField();
+      const townADraft = sessionStorage.getItem("route_points:1");
+      document.getElementById("route-data").dataset.townId = "2";
+      state.deliveryPoints = [{ lat: 36, lng: 140, address: "町B" }];
+      updateHiddenField();
+      expect(sessionStorage.getItem("route_points:1")).toBe(townADraft);
+      expect(JSON.parse(sessionStorage.getItem("route_points:2"))).toEqual(state.deliveryPoints);
+      expect(sessionStorage.getItem("route_points")).toBeNull();
+    });
+
+    test("does not save drafts on edit or show pages", () => {
+      sessionStorage.clear();
+      state.isNewPage = false;
+      updateHiddenField();
+      expect(sessionStorage.length).toBe(0);
+    });
+
+    test("does not save a shared draft when town id is missing", () => {
+      sessionStorage.clear();
+      state.isNewPage = true;
+      delete document.getElementById("route-data").dataset.townId;
+      updateHiddenField();
+      expect(sessionStorage.length).toBe(0);
+    });
+
     test("saves to sessionStorage on a new page", () => {
 
       state.isNewPage = true;
@@ -279,7 +309,7 @@ describe("ui.js", () => {
 
       expect(setItemSpy)
         .toHaveBeenCalledWith(
-          "route_points",
+          "route_points:1",
           JSON.stringify(
             state.deliveryPoints
           )
