@@ -1,5 +1,7 @@
 // pages.js
 
+import { getDraftKey, isValidDraft } from "map/draft";
+
 import { state } from "map/state";
 
 import {
@@ -67,10 +69,10 @@ function loadInitialPoints(
 
   if (!useSession) return;
 
-  const saved =
-    sessionStorage.getItem(
-      "route_points"
-    );
+  const draftKey = getDraftKey();
+  if (!draftKey) return;
+
+  const saved = sessionStorage.getItem(draftKey);
 
   if (saved !== null) {
 
@@ -80,13 +82,15 @@ function loadInitialPoints(
 
       savedPoints = JSON.parse(saved);
 
+      if (!isValidDraft(savedPoints)) {
+        sessionStorage.removeItem(draftKey);
+        return;
+      }
+
     } catch (_error) {
 
-      sessionStorage.removeItem(
-        "route_points"
-      );
-
-      savedPoints = [];
+      sessionStorage.removeItem(draftKey);
+      return;
     }
 
     loadRoutePoints(

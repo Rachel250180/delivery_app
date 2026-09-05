@@ -75,6 +75,7 @@
 
 <div id="route-data"
   data-map-mode="new"
+  data-town-id="<%= @town.id %>"
   data-max-points="<%= Route::MAX_ROUTE_POINTS %>"
   data-points="<%=
     @route.route_points.map { |p|

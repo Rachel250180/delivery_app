@@ -53,6 +53,7 @@ jest.mock("../geocoder", () => ({
 }));
 
 jest.mock("../utils", () => ({
+  ...jest.requireActual("../utils"),
   canAddPoint: jest.fn()
 }));
 
@@ -63,6 +64,7 @@ describe("pages.js", () => {
     jest.clearAllMocks();
 
     sessionStorage.clear();
+    document.body.innerHTML = `<div id="route-data" data-town-id="1" data-max-points="9"></div>`;
 
     state.mapGeneration = 0;
     state.deliveryPoints = [];
@@ -90,6 +92,14 @@ describe("pages.js", () => {
       addListener: jest.fn()
     };
 
+  });
+
+  test.each([initMapEdit, initMapShow])("existing pages ignore drafts (%p)", initialize => {
+    sessionStorage.setItem("route_points:1", JSON.stringify([{ lat: 35, lng: 139, address: "下書き" }]));
+    getRoutePoints.mockReturnValue([]);
+    initialize();
+    expect(loadRoutePoints).not.toHaveBeenCalled();
+    expect(state.isNewPage).toBe(false);
   });
 
   describe("initMapShow", () => {
@@ -168,14 +178,88 @@ describe("pages.js", () => {
         .toHaveBeenCalled();
     });
 
+    test("restores a draft only in the town where it was saved", () => {
+      const points = [{ lat: 35, lng: 139, address: "東京" }];
+      state.isNewPage = true;
+      state.deliveryPoints = points;
+      jest.requireActual("../ui").updateHiddenField();
+      getRoutePoints.mockReturnValue([]);
+      document.getElementById("route-data").dataset.townId = "2";
+      initMapNew();
+      expect(loadRoutePoints).not.toHaveBeenCalled();
+      expect(sessionStorage.getItem("route_points:1")).toBe(JSON.stringify(points));
+      document.getElementById("route-data").dataset.townId = "1";
+      initMapNew();
+      expect(loadRoutePoints).toHaveBeenCalledWith(points);
+    });
+
+    test("ignores the legacy shared key", () => {
+      sessionStorage.setItem("route_points", JSON.stringify([{ lat: 35, lng: 139, address: "" }]));
+      getRoutePoints.mockReturnValue([]);
+      initMapNew();
+      expect(loadRoutePoints).not.toHaveBeenCalled();
+    });
+
+    test.each([
+      null, {}, "text", 1, true,
+      Array(10).fill({ lat: 35, lng: 139, address: "" }),
+      [null], [[]], [{}], [1],
+      [{ lat: 35, lng: 139 }],
+      [{ lat: 35, lng: 139, address: {} }],
+      ...[-91, 91, "35", null, true].map(lat => [{ lat, lng: 139, address: "" }]),
+      ...[-181, 181, "139", null, true].map(lng => [{ lat: 35, lng, address: "" }])
+    ].map(value => [value]))("removes invalid draft data: %j", (points) => {
+      sessionStorage.setItem("route_points:1", JSON.stringify(points));
+      sessionStorage.setItem("route_points:2", "other town");
+      getRoutePoints.mockReturnValue([]);
+      expect(() => initMapNew()).not.toThrow();
+      expect(sessionStorage.getItem("route_points:1")).toBeNull();
+      expect(sessionStorage.getItem("route_points:2")).toBe("other town");
+      expect(loadRoutePoints).not.toHaveBeenCalled();
+      expect(state.deliveryPoints).toEqual([]);
+      expect(initSortable).toHaveBeenCalled();
+    });
+
+    test("rejects non-finite coordinates parsed from JSON", () => {
+      sessionStorage.setItem("route_points:1", '[{"lat":1e400,"lng":139,"address":""}]');
+      getRoutePoints.mockReturnValue([]);
+      initMapNew();
+      expect(sessionStorage.getItem("route_points:1")).toBeNull();
+      expect(loadRoutePoints).not.toHaveBeenCalled();
+    });
+
+    test.each([[], Array(9).fill({ lat: -90, lng: -180, address: "" }),
+      [{ lat: 90, lng: 180, address: "境界" }]].map(value => [value]))("restores valid boundary data: %j", points => {
+      sessionStorage.setItem("route_points:1", JSON.stringify(points));
+      getRoutePoints.mockReturnValue([]);
+      initMapNew();
+      expect(loadRoutePoints).toHaveBeenCalledWith(points);
+    });
+
+    test("uses the configured point limit", () => {
+      document.getElementById("route-data").dataset.maxPoints = "1";
+      sessionStorage.setItem("route_points:1", JSON.stringify(Array(2).fill({ lat: 0, lng: 0, address: "" })));
+      getRoutePoints.mockReturnValue([]);
+      initMapNew();
+      expect(sessionStorage.getItem("route_points:1")).toBeNull();
+    });
+
+    test("prioritizes server points over a draft", () => {
+      const points = [{ lat: 1, lng: 2, address: "サーバー" }];
+      sessionStorage.setItem("route_points:1", "invalid");
+      getRoutePoints.mockReturnValue(points);
+      initMapNew();
+      expect(loadRoutePoints).toHaveBeenCalledWith(points);
+    });
+
     test("loads route_points from sessionStorage", () => {
 
       const savedPoints = [
-        { lat: 10, lng: 20 }
+        { lat: 10, lng: 20, address: "東京" }
       ];
 
       sessionStorage.setItem(
-        "route_points",
+        "route_points:1",
         JSON.stringify(savedPoints)
       );
 
@@ -190,7 +274,7 @@ describe("pages.js", () => {
     test("removes invalid route_points and continues with empty data", () => {
 
       sessionStorage.setItem(
-        "route_points",
+        "route_points:1",
         "invalid json"
       );
 
@@ -199,11 +283,11 @@ describe("pages.js", () => {
       expect(() => initMapNew())
         .not.toThrow();
 
-      expect(sessionStorage.getItem("route_points"))
+      expect(sessionStorage.getItem("route_points:1"))
         .toBeNull();
 
       expect(loadRoutePoints)
-        .toHaveBeenCalledWith([]);
+        .not.toHaveBeenCalled();
 
       expect(initSortable)
         .toHaveBeenCalled();
@@ -218,7 +302,7 @@ describe("pages.js", () => {
     test("removes empty route_points and continues with empty data", () => {
 
       sessionStorage.setItem(
-        "route_points",
+        "route_points:1",
         ""
       );
 
@@ -227,11 +311,11 @@ describe("pages.js", () => {
       expect(() => initMapNew())
         .not.toThrow();
 
-      expect(sessionStorage.getItem("route_points"))
+      expect(sessionStorage.getItem("route_points:1"))
         .toBeNull();
 
       expect(loadRoutePoints)
-        .toHaveBeenCalledWith([]);
+        .not.toHaveBeenCalled();
 
       expect(initSortable)
         .toHaveBeenCalled();

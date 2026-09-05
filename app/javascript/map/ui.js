@@ -1,5 +1,7 @@
 // ui.js
 
+import { getDraftKey } from "map/draft";
+
 import { state } from "map/state";
 
 import { drawRoute } from "map/route";
@@ -160,10 +162,12 @@ export function updateHiddenField() {
       );
   }
 
-  if (state.isNewPage) {
+  const draftKey = getDraftKey();
+
+  if (state.isNewPage && draftKey) {
 
     sessionStorage.setItem(
-      "route_points",
+      draftKey,
 
       JSON.stringify(
         state.deliveryPoints
