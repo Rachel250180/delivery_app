@@ -10,7 +10,9 @@
   <button onclick="goToGoogleMap()" class="btn-simple">
     GoogleMapで確認する
   </button>
-  <%= link_to "編集する", edit_town_route_path(@town, @route), class:"btn-edit" %>
+  <% if current_user && @route.user_id == current_user.id %>
+    <%= link_to "編集する", edit_town_route_path(@town, @route), class:"btn-edit" %>
+  <% end %>
 
   <% if current_user&.admin? %>
     <% if @route.representative? %>
